@@ -1,3 +1,5 @@
+#pragma once
+
 /////////////////////////////////////////////////////////////////////////////
 // 定義CGame及CGameState所使用的三個狀態常數
 /////////////////////////////////////////////////////////////////////////////
@@ -84,9 +86,11 @@ namespace game_framework {
 		static bool  CreateSurfaceWindowed();
 		static void  LoadBitmap(int i, int IDB_BITMAP);
 		static void  LoadBitmap(int i, char *filename);
+		static void  LoadBitmapFromExistHBITMAP(int i, HBITMAP bitmap);
 		static DWORD MatchColorKey(LPDIRECTDRAWSURFACE lpDDSurface, COLORREF color);
 		static int   RegisterBitmap(int IDB_BITMAP, COLORREF ColorKey);
 		static int   RegisterBitmap(char *filename, COLORREF ColorKey);
+		static int   RegisterBitmapWithHBITMAP(HBITMAP hbitmap);
 		static void  ReleaseSurface();
 		static void  RestoreSurface();
 		static void  SetColorKey(unsigned SurfaceID, COLORREF color);

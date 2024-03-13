@@ -56,7 +56,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	bee.LoadBitmapByString({ "resources/bee_1.bmp", "resources/bee_2.bmp" });
 	bee.SetTopLeft(462, 265);
 
-	ball.LoadBitmapByString({ "resources/ball-3.bmp", "resources/ball-2.bmp", "resources/ball-1.bmp", "resources/ball-ok.bmp" });
+	ball.LoadBitmapByString({ "resources/ball-3.bmp", "resources/ball-3.bmp", "resources/ball-2.bmp", "resources/ball-1.bmp", "resources/ball-ok.bmp" });
 	ball.SetTopLeft(150, 430);
 
 	for (int i = 0; i < 3; i++) {
@@ -154,7 +154,7 @@ void CGameStateRun::OnShow()
 
 void CGameStateRun::show_image_by_phase() {
 	if (phase <= 6) {
-		background.SelectShowBitmap((phase - 1) * 2 + (sub_phase - 1));
+		background.SetFrameIndexOfBitmap((phase - 1) * 2 + (sub_phase - 1));
 		background.ShowBitmap();
 		character.ShowBitmap();
 		if (phase == 3 && sub_phase == 1) {
@@ -175,38 +175,71 @@ void CGameStateRun::show_image_by_phase() {
 }
 
 void CGameStateRun::show_text_by_phase() {
-	
+	CDC *pDC = CDDraw::GetBackCDC();
+
+	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(0, 0, 0), 800);
+
+	if (phase == 1 && sub_phase == 1) {
+		CTextDraw::Print(pDC, 237, 128, "修改你的主角！");
+		CTextDraw::Print(pDC, 55, 163, "將灰色方格換成 resources 內的 giraffe.bmp 圖樣！");
+		CTextDraw::Print(pDC, 373, 537, "按下 Enter 鍵來驗證");
+	} else if (phase == 2 && sub_phase == 1) {
+		CTextDraw::Print(pDC, 26, 128, "下一個階段，讓長頸鹿能夠透過上下左右移動到這個位置！");
+		CTextDraw::Print(pDC, 373, 537, "按下 Enter 鍵來驗證");
+	} else if (phase == 3 && sub_phase == 1) {
+		CTextDraw::Print(pDC, 205, 128, "幫你準備了一個寶箱");
+		CTextDraw::Print(pDC, 68, 162, "設計程式讓長頸鹿摸到寶箱後，將寶箱消失！");
+		CTextDraw::Print(pDC, 68, 196, "記得寶箱要去背，使用 RGB(255, 255, 255)");
+		CTextDraw::Print(pDC, 373, 537, "按下 Enter 鍵來驗證");
+	} else if (phase == 4 && sub_phase == 1) {
+		CTextDraw::Print(pDC, 173, 128, "幫你準備了一個蜜蜂好朋友");
+		CTextDraw::Print(pDC, 89, 162, "已經幫它做了兩幀的動畫，讓它可以上下移動");
+		CTextDraw::Print(pDC, 110, 196, "寫個程式來讓你的蜜蜂好朋友擁有動畫！");
+		CTextDraw::Print(pDC, 373, 537, "按下 Enter 鍵來驗證");
+	} else if (phase == 5 && sub_phase == 1) {
+		CTextDraw::Print(pDC, 173, 128, "幫你準備了三扇門");
+		CTextDraw::Print(pDC, 89, 162, "設計程式讓長頸鹿摸到門之後，門會打開");
+		CTextDraw::Print(pDC, 373, 537, "按下 Enter 鍵來驗證");
+	} else if (phase == 6 && sub_phase == 1) {
+		CTextDraw::Print(pDC, 173, 128, "幫你準備了一顆會倒數的球");
+		CTextDraw::Print(pDC, 89, 162, "設計程式讓球倒數，然後顯示 OK 後停止動畫");
+		CTextDraw::Print(pDC, 373, 537, "按下 Enter 鍵來驗證");
+	} else if (sub_phase == 2) {
+		CTextDraw::Print(pDC, 268, 128, "完成！");
+	}
+
+	CDDraw::ReleaseBackCDC();
 }
 
 bool CGameStateRun::validate_phase_1() {
-	return character.GetImageFilename() == "resources/giraffe.bmp";
+	return character.GetImageFileName() == "resources/giraffe.bmp";
 }
 
 bool CGameStateRun::validate_phase_2() {
-	return character.Top() > 204 && character.Top() < 325 && character.Left() > 339 && character.Left() < 459;
+	return character.GetTop() > 204 && character.GetTop() < 325 && character.GetLeft() > 339 && character.GetLeft() < 459;
 }
 
 bool CGameStateRun::validate_phase_3() {
 	return (
-		character.Top() + character.Height() >= chest_and_key.Top()
-		&& character.Left() + character.Width() >= chest_and_key.Left()
-		&& chest_and_key.GetSelectShowBitmap() == 1
+		character.GetTop() + character.GetHeight() >= chest_and_key.GetTop()
+		&& character.GetLeft() + character.GetWidth() >= chest_and_key.GetLeft()
+		&& chest_and_key.GetFrameIndexOfBitmap() == 1
 		&& chest_and_key.GetFilterColor() == RGB(255, 255, 255)
 	);
 }
 
 bool CGameStateRun::validate_phase_4() {
-	return bee.IsAnimation() && bee.GetMovingBitmapFrame() == 2;
+	return bee.IsAnimation() && bee.GetFrameSizeOfBitmap() == 2;
 }
 
 bool CGameStateRun::validate_phase_5() {
 	bool check_all_door_is_open = true;
 	for (int i = 0; i < 3; i++) {
-		check_all_door_is_open &= (door[i].GetSelectShowBitmap() == 1);
+		check_all_door_is_open &= (door[i].GetFrameIndexOfBitmap() == 1);
 	}
 	return check_all_door_is_open;
 }
 
 bool CGameStateRun::validate_phase_6() {
-	return ball.IsAnimationDone() && !ball.IsAnimation();
+	return ball.IsAnimationDone() && !ball.IsAnimation() && ball.GetFrameIndexOfBitmap() == ball.GetFrameSizeOfBitmap() - 1;
 }
