@@ -13,7 +13,7 @@ using namespace game_framework;
 // 這個class為遊戲的遊戲執行物件，主要的遊戲程式都在這裡
 /////////////////////////////////////////////////////////////////////////////
 
-CGameStateRun::CGameStateRun(CGame *g) : CGameState(g)
+CGameStateRun::CGameStateRun(CGame* g) : CGameState(g)
 {
 }
 
@@ -27,16 +27,30 @@ void CGameStateRun::OnBeginState()
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {
+	background.SetTopLeft(background.GetLeft()+speedX, background.GetTop()+speedY);
+	if (speedX > 0) {
+		character.SetFrameIndexOfBitmap(1);
+	}
+	else if (speedX < 0) {
+		character.SetFrameIndexOfBitmap(3);
+	}
+	else if (speedY > 0) {
+		character.SetFrameIndexOfBitmap(2);
+	}
+	else if (speedY < 0) {
+		character.SetFrameIndexOfBitmap(0);
+	}
 }
+
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 {
-	background.LoadBitmapByString({ 
-		"resources/phase11_background.bmp", 
-		"resources/phase12_background.bmp", 
-		"resources/phase21_background.bmp", 
-		"resources/phase22_background.bmp", 
-		"resources/phase31_background.bmp", 
+	background.LoadBitmapByString({
+		"resources/phase11_background.bmp",
+		"resources/phase12_background.bmp",
+		"resources/phase21_background.bmp",
+		"resources/phase22_background.bmp",
+		"resources/phase31_background.bmp",
 		"resources/phase32_background.bmp",
 		"resources/phase41_background.bmp",
 		"resources/phase42_background.bmp",
@@ -44,11 +58,12 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 		"resources/phase52_background.bmp",
 		"resources/phase61_background.bmp",
 		"resources/phase62_background.bmp",
-	});
+		});
 	background.SetTopLeft(0, 0);
 
-	character.LoadBitmapByString({ "resources/gray.bmp" });
+	character.LoadBitmapByString({ "resources/red_front.bmp","resources/red_left.bmp","resources/red_back.bmp","resources/red_right.bmp" });
 	character.SetTopLeft(150, 265);
+	character.SetAnimation(1000, true);
 
 	chest_and_key.LoadBitmapByString({ "resources/chest.bmp", "resources/chest_ignore.bmp" }, RGB(255, 255, 255));
 	chest_and_key.SetTopLeft(150, 430);
@@ -66,7 +81,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 }
 
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
+{	
 	if (nChar == VK_RETURN) {
 		if (phase == 1) {
 			if (sub_phase == 1) {
@@ -76,7 +91,8 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				sub_phase = 1;
 				phase += 1;
 			}
-		} else if (phase == 2) {
+		}
+		else if (phase == 2) {
 			if (sub_phase == 1) {
 				sub_phase += validate_phase_2();
 			}
@@ -84,7 +100,8 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				sub_phase = 1;
 				phase += 1;
 			}
-		}else if (phase == 3) {
+		}
+		else if (phase == 3) {
 			if (sub_phase == 1) {
 				sub_phase += validate_phase_3();
 			}
@@ -92,7 +109,8 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				sub_phase = 1;
 				phase += 1;
 			}
-		}else if (phase == 4) {
+		}
+		else if (phase == 4) {
 			if (sub_phase == 1) {
 				sub_phase += validate_phase_4();
 			}
@@ -100,7 +118,8 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				sub_phase = 1;
 				phase += 1;
 			}
-		}else if (phase == 5) {
+		}
+		else if (phase == 5) {
 			if (sub_phase == 1) {
 				sub_phase += validate_phase_5();
 			}
@@ -108,7 +127,8 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				sub_phase = 1;
 				phase += 1;
 			}
-		}else if (phase == 6) {
+		}
+		else if (phase == 6) {
 			if (sub_phase == 1) {
 				sub_phase += validate_phase_6();
 			}
@@ -119,11 +139,52 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 		}
 	}
+
+	if(nChar == VK_LEFT)
+	{	
+		speedX = 1;
+		speedY = 0;
+	}
+	else if (nChar == VK_UP)
+	{
+		speedY = 1;
+		speedX = 0;
+	}
+	else if (nChar == VK_DOWN)
+	{
+		speedY = -1;
+		speedX = 0;
+	}
+	else if (nChar == VK_RIGHT)
+	{
+		speedX = -1;
+		speedY = 0;
+	}
+
+
+	
 }
 
 void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	
+	if (nChar == VK_LEFT)
+	{
+		speedX = 0;
+
+	}
+	else if (nChar == VK_UP)
+	{
+		speedY = 0;
+	}
+	else if (nChar == VK_DOWN)
+	{
+		speedY = 0;
+	}
+	else if (nChar == VK_RIGHT)
+	{
+		speedX = 0;
+	}
+
 }
 
 void CGameStateRun::OnLButtonDown(UINT nFlags, CPoint point)  // 處理滑鼠的動作
@@ -150,6 +211,7 @@ void CGameStateRun::OnShow()
 {
 	show_image_by_phase();
 	show_text_by_phase();
+	character.ShowBitmap();
 }
 
 void CGameStateRun::show_image_by_phase() {
@@ -175,7 +237,7 @@ void CGameStateRun::show_image_by_phase() {
 }
 
 void CGameStateRun::show_text_by_phase() {
-	CDC *pDC = CDDraw::GetBackCDC();
+	CDC* pDC = CDDraw::GetBackCDC();
 
 	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(0, 0, 0), 800);
 
@@ -183,36 +245,13 @@ void CGameStateRun::show_text_by_phase() {
 		CTextDraw::Print(pDC, 237, 128, "修改你的主角！");
 		CTextDraw::Print(pDC, 55, 163, "將灰色方格換成 resources 內的 giraffe.bmp 圖樣！");
 		CTextDraw::Print(pDC, 373, 537, "按下 Enter 鍵來驗證");
-	} else if (phase == 2 && sub_phase == 1) {
-		CTextDraw::Print(pDC, 26, 128, "下一個階段，讓長頸鹿能夠透過上下左右移動到這個位置！");
-		CTextDraw::Print(pDC, 373, 537, "按下 Enter 鍵來驗證");
-	} else if (phase == 3 && sub_phase == 1) {
-		CTextDraw::Print(pDC, 205, 128, "幫你準備了一個寶箱");
-		CTextDraw::Print(pDC, 68, 162, "設計程式讓長頸鹿摸到寶箱後，將寶箱消失！");
-		CTextDraw::Print(pDC, 68, 196, "記得寶箱要去背，使用 RGB(255, 255, 255)");
-		CTextDraw::Print(pDC, 373, 537, "按下 Enter 鍵來驗證");
-	} else if (phase == 4 && sub_phase == 1) {
-		CTextDraw::Print(pDC, 173, 128, "幫你準備了一個蜜蜂好朋友");
-		CTextDraw::Print(pDC, 89, 162, "已經幫它做了兩幀的動畫，讓它可以上下移動");
-		CTextDraw::Print(pDC, 110, 196, "寫個程式來讓你的蜜蜂好朋友擁有動畫！");
-		CTextDraw::Print(pDC, 373, 537, "按下 Enter 鍵來驗證");
-	} else if (phase == 5 && sub_phase == 1) {
-		CTextDraw::Print(pDC, 173, 128, "幫你準備了三扇門");
-		CTextDraw::Print(pDC, 89, 162, "設計程式讓長頸鹿摸到門之後，門會打開");
-		CTextDraw::Print(pDC, 373, 537, "按下 Enter 鍵來驗證");
-	} else if (phase == 6 && sub_phase == 1) {
-		CTextDraw::Print(pDC, 173, 128, "幫你準備了一顆會倒數的球");
-		CTextDraw::Print(pDC, 89, 162, "設計程式讓球倒數，然後顯示 OK 後停止動畫");
-		CTextDraw::Print(pDC, 373, 537, "按下 Enter 鍵來驗證");
-	} else if (sub_phase == 2) {
-		CTextDraw::Print(pDC, 268, 128, "完成！");
 	}
 
 	CDDraw::ReleaseBackCDC();
 }
 
 bool CGameStateRun::validate_phase_1() {
-	return character.GetImageFileName() == "resources/giraffe.bmp";
+	return character.GetImageFileName() == "resources/red_front.bmp";
 }
 
 bool CGameStateRun::validate_phase_2() {
@@ -225,7 +264,7 @@ bool CGameStateRun::validate_phase_3() {
 		&& character.GetLeft() + character.GetWidth() >= chest_and_key.GetLeft()
 		&& chest_and_key.GetFrameIndexOfBitmap() == 1
 		&& chest_and_key.GetFilterColor() == RGB(255, 255, 255)
-	);
+		);
 }
 
 bool CGameStateRun::validate_phase_4() {
