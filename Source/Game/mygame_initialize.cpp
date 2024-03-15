@@ -69,7 +69,7 @@ void CGameStateInit::draw_text() {
 
 	/* Print info */
 	CTextDraw::ChangeFontLog(pDC,  24, "·L³n¥¿¶ÂÅé", RGB(0,0,0));
-	CTextDraw::Print(pDC, 182, 431, "Press any key to start");
+	CTextDraw::Print(pDC, 210, 301, "Press any key to start");
 
 	CDDraw::ReleaseBackCDC();
 }
