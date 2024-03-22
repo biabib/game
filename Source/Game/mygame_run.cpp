@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "../Core/Resource.h"
 #include <mmsystem.h>
+#include <string>
 #include <ddraw.h>
 #include "../Library/audio.h"
 #include "../Library/gameutil.h"
@@ -30,7 +31,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	int frame = character.GetFrameIndexOfBitmap();
 	background.SetTopLeft(background.GetLeft()+speedX, background.GetTop()+speedY);
 	if (speedX != 0 || speedY != 0) {
-		if (characterFrameCounter == 7) {
+		if (characterFrameCounter == 4) {
 			if (speedY < 0) {
 				character.SetFrameIndexOfBitmap((character.GetFrameIndexOfBitmap()) % 2 + 1);
 			}
@@ -64,51 +65,91 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			character.SetFrameIndexOfBitmap(8);
 		}
 	}
+	
+	
 }
 
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 {
 	background.LoadBitmapByString({
-		"resources/map.bmp",
+		"resources/home_2f.bmp",
+		"resources/home_1f.bmp",
+		"resources/map1_1.5.bmp",
 		});
-	background.SetTopLeft(0, 0);
-
-	character.LoadBitmapByString({ "Resources/red_front.bmp","resources/red_front1.bmp","resources/red_front2.bmp","resources/red_left.bmp","resources/red_left1.bmp","resources/red_back.bmp","resources/red_back1.bmp","resources/red_back2.bmp","resources/red_right.bmp","resources/red_right1.bmp" },RGB(255,255,255));
+	background.SetTopLeft(250, 190);
+	/*background.SetTopLeft(-215, -1885);*/
+	
+	character.LoadBitmapByString({ "Resources/character/red_front.bmp","resources/character/red_front1.bmp","resources/character/red_front2.bmp","resources/character/red_left.bmp","resources/character/red_left1.bmp","resources/character/red_back.bmp","resources/character/red_back1.bmp","resources/character/red_back2.bmp","resources/character/red_right.bmp","resources/character/red_right1.bmp" },RGB(255,255,255));
 	character.SetTopLeft(300, 272);
 	character.SetAnimation(1000, true);
 
 	textbox.LoadBitmapByString({"Resources/text.bmp"});
 	textbox.SetTopLeft(0,378);
+
+	
 }
 
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {	
 	if (nChar == VK_RETURN) {
-	
+		if (phase == 1) {
+			if ((((90 <= background.GetLeft()) && (background.GetLeft() <= 110))) && ((190 <= background.GetTop()) &&(background.GetTop() <= 210))) {
+				phase = 2;
+				background.SetFrameIndexOfBitmap(0);
+				background.SetTopLeft(205,210);
+				character.SetFrameIndexOfBitmap(3);
+				Sleep(500);
+			}
+			else if ((((180 <= background.GetLeft()) && (background.GetLeft() <= 200))) && ((10 <= background.GetTop()) && (background.GetTop() <= 30))) {
+				phase = 3;
+				background.SetFrameIndexOfBitmap(2);
+				background.SetTopLeft(-215, -1885);
+				character.SetFrameIndexOfBitmap(0);
+				Sleep(500);
+			}
+		}
+		else if (phase == 2) {
+			if (((190 <= background.GetLeft()) && (background.GetLeft() <= 210)) && ((200 <= background.GetTop()) && (background.GetTop() <= 220))) {
+				phase = 1;
+				background.SetFrameIndexOfBitmap(1);
+				background.SetTopLeft(110,200);
+				character.SetFrameIndexOfBitmap(3);
+				Sleep(500);
+			}
+		}
+		else if (phase == 3) {
+			if (((-225 <= background.GetLeft()) && (background.GetLeft() <= -205)) && ((-1895 <= background.GetTop()) && (background.GetTop() <= -1875))) {
+				phase = 1;
+				background.SetFrameIndexOfBitmap(1);
+				background.SetTopLeft(190, 20);
+				character.SetFrameIndexOfBitmap(5);
+				Sleep(500);
+			}
+		}
+
 	}
 
 	if(nChar == VK_LEFT)
 	{	
-		speedX = 3;
+		speedX = 5;
 		speedY = 0;
 	}
 	else if (nChar == VK_UP)
 	{
-		speedY = 3;
+		speedY = 5;
 		speedX = 0;
 	}
 	else if (nChar == VK_DOWN)
 	{
-		speedY = -3;
+		speedY = -5;
 		speedX = 0;
 	}
 	else if (nChar == VK_RIGHT)
 	{
-		speedX = -3;
+		speedX = -5;
 		speedY = 0;
 	}
-
 
 	
 }
@@ -163,16 +204,30 @@ void CGameStateRun::OnShow()
 }
 
 void CGameStateRun::show_image_by_phase() {
+	/*if (phase = 1) {
+		
+		background.SetFrameIndexOfBitmap(0);
 		background.ShowBitmap();
-		character.ShowBitmap();
-		textbox.ShowBitmap();
+	}
+	else if (phase = 2) {
+		
+		
+	}*/
+
+	background.ShowBitmap();
+	character.ShowBitmap();
+	//textbox.ShowBitmap();
 }
 
 void CGameStateRun::show_text_by_phase() {
 	CDC* pDC = CDDraw::GetBackCDC();
+	string x = to_string(background.GetLeft());
+	string y = to_string(background.GetTop());
 
-	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(0, 0, 0), 800);
-
+	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 0, 0), 800);
+	CTextDraw::Print(pDC, 0, 0, x);
+	CTextDraw::Print(pDC, 90, 0, y);
 
 	CDDraw::ReleaseBackCDC();
 }
+
