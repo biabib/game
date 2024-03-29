@@ -65,7 +65,48 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			character.SetFrameIndexOfBitmap(8);
 		}
 	}
-	
+	if (phase == 1) {
+		if ((((75 <= background.GetLeft()) && (background.GetLeft() <= 100))) && ((190 <= background.GetTop()) && (background.GetTop() <= 220))) {
+			phase = 2;
+			background.SetFrameIndexOfBitmap(0);
+			background.SetTopLeft(205, 210);
+			character.SetFrameIndexOfBitmap(3);
+			speedX = 0;
+			speedY = 0;
+			//Sleep(500);
+		}
+		else if ((((180 <= background.GetLeft()) && (background.GetLeft() <= 200))) /*&& ((10 <= background.GetTop())*/ && (background.GetTop() == 20)) {
+			phase = 3;
+			background.SetFrameIndexOfBitmap(2);
+			background.SetTopLeft(-215, -1895);
+			character.SetFrameIndexOfBitmap(0);
+			speedX = 0;
+			speedY = 0;
+			//Sleep(500);
+		}
+	}
+	else if (phase == 2) {
+		if (((185<= background.GetLeft()) && (background.GetLeft() <= 195)) && ((205 <= background.GetTop()) && (background.GetTop() <= 225))) {
+			phase = 1;
+			background.SetFrameIndexOfBitmap(1);
+			background.SetTopLeft(110, 200);
+			character.SetFrameIndexOfBitmap(3);
+			speedX = 0;
+			speedY = 0;
+			//Sleep(500);
+		}
+	}
+	else if (phase == 3) {
+		if (((-225 <= background.GetLeft()) && (background.GetLeft() <= -205))/* && ((-1895 <= background.GetTop())*/  && (background.GetTop() == -1885)) {
+			phase = 1;
+			background.SetFrameIndexOfBitmap(1);
+			background.SetTopLeft(190, 30);
+			character.SetFrameIndexOfBitmap(5);
+			speedX = 0;
+			speedY = 0;
+			//Sleep(500);
+		}
+	}
 	
 }
 
@@ -93,7 +134,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {	
 	if (nChar == VK_RETURN) {
-		if (phase == 1) {
+		/*if (phase == 1) {
 			if ((((90 <= background.GetLeft()) && (background.GetLeft() <= 110))) && ((190 <= background.GetTop()) &&(background.GetTop() <= 210))) {
 				phase = 2;
 				background.SetFrameIndexOfBitmap(0);
@@ -119,14 +160,14 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 		}
 		else if (phase == 3) {
-			if (((-225 <= background.GetLeft()) && (background.GetLeft() <= -205)) && ((-1895 <= background.GetTop()) && (background.GetTop() <= -1875))) {
+			if (((-195 <= background.GetLeft()) && (background.GetLeft() <= -205)) && ((-1895 <= background.GetTop()) && (background.GetTop() <= -1875))) {
 				phase = 1;
 				background.SetFrameIndexOfBitmap(1);
 				background.SetTopLeft(190, 20);
 				character.SetFrameIndexOfBitmap(5);
 				Sleep(500);
 			}
-		}
+		}*/
 
 	}
 
