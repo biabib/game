@@ -32,9 +32,9 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	int frame = character.GetFrameIndexOfBitmap();
 	background.SetTopLeft(background.GetLeft()+speedX, background.GetTop()+speedY);
 	hitbox[0].SetTopLeft(hitbox[0].GetLeft() + speedX, hitbox[0].GetTop() + speedY);
-	//for (int i = 0; i < hitboxnum; i++) {
-		//hitbox[i].SetTopLeft(hitbox[i].GetLeft() + speedX, hitbox[i].GetTop() + speedY);
-	//}
+	for (int i = 0; i < hitboxnum; i++) {
+		hitbox[i].SetTopLeft(hitbox[i].GetLeft() + speedX, hitbox[i].GetTop() + speedY);
+	}
 	if (speedX != 0 || speedY != 0) {
 		if (characterFrameCounter == 4) {
 			if (speedY < 0) {
@@ -241,15 +241,15 @@ void CGameStateRun::show_image_by_phase() {
 	background.ShowBitmap();
 	character.ShowBitmap();
 	//textbox.ShowBitmap();
-	//for (int i = 0; i < hitboxnum; i++) {
-	//	hitbox[i].ShowBitmap();
-	//}
+	for (int i = 0; i < hitboxnum; i++) {
+		hitbox[i].ShowBitmap();
+	}
 	hitbox[0].ShowBitmap();
 }
 
 void CGameStateRun::show_text_by_phase() {
 	CDC* pDC = CDDraw::GetBackCDC();
-	string x = to_string(background.GetLeft());
+	string x = to_string(hitboxnum);
 	string y = to_string(background.GetTop());
 
 	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 0, 0), 800);
