@@ -7,6 +7,7 @@
 #include "../Library/gameutil.h"
 #include "../Library/gamecore.h"
 #include "mygame.h"
+#include <fstream>
 
 using namespace game_framework;
 
@@ -30,6 +31,10 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 {
 	int frame = character.GetFrameIndexOfBitmap();
 	background.SetTopLeft(background.GetLeft()+speedX, background.GetTop()+speedY);
+	hitbox[0].SetTopLeft(hitbox[0].GetLeft() + speedX, hitbox[0].GetTop() + speedY);
+	//for (int i = 0; i < hitboxnum; i++) {
+		//hitbox[i].SetTopLeft(hitbox[i].GetLeft() + speedX, hitbox[i].GetTop() + speedY);
+	//}
 	if (speedX != 0 || speedY != 0) {
 		if (characterFrameCounter == 4) {
 			if (speedY < 0) {
@@ -117,7 +122,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 		"resources/home_2f.bmp",
 		"resources/home_1f.bmp",
 		"resources/map1_1.5.bmp",
-		});
+		});//,RGB(100,100,100));
 	background.SetTopLeft(250, 190);
 	/*background.SetTopLeft(-215, -1885);*/
 	
@@ -127,8 +132,27 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 
 	textbox.LoadBitmapByString({"Resources/text.bmp"});
 	textbox.SetTopLeft(0,378);
-
 	
+	ifstream ifs("map/home2f.txt");
+	for (int i = 0; i < 6; i++) {
+		for (int j = 0; j < 6; j++) {
+			ifs >> home2fmap[i][j];
+		}
+	}
+	ifs.close();							//讀地圖txt進來
+	int hit = 0;
+	for (int i = 0; i < 6; i++) {
+		for (int j = 0; j < 6; j++) {
+			if (home2fmap[i][j] % 2 == 1) {
+				hitboxnum++;
+				hitbox[hit].LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+				hitbox[hit].SetTopLeft(250 + i * 24 , 190 + j * 24);
+				hit++;
+			}
+		}
+	}
+	hitbox[0].LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+	hitbox[0].SetTopLeft(250 , 190 );
 }
 
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -258,6 +282,10 @@ void CGameStateRun::show_image_by_phase() {
 	background.ShowBitmap();
 	character.ShowBitmap();
 	//textbox.ShowBitmap();
+	//for (int i = 0; i < hitboxnum; i++) {
+	//	hitbox[i].ShowBitmap();
+	//}
+	hitbox[0].ShowBitmap();
 }
 
 void CGameStateRun::show_text_by_phase() {

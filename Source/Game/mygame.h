@@ -104,6 +104,8 @@ namespace game_framework {
 		CMovingBitmap background;
 		CMovingBitmap character;
 		CMovingBitmap textbox;
+		CMovingBitmap hitbox [100];					//先用一百個物件看看夠不夠
+		int hitboxnum = 0;
 		void show_image_by_phase();
 		void show_text_by_phase();
 		/*void phase_house();
