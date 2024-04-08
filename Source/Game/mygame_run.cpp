@@ -35,6 +35,9 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	for (int i = 0; i < hitboxnum; i++) {
 		hitbox[i].SetTopLeft(hitbox[i].GetLeft() + speedX, hitbox[i].GetTop() + speedY);
 	}
+	for (int i = 0; i < tppointnum; i++) {
+		tppoint[i].SetTopLeft(tppoint[i].GetLeft() + speedX, tppoint[i].GetTop() + speedY);
+	}
 	if (speedX != 0 || speedY != 0) {
 		if (characterFrameCounter == 4) {
 			if (speedY < 0) {
@@ -100,14 +103,23 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	}
 	ifs.close();							//讀地圖txt進來
 	int hit = 0;
+	int tpp = 0;
+	int gra = 0;
+	
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 6; j++) {
-			if (home2fmap[i][j] %2 == 1) {
+			if (home2fmap[i][j]  == 1) {
 				hitboxnum++;
 				//hitbox[hit].LoadEmptyBitmap(100,100);            
 				hitbox[hit].LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
 				hitbox[hit].SetTopLeft(250 + j * 24 , 190 + i * 24);
 				hit++;
+			}
+			else if (home2fmap[i][j] == 2) {
+				tppointnum++;
+				tppoint[tpp].LoadBitmapByString({ "Resources/air.bmp" });
+				tppoint[tpp].SetTopLeft(250 + j * 24, 190 + i * 24);
+				tpp++;
 			}
 		}
 	}
@@ -136,7 +148,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 		}
 		else if (phase == 2) {
-			if (((190 <= background.GetLeft()) && (background.GetLeft() <= 210)) && ((200 <= background.GetTop()) && (background.GetTop() <= 220))) {
+			if (character.IsOverlap(character,tppoint[0])){
 				phase = 1;
 				background.SetFrameIndexOfBitmap(1);
 				background.SetTopLeft(110,200);
@@ -245,6 +257,9 @@ void CGameStateRun::show_image_by_phase() {
 	//textbox.ShowBitmap();
 	for (int i = 0; i < hitboxnum; i++) {
 		hitbox[i].ShowBitmap();
+	}
+	for (int i = 0; i < tppointnum; i++) {
+		tppoint[i].ShowBitmap();
 	}
 }
 

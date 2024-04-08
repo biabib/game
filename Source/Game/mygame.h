@@ -104,8 +104,12 @@ namespace game_framework {
 		CMovingBitmap background;
 		CMovingBitmap character;
 		CMovingBitmap textbox;
-		CMovingBitmap hitbox [100];					//先用一百個物件看看夠不夠
+		CMovingBitmap hitbox [200];					//先用兩百個物件看看夠不夠
+		CMovingBitmap tppoint[10];
+		CMovingBitmap grass[100];
 		int hitboxnum = 0;
+		int grassnum = 0;
+		int tppointnum = 0;
 		void show_image_by_phase();
 		void show_text_by_phase();
 		/*void phase_house();
