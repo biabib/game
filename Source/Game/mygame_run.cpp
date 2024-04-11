@@ -28,16 +28,43 @@ void CGameStateRun::OnBeginState()
 }
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
-{
+{	
 	int frame = character.GetFrameIndexOfBitmap();
-	background.SetTopLeft(background.GetLeft()+speedX, background.GetTop()+speedY);
+	background.SetTopLeft(background.GetLeft() + speedX, background.GetTop() + speedY);
+	for (auto i = hitbox.begin(); i != hitbox.end(); i++) {
+		i->SetTopLeft(i->GetLeft() + speedX, i->GetTop() + speedY);
+	}
+	for (auto i = tppoint.begin(); i != tppoint.end(); i++) {
+		i->SetTopLeft(i->GetLeft() + speedX, i->GetTop() + speedY);
+	}
 
-	for (int i = 0; i < hitboxnum; i++) {
-		hitbox[i].SetTopLeft(hitbox[i].GetLeft() + speedX, hitbox[i].GetTop() + speedY);
+	/*for (int i = 0; i < hitbox.size(); i++) {
+		hitbox[i].SetTopLeft(hitbox[i].GetLeft() + speedX, hitbox[i].GetTop() + speedY);         //舊的移動
 	}
 	for (int i = 0; i < tppointnum; i++) {
 		tppoint[i].SetTopLeft(tppoint[i].GetLeft() + speedX, tppoint[i].GetTop() + speedY);
+	}*/
+
+
+	for (auto i = hitbox.begin(); i != hitbox.end(); i++) {                                   //判定卡hitbox
+		if (CMovingBitmap::IsOverlap(character, *i)) {
+			if (character.GetLeft() > i->GetLeft()) {
+				overlapleft = 1;
+			}
+			else if (character.GetLeft() < i->GetLeft()) {
+				overlapright = 1;
+			}
+			else if (character.GetTop() > i->GetTop()) {
+				overlaptop = 1;
+			}
+			else if (character.GetTop() < i->GetTop()) {
+				overlapdown = 1;
+			}
+		}
 	}
+
+
+
 	if (speedX != 0 || speedY != 0) {
 		if (characterFrameCounter == 4) {
 			if (speedY < 0) {
@@ -74,43 +101,38 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		}
 	}
 	if (phase == 1) {
+		hitbox.clear();
+		tppoint.clear();
 		ifstream ifs("mapdoc/home1f.txt");
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 7; j++) {
-				ifs >> home1fmap[i][j];
+				int a = 0;
+				ifs >> a;
+				home1fmap.push_back(a);
 			}
 		}
 		ifs.close();							//讀地圖txt進來
-		CMovingBitmap hitbox[200];
-		CMovingBitmap tppoint[200];
-		int hit = 0;
-		int tpp = 0;
-		int gra = 0;
-		hitboxnum = 0;
-		//for (int i = 0; i < 8; i++) {
-		//	for (int j = 0; j < 7; j++) {
-		//		if (home1fmap[i][j] == 1) {
-		//			hitboxnum++;
-		//			//hitbox[hit].LoadEmptyBitmap(100,100);            
-		//			hitbox[hit].LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-		//			hitbox[hit].SetTopLeft(250 + j * 24, 190 + i * 24);
-		//			hit++;
-		//		}
 
-		//		else if (home1fmap[i][j] == 2) {
-		//			tppointnum++;
-		//			tppoint[tpp].LoadBitmapByString({ "Resources/air.bmp" });
-		//			tppoint[tpp].SetTopLeft(250 + j * 24, 190 + i * 24);
-		//			tpp++;
-		//		}
-		//	}
-		//}
-		for (int i = 0; i < 200; i++) {
-			hitbox[i].~CMovingBitmap();
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 7; j++) {
+				int a = 0;
+				a = home1fmap.front();
+				home1fmap.erase(home1fmap.begin());
+
+				if (a == 1) {
+					hitbox.insert(hitbox.begin(), CMovingBitmap());
+					hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+					hitbox.begin()->SetTopLeft(120 + j * 32, 200 + i * 32);
+				}
+
+				else if (a == 2) {
+					tppoint.insert(tppoint.begin(), CMovingBitmap());
+					tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+					tppoint.begin()->SetTopLeft(120 + j * 32, 200 + i * 32);
+				}
+			}
 		}
-		for (int i = 0; i < 10; i++) {
-			tppoint[i].~CMovingBitmap();
-		}
+		
 		if ((((90 <= background.GetLeft()) && (background.GetLeft() <= 110))) && ((190 <= background.GetTop()) && (background.GetTop() <= 210))) {
 			phase = 2;
 			background.SetFrameIndexOfBitmap(0);
@@ -127,43 +149,13 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		}
 	}
 	else if (phase == 2) {
-		//ifstream ifs("mapdoc/home2f.txt");
-		//for (int i = 0; i < 6; i++) {
-		//	for (int j = 0; j < 6; j++) {
-		//		ifs >> home2fmap[i][j];
-		//	}
-		//}
-		//ifs.close();							//讀地圖txt進來
-		//CMovingBitmap hitbox[200];
-		//CMovingBitmap tppoint[200];
-		//int hit = 0;
-		//int tpp = 0;
-		//int gra = 0;
 
-		//for (int i = 0; i < 6; i++) {
-		//	for (int j = 0; j < 6; j++) {
-		//		if (home2fmap[i][j] == 1) {
-		//			hitboxnum++;
-		//			//hitbox[hit].LoadEmptyBitmap(100,100);            
-		//			hitbox[hit].LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-		//			hitbox[hit].SetTopLeft(250 + j * 24, 190 + i * 24);
-		//			hit++;
-		//		}
-		//		else if (home2fmap[i][j] == 2) {
-		//			tppointnum++;
-		//			tppoint[tpp].LoadBitmapByString({ "Resources/air.bmp" });
-		//			tppoint[tpp].SetTopLeft(250 + j * 24, 190 + i * 24);
-		//			tpp++;
-		//		}
-		//	}
-		//}
-
-		if (character.IsOverlap(character, tppoint[0])) {
+		if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
 			
 			phase = 1;
 			
 			background.SetFrameIndexOfBitmap(1);
-			background.SetTopLeft(110, 200);
+			background.SetTopLeft(120, 200);
 			character.SetFrameIndexOfBitmap(3);
 			Sleep(500);
 			
@@ -201,175 +193,56 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	ifstream ifs("mapdoc/home2f.txt");
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 6; j++) {
-			ifs >> home2fmap[i][j];
+			int a = 0;
+			ifs >> a;
+			home2fmap.push_back(a);
 		}
 	}
 	ifs.close();							//讀地圖txt進來
-	int hit = 0;
-	int tpp = 0;
-	int gra = 0;
-	
+
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 6; j++) {
-			if (home2fmap[i][j]  == 1) {
-				hitboxnum++;
-				//hitbox[hit].LoadEmptyBitmap(100,100);            
-				hitbox[hit].LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-				hitbox[hit].SetTopLeft(250 + j * 24 , 190 + i * 24);
-				hit++;
+			int a = 0;
+			a = home2fmap.front();
+			home2fmap.erase(home2fmap.begin());
+
+			if (a == 1) {
+				hitbox.insert(hitbox.begin(),CMovingBitmap());
+				hitbox.begin()->LoadBitmapByString({"Resources/air.bmp"});// , RGB(100, 100, 100));
+				hitbox.begin()->SetTopLeft(250 + j * 32, 190 + i * 32);
 			}
-			else if (home2fmap[i][j] == 2) {
-				tppointnum++;
-				tppoint[tpp].LoadBitmapByString({ "Resources/air.bmp" });
-				tppoint[tpp].SetTopLeft(250 + j * 24, 190 + i * 24);
-				tpp++;
+
+			else if (a == 2) {
+				tppoint.insert(tppoint.begin(),CMovingBitmap());
+				tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+				tppoint.begin()->SetTopLeft(250 + j * 32, 190 + i * 32);
 			}
 		}
 	}
+	
 }
 
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {	
 	if (nChar == VK_RETURN) {
-		//if (phase == 1) {
-		//	//ifstream ifs("mapdoc/home1f.txt");
-		//	//for (int i = 0; i < 8; i++) {
-		//	//	for (int j = 0; j < 7; j++) {
-		//	//		ifs >> home1fmap[i][j];
-		//	//	}
-		//	//}
-		//	//ifs.close();							//讀地圖txt進來
-		//	//CMovingBitmap hitbox[200];
-		//	//CMovingBitmap tppoint[200];
-		//	//int hit = 0;
-		//	//int tpp = 0;
-		//	//for (int i = 0; i < 8; i++) {
-		//	//	for (int j = 0; j < 7; j++) {
-		//	//		if (home1fmap[i][j] == 1) {
-		//	//			hitboxnum++;
-		//	//			//hitbox[hit].LoadEmptyBitmap(100,100);            
-		//	//			hitbox[hit].LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-		//	//			hitbox[hit].SetTopLeft(250 + j * 24, 190 + i * 24);
-		//	//			hit++;
-		//	//		}
-		//	//		else if (home1fmap[i][j] == 2) {
-		//	//			tppointnum++;
-		//	//			tppoint[tpp].LoadBitmapByString({ "Resources/air.bmp" });
-		//	//			tppoint[tpp].SetTopLeft(250 + j * 24, 190 + i * 24);
-		//	//			tpp++;
-		//	//		}
-		//	//	}
-		//	//}
-
-		//	if ((((90 <= background.GetLeft()) && (background.GetLeft() <= 110))) && ((190 <= background.GetTop()) &&(background.GetTop() <= 210))) {
-		//		phase = 2;
-		//		background.SetFrameIndexOfBitmap(0);
-		//		background.SetTopLeft(205,210);
-		//		character.SetFrameIndexOfBitmap(3);
-		//		Sleep(500);
-		//	}
-		//	else if ((((180 <= background.GetLeft()) && (background.GetLeft() <= 200))) && ((10 <= background.GetTop()) && (background.GetTop() <= 30))) {
-		//		phase = 3;
-		//		background.SetFrameIndexOfBitmap(2);
-		//		background.SetTopLeft(-215, -1885);
-		//		character.SetFrameIndexOfBitmap(0);
-		//		Sleep(500);
-		//	}
-		//}
-		//else if (phase == 2) {
-		//	//ifstream ifs("mapdoc/home2f.txt");
-		//	//for (int i = 0; i < 6; i++) {
-		//	//	for (int j = 0; j < 6; j++) {
-		//	//		ifs >> home2fmap[i][j];
-		//	//	}
-		//	//}
-		//	//ifs.close();							//讀地圖txt進來
-		//	//int hit = 0;
-		//	//int tpp = 0;
-		//	//int gra = 0;
-
-		//	//for (int i = 0; i < 6; i++) {
-		//	//	for (int j = 0; j < 6; j++) {
-		//	//		if (home2fmap[i][j] == 1) {
-		//	//			hitboxnum++;
-		//	//			//hitbox[hit].LoadEmptyBitmap(100,100);            
-		//	//			hitbox[hit].LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-		//	//			hitbox[hit].SetTopLeft(250 + j * 24, 190 + i * 24);
-		//	//			hit++;
-		//	//		}
-		//	//		else if (home2fmap[i][j] == 2) {
-		//	//			tppointnum++;
-		//	//			tppoint[tpp].LoadBitmapByString({ "Resources/air.bmp" });
-		//	//			tppoint[tpp].SetTopLeft(250 + j * 24, 190 + i * 24);
-		//	//			tpp++;
-		//	//		}
-		//	//	}
-		//	//}
-
-		//	if (character.IsOverlap(character,tppoint[0])){
-		//		phase = 1;
-		//		ifstream ifs("mapdoc/home1f.txt");
-		//		for (int i = 0; i < 8; i++) {
-		//			for (int j = 0; j < 7; j++) {
-		//				ifs >> home2fmap[i][j];
-		//			}
-		//		}
-		//		ifs.close();							//讀地圖txt進來
-		//		int hit = 0;
-		//		int tpp = 0;
-		//		int gra = 0;
-
-		//		for (int i = 0; i < 8; i++) {
-		//			for (int j = 0; j < 7; j++) {
-		//				if (home2fmap[i][j] == 1) {
-		//					hitboxnum++;
-		//					//hitbox[hit].LoadEmptyBitmap(100,100);            
-		//					hitbox[hit].LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-		//					hitbox[hit].SetTopLeft(110 + j * 24, 200 + i * 24);
-		//					hit++;
-		//				}
-		//				else if (home2fmap[i][j] == 2) {
-		//					tppointnum++;
-		//					tppoint[tpp].LoadBitmapByString({ "Resources/air.bmp" });
-		//					tppoint[tpp].SetTopLeft(110 + j * 24, 200 + i * 24);
-		//					tpp++;
-		//				}
-		//			}
-		//		}
-		//		background.SetFrameIndexOfBitmap(1);
-		//		background.SetTopLeft(110,200);
-		//		character.SetFrameIndexOfBitmap(3);
-		//		Sleep(500);
-		//	}
-		//}
-		//else if (phase == 3) {
-		//	if (((-225 <= background.GetLeft()) && (background.GetLeft() <= -205)) && ((-1895 <= background.GetTop()) && (background.GetTop() <= -1875))) {
-		//		phase = 1;
-		//		background.SetFrameIndexOfBitmap(1);
-		//		background.SetTopLeft(190, 20);
-		//		character.SetFrameIndexOfBitmap(5);
-		//		Sleep(500);
-		//	}
-		//}
-
 	}
 
-	if(nChar == VK_LEFT)
+	if(nChar == VK_LEFT && overlapleft == 0)
 	{	
 		speedX = 5;
 		speedY = 0;
 	}
-	else if (nChar == VK_UP)
+	else if (nChar == VK_UP && overlaptop == 0)
 	{
 		speedY = 5;
 		speedX = 0;
 	}
-	else if (nChar == VK_DOWN)
+	else if (nChar == VK_DOWN && overlapdown == 0)
 	{
 		speedY = -5;
 		speedX = 0;
 	}
-	else if (nChar == VK_RIGHT)
+	else if (nChar == VK_RIGHT && overlapright == 0)
 	{
 		speedX = -5;
 		speedY = 0;
@@ -440,11 +313,11 @@ void CGameStateRun::show_image_by_phase() {
 	background.ShowBitmap();
 	character.ShowBitmap();
 	//textbox.ShowBitmap();
-	for (int i = 0; i < hitboxnum; i++) {
-		hitbox[i].ShowBitmap();
+	for (auto i = hitbox.begin(); i != hitbox.end(); i++) {
+		i->ShowBitmap();
 	}
-	for (int i = 0; i < tppointnum; i++) {
-		tppoint[i].ShowBitmap();
+	for (auto i = tppoint.begin(); i != tppoint.end(); i++) {
+		i->ShowBitmap();
 	}
 }
 

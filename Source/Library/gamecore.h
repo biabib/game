@@ -164,8 +164,8 @@ namespace game_framework {
 		int mansionmap[30][50]{};
 		int lakedtopmap[30][50]{};
 		int righttopmap[30][44]{};                          //讀地圖txt用宣告起來放著
-		int home1fmap[8][7]{};
-		int home2fmap[6][6]{};
+		vector <int> home1fmap;
+		vector <int> home2fmap;
 		int pokemonmap[8][12]{};
 		int shopmap[7][9]{};
 	};

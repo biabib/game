@@ -37,7 +37,7 @@
  *      2. Replace the demonstration of animation as a new bouncing ball.
  *      3. Use ShowInitProgress(percent) to display loading progress.
 */
-
+#include <vector>
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -104,9 +104,13 @@ namespace game_framework {
 		CMovingBitmap background;
 		CMovingBitmap character;
 		CMovingBitmap textbox;
-		CMovingBitmap hitbox [200];					//先用兩百個物件看看夠不夠
-		CMovingBitmap tppoint[10];
-		CMovingBitmap grass[100];
+		std::vector<CMovingBitmap> hitbox;				//先用兩百個物件看看夠不夠
+		std::vector<CMovingBitmap> tppoint;
+		std::vector<CMovingBitmap> grass;
+		bool overlapleft = 0;
+		bool overlapright = 0;
+		bool overlaptop = 0;
+		bool overlapdown = 0;
 		int hitboxnum = 0;
 		int grassnum = 0;
 		int tppointnum = 0;
