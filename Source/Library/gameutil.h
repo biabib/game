@@ -82,7 +82,7 @@ namespace game_framework {
 	class CMovingBitmap {
 	public:
 		CMovingBitmap();
-
+		~CMovingBitmap();
 		/* The function for loading the bitmap. */
 		void  LoadBitmap(int, COLORREF = CLR_INVALID);		// 載入圖，指定圖的編號(resource)及透明色
 		void  LoadBitmap(char*, COLORREF = CLR_INVALID);	// 載入圖，指定圖的檔名及透明色
