@@ -29,9 +29,45 @@ void CGameStateRun::OnBeginState()
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {	
+	overlapleft = 0;
+	overlapright = 0;
+	overlaptop = 0;
+	overlapdown = 0;
+
+	for (auto i = hitbox.begin(); i != hitbox.end(); i++) {                                   //判定卡hitbox
+		if (CMovingBitmap::IsOverlap(character, *i)) {
+			if (character.GetLeft() > i->GetLeft()) {
+				overlapleft = 1;
+			}
+			if (character.GetLeft() < i->GetLeft()) {                                         //不同地方放else會出現一些很神奇的效果
+				overlapright = 1;
+			}
+			if (character.GetTop() < i->GetTop()) {
+				overlaptop = 1;
+			}
+			if (character.GetTop() > i->GetTop()) {
+				overlapdown = 1;
+			}
+		}
+	}
+
 	int frame = character.GetFrameIndexOfBitmap();
-	background.SetTopLeft(background.GetLeft() + speedX, background.GetTop() + speedY);
-	for (auto i = hitbox.begin(); i != hitbox.end(); i++) {
+
+	if (overlapleft && speedX > 0) {
+		speedX = 0;//background.SetTopLeft(background.GetLeft(), background.GetTop() + speedY);
+	}
+	if (overlapright && speedX < 0) {
+		speedX = 0;// background.SetTopLeft(background.GetLeft(), background.GetTop() + speedY);
+	}
+	if (overlaptop && speedY < 0) {
+		speedY = 0; //background.SetTopLeft(background.GetLeft() + speedX, background.GetTop());
+	}
+	if (overlapdown && speedY > 0) {
+		speedY = 0; //background.SetTopLeft(background.GetLeft() + speedX, background.GetTop());
+	}
+	background.SetTopLeft(background.GetLeft() + speedX, background.GetTop() + speedY);    //舊的移動角色
+	
+	for (auto i = hitbox.begin(); i != hitbox.end(); i++) {                                 //新的移動物件
 		i->SetTopLeft(i->GetLeft() + speedX, i->GetTop() + speedY);
 	}
 	for (auto i = tppoint.begin(); i != tppoint.end(); i++) {
@@ -39,31 +75,11 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	}
 
 	/*for (int i = 0; i < hitbox.size(); i++) {
-		hitbox[i].SetTopLeft(hitbox[i].GetLeft() + speedX, hitbox[i].GetTop() + speedY);         //舊的移動
+		hitbox[i].SetTopLeft(hitbox[i].GetLeft() + speedX, hitbox[i].GetTop() + speedY);         //舊的移動物件
 	}
 	for (int i = 0; i < tppointnum; i++) {
 		tppoint[i].SetTopLeft(tppoint[i].GetLeft() + speedX, tppoint[i].GetTop() + speedY);
 	}*/
-
-
-	for (auto i = hitbox.begin(); i != hitbox.end(); i++) {                                   //判定卡hitbox
-		if (CMovingBitmap::IsOverlap(character, *i)) {
-			if (character.GetLeft() > i->GetLeft()) {
-				overlapleft = 1;
-			}
-			else if (character.GetLeft() < i->GetLeft()) {
-				overlapright = 1;
-			}
-			else if (character.GetTop() > i->GetTop()) {
-				overlaptop = 1;
-			}
-			else if (character.GetTop() < i->GetTop()) {
-				overlapdown = 1;
-			}
-		}
-	}
-
-
 
 	if (speedX != 0 || speedY != 0) {
 		if (characterFrameCounter == 4) {
@@ -99,74 +115,138 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		else if (frame == 8 || frame == 9) {
 			character.SetFrameIndexOfBitmap(8);
 		}
-	}
+	}//
+
 	if (phase == 1) {
-		hitbox.clear();
-		tppoint.clear();
-		ifstream ifs("mapdoc/home1f.txt");
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 7; j++) {
-				int a = 0;
-				ifs >> a;
-				home1fmap.push_back(a);
-			}
-		}
-		ifs.close();							//讀地圖txt進來
-
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 7; j++) {
-				int a = 0;
-				a = home1fmap.front();
-				home1fmap.erase(home1fmap.begin());
-
-				if (a == 1) {
-					hitbox.insert(hitbox.begin(), CMovingBitmap());
-					hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-					hitbox.begin()->SetTopLeft(120 + j * 32, 200 + i * 32);
-				}
-
-				else if (a == 2) {
-					tppoint.insert(tppoint.begin(), CMovingBitmap());
-					tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-					tppoint.begin()->SetTopLeft(120 + j * 32, 200 + i * 32);
-				}
-			}
-		}
 		
-		if ((((90 <= background.GetLeft()) && (background.GetLeft() <= 110))) && ((190 <= background.GetTop()) && (background.GetTop() <= 210))) {
+		
+		if (CMovingBitmap::IsOverlap(character, tppoint[1])) {
 			phase = 2;
 			background.SetFrameIndexOfBitmap(0);
-			background.SetTopLeft(205, 210);
+			background.SetTopLeft(170, 170);
 			character.SetFrameIndexOfBitmap(3);
+			hitbox.clear();
+			tppoint.clear();
+			ifstream ifs("mapdoc/home2f.txt");
+			for (int i = 0; i < 6; i++) {
+				for (int j = 0; j < 6; j++) {
+					int a = 0;
+					ifs >> a;
+					home2fmap.push_back(a);
+				}
+			}
+			ifs.close();							//讀地圖txt進來
+
+			for (int i = 0; i < 6; i++) {
+				for (int j = 0; j < 6; j++) {
+					int a = 0;
+					a = home2fmap.front();
+					home2fmap.erase(home2fmap.begin());
+
+					if (a == 1) {
+						hitbox.insert(hitbox.begin(), CMovingBitmap());
+						hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+						hitbox.begin()->SetTopLeft(170 + j * 32, 170 + i * 32);
+					}
+
+					else if (a == 2) {
+						tppoint.insert(tppoint.begin(), CMovingBitmap());
+						tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+						tppoint.begin()->SetTopLeft(170 + j * 32, 170 + i * 32);
+					}
+				}
+			}
 			Sleep(500);
 		}
-		else if ((((180 <= background.GetLeft()) && (background.GetLeft() <= 200))) && ((10 <= background.GetTop()) && (background.GetTop() <= 30))) {
+		else if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
 			phase = 3;
 			background.SetFrameIndexOfBitmap(2);
 			background.SetTopLeft(-215, -1885);
 			character.SetFrameIndexOfBitmap(0);
+			hitbox.clear();
+			tppoint.clear();
 			Sleep(500);
 		}
 	}
 	else if (phase == 2) {
 
 		if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
-			
 			phase = 1;
-			
 			background.SetFrameIndexOfBitmap(1);
-			background.SetTopLeft(120, 200);
+			background.SetTopLeft(140, 205);
 			character.SetFrameIndexOfBitmap(3);
+			hitbox.clear();
+			tppoint.clear();
+			ifstream ifs("mapdoc/home1f.txt");
+			for (int i = 0; i < 8; i++) {
+				for (int j = 0; j < 7; j++) {
+					int a = 0;
+					ifs >> a;
+					home1fmap.push_back(a);
+				}
+			}
+			ifs.close();							//讀地圖txt進來
+
+			for (int i = 0; i < 8; i++) {
+				for (int j = 0; j < 7; j++) {
+					int a = 0;
+					a = home1fmap.front();
+					home1fmap.erase(home1fmap.begin());
+
+					if (a == 1) {
+						hitbox.insert(hitbox.begin(), CMovingBitmap());
+						hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+						hitbox.begin()->SetTopLeft(140 + j * 32, 205 + i * 32);
+					}
+
+					else if (a == 2) {
+						tppoint.insert(tppoint.begin(), CMovingBitmap());
+						tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+						tppoint.begin()->SetTopLeft(140 + j * 32, 205 + i * 32);
+					}
+				}
+			}
 			Sleep(500);
 			
 		}
 	}
 	else if (phase == 3) {
-		if (((-225 <= background.GetLeft()) && (background.GetLeft() <= -205)) && ((-1895 <= background.GetTop()) && (background.GetTop() <= -1875))) {
+		if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
 			phase = 1;
 			background.SetFrameIndexOfBitmap(1);
-			background.SetTopLeft(190, 20);
+			background.SetTopLeft(170, 20);
 			character.SetFrameIndexOfBitmap(5);
+			hitbox.clear();
+			tppoint.clear();
+			ifstream ifs("mapdoc/home1f.txt");
+			for (int i = 0; i < 8; i++) {
+				for (int j = 0; j < 7; j++) {
+					int a = 0;
+					ifs >> a;
+					home1fmap.push_back(a);
+				}
+			}
+			ifs.close();							//讀地圖txt進來
+
+			for (int i = 0; i < 8; i++) {
+				for (int j = 0; j < 7; j++) {
+					int a = 0;
+					a = home1fmap.front();
+					home1fmap.erase(home1fmap.begin());
+
+					if (a == 1) {
+						hitbox.insert(hitbox.begin(), CMovingBitmap());
+						hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+						hitbox.begin()->SetTopLeft(140 + j * 32, 205 + i * 32);
+					}
+
+					else if (a == 2) {
+						tppoint.insert(tppoint.begin(), CMovingBitmap());
+						tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+						tppoint.begin()->SetTopLeft(140 + j * 32, 205 + i * 32);
+					}
+				}
+			}
 			Sleep(500);
 		}
 	}
@@ -176,11 +256,11 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 {
 	background.LoadBitmapByString({
-		"resources/home_2f.bmp",
-		"resources/home_1f.bmp",
+		"resources/map/home_2f.bmp",
+		"resources/map/home_1f.bmp",
 		"resources/map1_1.5.bmp",
 		});//,RGB(100,100,100));
-	background.SetTopLeft(250, 190);
+	background.SetTopLeft(235, 170);
 	/*background.SetTopLeft(-215, -1885);*/
 	
 	character.LoadBitmapByString({ "Resources/character/red_front.bmp","resources/character/red_front1.bmp","resources/character/red_front2.bmp","resources/character/red_left.bmp","resources/character/red_left1.bmp","resources/character/red_back.bmp","resources/character/red_back1.bmp","resources/character/red_back2.bmp","resources/character/red_right.bmp","resources/character/red_right1.bmp" },RGB(255,255,255));
@@ -209,13 +289,13 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 			if (a == 1) {
 				hitbox.insert(hitbox.begin(),CMovingBitmap());
 				hitbox.begin()->LoadBitmapByString({"Resources/air.bmp"});// , RGB(100, 100, 100));
-				hitbox.begin()->SetTopLeft(250 + j * 32, 190 + i * 32);
+				hitbox.begin()->SetTopLeft(235 + j * 32, 170 + i * 32);
 			}
 
 			else if (a == 2) {
 				tppoint.insert(tppoint.begin(),CMovingBitmap());
 				tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-				tppoint.begin()->SetTopLeft(250 + j * 32, 190 + i * 32);
+				tppoint.begin()->SetTopLeft(235 + j * 32, 170 + i * 32);
 			}
 		}
 	}
@@ -227,28 +307,27 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (nChar == VK_RETURN) {
 	}
 
-	if(nChar == VK_LEFT && overlapleft == 0)
+	if(nChar == VK_LEFT )
 	{	
 		speedX = 5;
 		speedY = 0;
 	}
-	else if (nChar == VK_UP && overlaptop == 0)
+	if (nChar == VK_UP )
 	{
 		speedY = 5;
 		speedX = 0;
 	}
-	else if (nChar == VK_DOWN && overlapdown == 0)
+	if (nChar == VK_DOWN )
 	{
 		speedY = -5;
 		speedX = 0;
 	}
-	else if (nChar == VK_RIGHT && overlapright == 0)
+	if (nChar == VK_RIGHT )
 	{
 		speedX = -5;
 		speedY = 0;
 	}
 
-	
 }
 
 void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
