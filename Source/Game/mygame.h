@@ -88,7 +88,8 @@ namespace game_framework {
 		void OnMouseMove(UINT nFlags, CPoint point);	// 處理滑鼠的動作 
 		void OnRButtonDown(UINT nFlags, CPoint point);  // 處理滑鼠的動作
 		void OnRButtonUp(UINT nFlags, CPoint point);	// 處理滑鼠的動作
-		
+		int lastX = 0;
+		int lastY = 0;
 		int speedX = 0;
 		int speedY = 0;
 	protected:
@@ -97,13 +98,16 @@ namespace game_framework {
 	private:
 		int phase = 2;
 		int sub_phase = 1;
+		bool bag = false;
 		int driection=0;
 		int characterFrameCounter = 0;
 		CMovingBitmap house_1f;
 		CMovingBitmap house_2f;
 		CMovingBitmap background;
 		CMovingBitmap character;
+		CMovingBitmap point;
 		CMovingBitmap textbox;
+		CMovingBitmap arrow;
 		void show_image_by_phase();
 		void show_text_by_phase();
 		/*void phase_house();
