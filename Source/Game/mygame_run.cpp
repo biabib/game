@@ -171,6 +171,11 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {	
 	if (nChar == VK_RETURN) {
 		
+		if (bag == true) {
+			int arrow_y = arrow.GetTop();
+			if (arrow_y == 255)		//離開功能
+				exit(0);
+		}
 
 	}
 	if (nChar == VK_ESCAPE) {	//暫停並顯示箭頭
