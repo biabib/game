@@ -88,7 +88,8 @@ namespace game_framework {
 		void OnMouseMove(UINT nFlags, CPoint point);	// 處理滑鼠的動作 
 		void OnRButtonDown(UINT nFlags, CPoint point);  // 處理滑鼠的動作
 		void OnRButtonUp(UINT nFlags, CPoint point);	// 處理滑鼠的動作
-		
+		int lastX = 0;
+		int lastY = 0;
 		int speedX = 0;
 		int speedY = 0;
 	protected:
@@ -99,14 +100,23 @@ namespace game_framework {
 		int sub_phase = 1;
 		int driection=0;
 		int characterFrameCounter = 0;
+		bool bag = false;
+		bool text = false;
 		CMovingBitmap house_1f;
 		CMovingBitmap house_2f;
 		CMovingBitmap background;
+		/*CMovingBitmap shoptext;
+		CMovingBitmap pokemontext;*/			//暫時無用
 		CMovingBitmap character;
 		CMovingBitmap textbox;
+		CMovingBitmap menu;
+		CMovingBitmap point;
+		CMovingBitmap arrow;
+		std::vector<CMovingBitmap> pack;
 		std::vector<CMovingBitmap> hitbox;				//先用兩百個物件看看夠不夠
 		std::vector<CMovingBitmap> tppoint;
 		std::vector<CMovingBitmap> grass;
+		std::vector<CMovingBitmap> dialog;
 		bool overlapleft = 0;
 		bool overlapright = 0;
 		bool overlaptop = 0;
@@ -114,6 +124,8 @@ namespace game_framework {
 		int hitboxnum = 0;
 		int grassnum = 0;
 		int tppointnum = 0;
+		int textnum = 0;
+		int money = 0;
 		void show_image_by_phase();
 		void show_text_by_phase();
 		/*void phase_house();
@@ -138,5 +150,17 @@ namespace game_framework {
 		CMovingBitmap background;
 		void load_background();
 	};
+	struct backpack {
+		int money;
+		pokemon pokemoninpack[6];
+		int prop[20];									//道具，數量暫定
+	};
+	struct pokemon {
+		int level;
+		int experience;
+		int race;										//種族
+		int attack;
+		int life;
 
+	};
 }
