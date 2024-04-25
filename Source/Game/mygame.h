@@ -101,6 +101,11 @@ namespace game_framework {
 		bool bag = false;
 		int driection=0;
 		int characterFrameCounter = 0;
+<<<<<<< Updated upstream
+=======
+		bool bag = false;
+		bool text = false;
+>>>>>>> Stashed changes
 		CMovingBitmap house_1f;
 		CMovingBitmap house_2f;
 		CMovingBitmap background;
@@ -108,6 +113,23 @@ namespace game_framework {
 		CMovingBitmap point;
 		CMovingBitmap textbox;
 		CMovingBitmap arrow;
+<<<<<<< Updated upstream
+=======
+		std::vector<CMovingBitmap> pack;
+		std::vector<CMovingBitmap> hitbox;				//先用兩百個物件看看夠不夠
+		std::vector<CMovingBitmap> tppoint;
+		std::vector<CMovingBitmap> grass;
+		std::vector<CMovingBitmap> dialog;
+		bool overlapleft = 0;
+		bool overlapright = 0;
+		bool overlaptop = 0;
+		bool overlapdown = 0;
+		int hitboxnum = 0;
+		int grassnum = 0;
+		int tppointnum = 0;
+		int textnum = 0;
+		int money = 0;
+>>>>>>> Stashed changes
 		void show_image_by_phase();
 		void show_text_by_phase();
 		/*void phase_house();
@@ -132,5 +154,21 @@ namespace game_framework {
 		CMovingBitmap background;
 		void load_background();
 	};
+<<<<<<< Updated upstream
 
+=======
+	struct backpack {
+		int money;
+		pokemon pokemoninpack[6];
+		int prop[20];									//道具，數量暫定
+	};
+	struct pokemon {
+		int level;
+		int experience;
+		int race;										//種族
+		int attack;
+		int life;
+
+	};
+>>>>>>> Stashed changes
 }
