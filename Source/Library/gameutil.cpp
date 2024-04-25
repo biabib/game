@@ -34,6 +34,10 @@ namespace game_framework {
 		isBitmapLoaded = false;
 	}
 
+	CMovingBitmap::~CMovingBitmap()
+	{
+	}
+
 	//! 取得 CMovingBitmap 物件的圖片高度。
 	/*!
 		需要先載入圖片。

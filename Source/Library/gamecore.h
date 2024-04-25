@@ -155,6 +155,19 @@ namespace game_framework {
 		virtual void OnShow() = 0;								// 顯示這個狀態的遊戲畫面
 		CGame *game;
 		CMovingBitmap loadingBitmap;
+		int towmmap[22][50]{};
+		int bridgemap[22][50]{};
+		int forestmap[22][44]{};
+		int roadmap[30][50]{};
+		int lakedownmap[30][50]{};
+		int outliermap[30][44]{};
+		int mansionmap[30][50]{};
+		int lakedtopmap[30][50]{};
+		int righttopmap[30][44]{};                          //讀地圖txt用宣告起來放著
+		vector <int> home1fmap;
+		vector <int> home2fmap;
+		int pokemonmap[8][12]{};
+		int shopmap[7][9]{};
 	};
 
 	/////////////////////////////////////////////////////////////////////////////

@@ -37,7 +37,7 @@
  *      2. Replace the demonstration of animation as a new bouncing ball.
  *      3. Use ShowInitProgress(percent) to display loading progress.
 */
-
+#include <vector>
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -98,23 +98,22 @@ namespace game_framework {
 	private:
 		int phase = 2;
 		int sub_phase = 1;
-		bool bag = false;
 		int driection=0;
 		int characterFrameCounter = 0;
-<<<<<<< Updated upstream
-=======
 		bool bag = false;
+		bool battle = false; 
 		bool text = false;
->>>>>>> Stashed changes
 		CMovingBitmap house_1f;
 		CMovingBitmap house_2f;
 		CMovingBitmap background;
+		/*CMovingBitmap shoptext;
+		CMovingBitmap pokemontext;*/			//暫時無用
 		CMovingBitmap character;
-		CMovingBitmap point;
 		CMovingBitmap textbox;
+		CMovingBitmap menu;
+		CMovingBitmap point;
 		CMovingBitmap arrow;
-<<<<<<< Updated upstream
-=======
+		/*CMovingBitmap battle;*/
 		std::vector<CMovingBitmap> pack;
 		std::vector<CMovingBitmap> hitbox;				//先用兩百個物件看看夠不夠
 		std::vector<CMovingBitmap> tppoint;
@@ -128,8 +127,8 @@ namespace game_framework {
 		int grassnum = 0;
 		int tppointnum = 0;
 		int textnum = 0;
+		int sub_textnum = 0;
 		int money = 0;
->>>>>>> Stashed changes
 		void show_image_by_phase();
 		void show_text_by_phase();
 		/*void phase_house();
@@ -154,21 +153,5 @@ namespace game_framework {
 		CMovingBitmap background;
 		void load_background();
 	};
-<<<<<<< Updated upstream
-
-=======
-	struct backpack {
-		int money;
-		pokemon pokemoninpack[6];
-		int prop[20];									//道具，數量暫定
-	};
-	struct pokemon {
-		int level;
-		int experience;
-		int race;										//種族
-		int attack;
-		int life;
-
-	};
->>>>>>> Stashed changes
+	
 }

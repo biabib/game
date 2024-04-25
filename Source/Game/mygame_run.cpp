@@ -3,11 +3,11 @@
 #include <mmsystem.h>
 #include <string>
 #include <ddraw.h>
-#include<fstream>
 #include "../Library/audio.h"
 #include "../Library/gameutil.h"
 #include "../Library/gamecore.h"
 #include "mygame.h"
+#include <fstream>
 
 using namespace game_framework;
 
@@ -27,13 +27,6 @@ void CGameStateRun::OnBeginState()
 {
 }
 
-<<<<<<< Updated upstream
-void CGameStateRun::OnMove()							// 移動遊戲元素
-{
-	if (bag == false) {
-		int frame = character.GetFrameIndexOfBitmap();
-		background.SetTopLeft(background.GetLeft() + speedX, background.GetTop() + speedY);
-=======
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 {
 	background.LoadBitmapByString({
@@ -49,9 +42,12 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	character.SetAnimation(1000, true);
 	textbox.LoadBitmapByString({ "Resources/text.bmp" });
 	textbox.SetTopLeft(0, 378);
-	menu.LoadBitmapByString({ "Resources/menu.bmp" });
-	menu.SetTopLeft(400, 40);
+	menu.LoadBitmapByString({ "Resources/menu.bmp","Resources/team.bmp" });
+	
 	arrow.LoadBitmapByString({ "Resources/arrow.bmp" });
+	
+	/*battle.LoadBitmapByString({ "Resources/battle1.bmp","Resources/battle2.bmp" });*/
+
 	ifstream ifs("mapdoc/home2f.txt");
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 6; j++) {
@@ -68,7 +64,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 			home2fmap.erase(home2fmap.begin());
 			if (a == 1) {
 				hitbox.insert(hitbox.begin(), CMovingBitmap());
-				hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+				hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
 				hitbox.begin()->SetTopLeft(235 + j * 32, 170 + i * 32);
 			}
 			else if (a == 2) {
@@ -86,6 +82,8 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	overlapright = 0;
 	overlaptop = 0;
 	overlapdown = 0;
+	int x = background.GetLeft();
+	int y = background.GetTop();
 	if (bag == false && textnum == 0) {
 		for (auto i = hitbox.begin(); i != hitbox.end(); i++) {                                   //判定卡hitbox
 			if (CMovingBitmap::IsOverlap(character, *i)) {
@@ -105,18 +103,22 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		}
 		//判定卡hitbox，不同地方放else會出現一些很神奇的效果
 		int frame = character.GetFrameIndexOfBitmap();
-
+		
 		if (overlapleft && speedX > 0) {
 			speedX = 0;//background.SetTopLeft(background.GetLeft(), background.GetTop() + speedY);
+			background.SetTopLeft(x, y);
 		}
 		if (overlapright && speedX < 0) {
 			speedX = 0;// background.SetTopLeft(background.GetLeft(), background.GetTop() + speedY);
+			background.SetTopLeft(x, y);
 		}
 		if (overlaptop && speedY < 0) {
 			speedY = 0; //background.SetTopLeft(background.GetLeft() + speedX, background.GetTop());
+			background.SetTopLeft(x, y);
 		}
 		if (overlapdown && speedY > 0) {
 			speedY = 0; //background.SetTopLeft(background.GetLeft() + speedX, background.GetTop());
+			background.SetTopLeft(x, y);
 		}
 		background.SetTopLeft(background.GetLeft() + speedX, background.GetTop() + speedY);    //舊的移動角色
 		for (auto i = hitbox.begin(); i != hitbox.end(); i++) {                                 //新的移動物件
@@ -132,14 +134,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			i->SetTopLeft(i->GetLeft() + speedX, i->GetTop() + speedY);
 		}
 		//物件移動
-/*for (int i = 0; i < hitbox.size(); i++) {
-	hitbox[i].SetTopLeft(hitbox[i].GetLeft() + speedX, hitbox[i].GetTop() + speedY);         //舊的移動物件
-}
-for (int i = 0; i < tppointnum; i++) {
-	tppoint[i].SetTopLeft(tppoint[i].GetLeft() + speedX, tppoint[i].GetTop() + speedY);
-}*/
 
->>>>>>> Stashed changes
 		if (speedX != 0 || speedY != 0) {
 			if (characterFrameCounter == 4) {
 				if (speedY < 0) {
@@ -159,7 +154,7 @@ for (int i = 0; i < tppointnum; i++) {
 			else {
 				characterFrameCounter += 1;
 			}
-		}
+		}   //背景地圖移動
 		else
 		{
 			if (frame == 1 || frame == 2) {
@@ -174,23 +169,14 @@ for (int i = 0; i < tppointnum; i++) {
 			else if (frame == 8 || frame == 9) {
 				character.SetFrameIndexOfBitmap(8);
 			}
-		}
+		}//
 
-		//這裡之下都是地圖切換  
-
-		/*if (phase = 0){
-			phase = 2;
-		}
-		else*/ if (phase == 1) {
-			if ((((75 <= background.GetLeft()) && (background.GetLeft() <= 100))) && ((190 <= background.GetTop()) && (background.GetTop() <= 220))) {
+		if (phase == 1) {
+			if (CMovingBitmap::IsOverlap(character, tppoint[1])) {
 				phase = 2;
 				background.SetFrameIndexOfBitmap(0);
-				background.SetTopLeft(205, 210);
+				background.SetTopLeft(170, 170);
 				character.SetFrameIndexOfBitmap(3);
-<<<<<<< Updated upstream
-				speedX = 0;
-				speedY = 0;
-=======
 				hitbox.clear();
 				tppoint.clear();
 				ifstream ifs("mapdoc/home2f.txt");
@@ -209,7 +195,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home2fmap.erase(home2fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(170 + j * 32, 170 + i * 32);
 						}
 
@@ -220,18 +206,13 @@ for (int i = 0; i < tppointnum; i++) {
 						}
 					}
 				}
->>>>>>> Stashed changes
 				Sleep(500);
 			}
-			else if (((((180 <= background.GetLeft()) && (background.GetLeft() <= 200))) && ((10 <= background.GetTop()) && (background.GetTop() <= 30))) && character.GetFrameIndexOfBitmap() == 0) {
+			else if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
 				phase = 3;
 				background.SetFrameIndexOfBitmap(2);
-				background.SetTopLeft(-245, -105);
+				background.SetTopLeft(-240, -115);
 				character.SetFrameIndexOfBitmap(0);
-<<<<<<< Updated upstream
-				speedX = 0;
-				speedY = 0;
-=======
 				hitbox.clear();
 				tppoint.clear();
 				grass.clear();
@@ -251,7 +232,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-240 + j * 32, -115 + i * 32);
 						}
 						else if (a == 2) {
@@ -266,20 +247,15 @@ for (int i = 0; i < tppointnum; i++) {
 						}
 					}
 				}
->>>>>>> Stashed changes
 				Sleep(500);
 			}
 		}
 		else if (phase == 2) {
-			if (((185 <= background.GetLeft()) && (background.GetLeft() <= 195)) && ((205 <= background.GetTop()) && (background.GetTop() <= 225))) {
+			if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
 				phase = 1;
 				background.SetFrameIndexOfBitmap(1);
-				background.SetTopLeft(110, 200);
+				background.SetTopLeft(140, 205);
 				character.SetFrameIndexOfBitmap(3);
-<<<<<<< Updated upstream
-				speedX = 0;
-				speedY = 0;
-=======
 				hitbox.clear();
 				tppoint.clear();
 				ifstream ifs("mapdoc/home1f.txt");
@@ -298,7 +274,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(140 + j * 32, 205 + i * 32);
 						}
 						else if (a == 2) {
@@ -308,20 +284,15 @@ for (int i = 0; i < tppointnum; i++) {
 						}
 					}
 				}
->>>>>>> Stashed changes
 				Sleep(500);
 			}
 		}
 		else if (phase == 3) {
-			if (((-255 <= background.GetLeft()) && (background.GetLeft() <= -235))/* && ((-1895 <= background.GetTop())*/ && (background.GetTop() == -95)) {
+			if (CMovingBitmap::IsOverlap(character, tppoint[1])) {
 				phase = 1;
 				background.SetFrameIndexOfBitmap(1);
-				background.SetTopLeft(190, 30);
+				background.SetTopLeft(205, 80);
 				character.SetFrameIndexOfBitmap(5);
-<<<<<<< Updated upstream
-				speedX = 0;
-				speedY = 0;
-=======
 				hitbox.clear();
 				tppoint.clear();
 				grass.clear();
@@ -341,7 +312,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(205 + j * 32, 80 + i * 32);
 						}
 						else if (a == 2) {
@@ -377,7 +348,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(105 + j * 32, 50 + i * 32);
 						}
 						else if (a == 2) {
@@ -421,7 +392,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-870 + j * 32, -115 + i * 32);
 						}
 						else if (a == 2) {
@@ -463,7 +434,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-240 + j * 32, -115 + i * 32);
 						}
 						else if (a == 2) {
@@ -478,101 +449,51 @@ for (int i = 0; i < tppointnum; i++) {
 						}
 					}
 				}
->>>>>>> Stashed changes
 				Sleep(500);
 			}
 		}
-		//else if (phase == 4) {
-		//	if (((-225 <= background.GetLeft()) && (background.GetLeft() <= -205))/* && ((-1895 <= background.GetTop())*/ && (background.GetTop() == -1885)) {
-		//		phase = 1;
-		//		background.SetFrameIndexOfBitmap(3);
-		//		background.SetTopLeft(190, 30);
-		//		character.SetFrameIndexOfBitmap(5);
-		//		speedX = 0;
-		//		speedY = 0;
-		//		//Sleep(500);
-		//	}
-		//}
-		//else if (phase == 5) {
-		//	if (((-225 <= background.GetLeft()) && (background.GetLeft() <= -205))/* && ((-1895 <= background.GetTop())*/ && (background.GetTop() == -1885)) {
-		//		phase = 1;
-		//		background.SetFrameIndexOfBitmap(4);
-		//		background.SetTopLeft(190, 30);
-		//		character.SetFrameIndexOfBitmap(5);
-		//		speedX = 0;
-		//		speedY = 0;
-		//		//Sleep(500);
-		//	}
-		//}
 	}
-	
-}
-
-
-void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
-{
-	background.LoadBitmapByString({
-		"resources/home_2f.bmp",
-		"resources/home_1f.bmp",
-		"resources/town.bmp",
-		"resources/shop.bmp",
-		"resources/pokemon.bmp",
-		});
-	background.SetTopLeft(250, 190);
-	
-	character.LoadBitmapByString({ "Resources/character/red_front.bmp","resources/character/red_front1.bmp","resources/character/red_front2.bmp","resources/character/red_left.bmp","resources/character/red_left1.bmp","resources/character/red_back.bmp","resources/character/red_back1.bmp","resources/character/red_back2.bmp","resources/character/red_right.bmp","resources/character/red_right1.bmp" },RGB(255,255,255));
-	character.SetTopLeft(300, 272);
-	character.SetAnimation(1000, true);
-
-	textbox.LoadBitmapByString({"Resources/text.bmp","Resources/menu.bmp"});
-	textbox.SetFrameIndexOfBitmap(1);
-	textbox.SetTopLeft(400, 40);
-
-	arrow.LoadBitmapByString({ "Resources/arrow.bmp" });
-	
-
-	
 }
 
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {	
-<<<<<<< Updated upstream
-=======
 	if (nChar == VK_ESCAPE) {	//暫停並顯示箭頭
 		if (textnum == 0) {
 			bag = !bag;
 			arrow.SetTopLeft(430, 75);
+			menu.SetFrameIndexOfBitmap(0);
+			menu.SetTopLeft(400, 30);
+		}
+		else if(textnum == 2 || textnum == 3)
+		{
+			textnum = 1;
+			arrow.SetTopLeft(100,415);
+		}
+		else if (textnum == 10) {
+			textnum = 0;
+			arrow.SetTopLeft(430, 75);
+			menu.SetFrameIndexOfBitmap(0);
+			menu.SetTopLeft(400, 40);
 		}
 		else {
 			textnum = 0;
 		}
 	}
->>>>>>> Stashed changes
 	if (nChar == VK_RETURN) {
-		
 		if (bag == true) {
 			int arrow_y = arrow.GetTop();
-			if (arrow_y == 255)		//離開功能
+			if (arrow_y == 75) {
+				textnum = 10;
+				arrow.SetTopLeft(30, 30);
+				menu.SetFrameIndexOfBitmap(1);
+				menu.SetTopLeft(0,0);
+			}
+			else if (arrow_y == 255)		//離開功能
 				exit(0);
-		}
-<<<<<<< Updated upstream
 
-	}
-	if (nChar == VK_ESCAPE) {	//暫停並顯示箭頭
-		bag = !bag;
-		arrow.SetTopLeft(430, 75);
-		
-=======
-		if (phase == 4) {
-			if (CMovingBitmap::IsOverlap(character, dialog[0])) {
-				textnum = 1;
-				arrow.SetTopLeft(100, 415);
-			}
-			else if (CMovingBitmap::IsOverlap(character, dialog[1])) {
-				textnum = 100;
-			}
 		}
-		/*if (textnum == 1) {
+		
+		if (textnum == 1) {
 			if (arrow.GetTop() == 415) {
 				textnum = 2;
 			}
@@ -581,60 +502,88 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 			else {
 				textnum = 0;
-			}
-		}*/
-		if (textnum == 2) {
-			if (arrow.GetTop() == 415) {
-				
-			}
-			else if (arrow.GetTop() == 465) {
-				
-			}
-			else {
-				textnum = 1;
+				sub_textnum = 1;
 			}
 		}
->>>>>>> Stashed changes
+		if (phase == 4 && sub_textnum == 0 && textnum == 0) {
+			if (CMovingBitmap::IsOverlap(character, dialog[0])) {
+				textnum = 1;
+				arrow.SetTopLeft(100, 415);
+			}
+			else if (CMovingBitmap::IsOverlap(character, dialog[1])) {
+				textnum = 100;
+			}
+		}
+		/*for (auto i = grass.begin(); i != grass.end(); i++) {
+			if (CMovingBitmap::IsOverlap(character, *i)) {
+				battle = !battle;
+			}
+		}
+		*/
 	}
 
-	if(nChar == VK_LEFT)
+	if(nChar == VK_LEFT )
 	{	
 		speedX = 5;
 		speedY = 0;
 	}
-	else if (nChar == VK_UP)
+	if (nChar == VK_UP )
 	{
-		speedY = 5;
-		speedX = 0;
-		if (bag == true) {
-			if (arrow.GetTop() != 75)		//選單箭頭  -->選單功能之後會加在上面的enter裡
-				arrow.SetTopLeft(430, arrow.GetTop() - 60);
+		if (bag == false && textnum == 0) {
+			speedY = 5;
+			speedX = 0;
 		}
+		if (bag == true) {
+			if (textnum == 10) {
+				if (arrow.GetTop() != 30)					//選單箭頭
+					arrow.SetTopLeft(30, arrow.GetTop() - 60);
+			}
+			else {
+				if (arrow.GetTop() != 75)					//選單箭頭
+					arrow.SetTopLeft(430, arrow.GetTop() - 60);
+			}
+		}
+		if (textnum == 1|| textnum == 2) {
+			if (arrow.GetTop() != 415)		
+				arrow.SetTopLeft(100, arrow.GetTop() - 50);
+		}
+														//三項選單
 	}
-	else if (nChar == VK_DOWN)
+	if (nChar == VK_DOWN )
 	{
-		speedY = -5;
-		speedX = 0;
-		if (bag == true) {
-<<<<<<< Updated upstream
-			if (arrow.GetTop() != 255)		//選單箭頭
-=======
-			if (arrow.GetTop() != 400)					//選單箭頭
->>>>>>> Stashed changes
-				arrow.SetTopLeft(430, arrow.GetTop() + 60);
+		if (bag == false && textnum == 0) {
+			speedY = -5;
+			speedX = 0;
 		}
+		if (bag == true) {
+			if (textnum == 10) {
+				if (arrow.GetTop() != 330)					//選單箭頭
+					arrow.SetTopLeft(30, arrow.GetTop() + 60);
+			}
+			else {
+				if (arrow.GetTop() != 255)					//選單箭頭
+					arrow.SetTopLeft(430, arrow.GetTop() + 60);
+			}
+		}
+		if (textnum == 1 || textnum == 2) {
+			if (arrow.GetTop() != 515)		
+				arrow.SetTopLeft(100, arrow.GetTop() + 50);
+		}
+														//三項選單
 	}
-	else if (nChar == VK_RIGHT)
+	if (nChar == VK_RIGHT )
 	{
 		speedX = -5;
 		speedY = 0;
 	}
 
-	
 }
 
 void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
+	if (nChar == VK_RETURN) {
+		sub_textnum = 0;
+	}
 	if (nChar == VK_LEFT)
 	{
 		speedX = 0;
@@ -679,21 +628,27 @@ void CGameStateRun::OnShow()
 {
 	show_image_by_phase();
 	show_text_by_phase();
-	character.ShowBitmap();
 }
 
 void CGameStateRun::show_image_by_phase() {
+	/*if (phase = 1) {
+		
+		background.SetFrameIndexOfBitmap(0);
+		background.ShowBitmap();
+	}
+	else if (phase = 2) {
+		
+		
+	}*/
 	background.ShowBitmap();
 	character.ShowBitmap();
-	if (bag == true) {
+	if (textnum != 0) {
 		textbox.ShowBitmap();
 		arrow.ShowBitmap();
 	}
-<<<<<<< Updated upstream
-=======
 	if (bag == true) {
-		menu.ShowBitmap();
-		arrow.ShowBitmap();
+			menu.ShowBitmap();
+			arrow.ShowBitmap();
 	}
 	for (auto i = hitbox.begin(); i != hitbox.end(); i++) {
 		i->ShowBitmap();
@@ -708,10 +663,10 @@ void CGameStateRun::show_image_by_phase() {
 		i->ShowBitmap();
 	}
 	
->>>>>>> Stashed changes
 }
 
 void CGameStateRun::show_text_by_phase() {
+
 	CDC* pDC = CDDraw::GetBackCDC();
 	string x = to_string(background.GetLeft());
 	string y = to_string(background.GetTop());
@@ -719,16 +674,20 @@ void CGameStateRun::show_text_by_phase() {
 	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 0, 0), 800);
 	CTextDraw::Print(pDC, 0, 0, x);
 	CTextDraw::Print(pDC, 90, 0, y);
-
-
 	if (bag == true) {				//選單文字
-		CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 800);
-		CTextDraw::Print(pDC, 450, 60, "寶可夢");
-		CTextDraw::Print(pDC, 450, 120, "背包");
-		CTextDraw::Print(pDC, 450, 180, "存檔");
-		CTextDraw::Print(pDC, 450, 240, "離開");
-<<<<<<< Updated upstream
-=======
+		if (textnum == 0) {
+			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 800);
+			CTextDraw::Print(pDC, 450, 60, "隊伍");
+			CTextDraw::Print(pDC, 450, 120, "背包");
+			CTextDraw::Print(pDC, 450, 180, "存檔");
+			CTextDraw::Print(pDC, 450, 240, "離開");
+		}
+		else if (textnum == 10) {
+			CTextDraw::ChangeFontLog(pDC, 30, "微軟正黑體", RGB(0, 0, 0), 800);
+			CTextDraw::Print(pDC, 90 , 10, "名字");
+			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 800);
+			CTextDraw::Print(pDC, 30, 400, "請選擇一隻寶可夢");
+		}
 	}
 	if (textnum == 1) {
 		CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
@@ -744,7 +703,7 @@ void CGameStateRun::show_text_by_phase() {
 	}
 	if (textnum == 3) {
 		CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 150, 400, "初級球   $100");
+		CTextDraw::Print(pDC, 150, 400, "初級球1   $100");
 		CTextDraw::Print(pDC, 150, 450, "中級球   $300");
 		CTextDraw::Print(pDC, 150, 500, "高級球   $500");
 	}
@@ -753,9 +712,7 @@ void CGameStateRun::show_text_by_phase() {
 		CTextDraw::Print(pDC, 150, 400, "治療寶可夢");
 		CTextDraw::Print(pDC, 150, 450, "肢解寶可夢");
 		CTextDraw::Print(pDC, 150, 500, "返回");
->>>>>>> Stashed changes
 	}
-
 	CDDraw::ReleaseBackCDC();
 }
 
