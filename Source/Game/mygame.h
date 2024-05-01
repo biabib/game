@@ -113,7 +113,7 @@ namespace game_framework {
 		CMovingBitmap menu;
 		CMovingBitmap point;
 		CMovingBitmap arrow;
-		/*CMovingBitmap battle;*/
+		CMovingBitmap battle_scr;
 		std::vector<CMovingBitmap> pack;
 		std::vector<CMovingBitmap> hitbox;				//先用兩百個物件看看夠不夠
 		std::vector<CMovingBitmap> tppoint;
@@ -131,6 +131,7 @@ namespace game_framework {
 		int money = 0;
 		void show_image_by_phase();
 		void show_text_by_phase();
+		void battle_value();
 		/*void phase_house();
 		void phase_map();*/
 	};

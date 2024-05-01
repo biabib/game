@@ -46,7 +46,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	
 	arrow.LoadBitmapByString({ "Resources/arrow.bmp" });
 	
-	/*battle.LoadBitmapByString({ "Resources/battle1.bmp","Resources/battle2.bmp" });*/
+	battle_scr.LoadBitmapByString({ "Resources/battle1.bmp","Resources/battle2.bmp" });
 
 	ifstream ifs("mapdoc/home2f.txt");
 	for (int i = 0; i < 6; i++) {
@@ -514,12 +514,12 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				textnum = 100;
 			}
 		}
-		/*for (auto i = grass.begin(); i != grass.end(); i++) {
+		for (auto i = grass.begin(); i != grass.end(); i++) {
 			if (CMovingBitmap::IsOverlap(character, *i)) {
 				battle = !battle;
 			}
 		}
-		*/
+		
 	}
 
 	if(nChar == VK_LEFT )
@@ -663,6 +663,15 @@ void CGameStateRun::show_image_by_phase() {
 		i->ShowBitmap();
 	}
 	
+}
+
+void CGameStateRun::battle_value() {
+	/*
+		HP = ((種族值+7)*LV)/50+10+LV
+		其他數值 = ((種族值+7)*LV)/50+5
+		傷害 = (((2*攻擊方等級+10)/250) * (攻擊方攻擊/防守方防禦)*招式威力 +2)*屬性加成 ,40%機率性暴擊,灼燒造成的物理招式減弱一半
+	
+	*/
 }
 
 void CGameStateRun::show_text_by_phase() {
