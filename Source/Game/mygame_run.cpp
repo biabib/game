@@ -48,7 +48,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	textbox.SetTopLeft(0, 378);
 	menu.LoadBitmapByString({ "Resources/menu.bmp" });
 	menu.SetTopLeft(400, 40);
-	arrow.LoadBitmapByString({ "Resources/arrow.bmp" });
+	arrow.LoadBitmapByString({ "Resources/arrow.bmp"});
 
 	ifstream ifs("mapdoc/home2f.txt");
 	for (int i = 0; i < 6; i++) {
@@ -525,7 +525,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		//stop function
 		for (auto i = grass.begin(); i != grass.end(); i++) {
 			if (CMovingBitmap::IsOverlap(character, *i)) {
-
+				bag = true;
 			}
 		}
 		// 遍歷草叢enter進入戰鬥
@@ -639,24 +639,24 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 	if (nChar == VK_UP)
 	{
-		if (bag == false && shopnum == 0) {
+		if (bag == false && shopnum == 0 ) {
 			speedY = 8;
 			speedX = 0;
 		}
 		//walk
 
-		if (propnum > 1 && arrow.GetTop() == 415) {
+		if (propnum > 1 && arrow.GetTop() == 415 && shopnum == 0) {
 			propnum--;
 			arrow.SetTopLeft(100, 565);
 		}
 		//prop page up	多五十補正
 		
-		if (shopnum > 1 && arrow.GetTop() == 415) {
+		if (shopnum > 2 && arrow.GetTop() == 415 && propnum == 0) {
 			shopnum--;
 			arrow.SetTopLeft(100, 565);
 		}
 		//shop page up	多五十補正
-
+		//隨著對話增加要增加篩選條件
 		if (arrownum == 1) {
 			if (arrow.GetTop() != 75 && propnum == 0)
 				arrow.SetTopLeft(430, arrow.GetTop() - 60);
@@ -682,18 +682,18 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			speedX = 0;
 		}
 		//walk
-		if (propnum < 6 && arrow.GetTop() == 515 ) {
+		if (propnum < 6 && arrow.GetTop() == 515 && shopnum == 0) {
 			propnum++;
 			arrow.SetTopLeft(100, 365);
 		}
-		//prop page down  少五十補正
+		//prop page down  少五十補正 
 
-		if (shopnum < 6 && arrow.GetTop() == 515) {
+		if (shopnum < 6 && arrow.GetTop() == 515 && propnum == 0) {
 			shopnum++;
 			arrow.SetTopLeft(100, 365);
 		}
 		//shop page down  少五十補正
-
+		//隨著對話增加要增加篩選條件
 		if (arrownum == 1) {
 			if (arrow.GetTop() != 255 && propnum == 0)
 				arrow.SetTopLeft(430, arrow.GetTop() + 60);
@@ -800,6 +800,7 @@ void CGameStateRun::show_image_by_phase() {
 	}*/
 	background.ShowBitmap();
 	character.ShowBitmap();
+	
 	if (shopnum || propnum) {
 		textbox.ShowBitmap();
 		arrow.ShowBitmap();
@@ -843,14 +844,14 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 450, 180, "存檔");
 			CTextDraw::Print(pDC, 450, 240, "離開");
 		}
-		else if (team) {
+		if (team) {
 			CTextDraw::ChangeFontLog(pDC, 30, "微軟正黑體", RGB(0, 0, 0), 800);
 			CTextDraw::Print(pDC, 90, 10, "名字");
 			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 800);
 			CTextDraw::Print(pDC, 30, 400, "請選擇一隻寶可夢");
 		}
-		else if (propnum == 1) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
+		if (propnum == 1) {
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "代幣");
 			CTextDraw::Print(pDC, 400, 400, moneyout);
 			CTextDraw::Print(pDC, 150, 450, "精靈球");
@@ -859,7 +860,7 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 400, 500, to_string(characterinf[2]));
 		}
 		else if (propnum == 2) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "高級球");
 			CTextDraw::Print(pDC, 400, 400, to_string(characterinf[3]));
 			CTextDraw::Print(pDC, 150, 450, "大師球");
@@ -868,7 +869,7 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 400, 500, to_string(characterinf[5]));
 		}
 		else if (propnum == 3) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "傷藥");
 			CTextDraw::Print(pDC, 400, 400, to_string(characterinf[6]));
 			CTextDraw::Print(pDC, 150, 450, "好傷藥");
@@ -877,7 +878,7 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 400, 500, to_string(characterinf[8]));
 		}
 		else if (propnum == 4) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "全滿藥");
 			CTextDraw::Print(pDC, 400, 400, to_string(characterinf[9]));
 			CTextDraw::Print(pDC, 150, 450, "解毒藥");
@@ -886,7 +887,7 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 400, 500, to_string(characterinf[11]));
 		}
 		else if (propnum == 5) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "解凍藥");
 			CTextDraw::Print(pDC, 400, 400, to_string(characterinf[12]));
 			CTextDraw::Print(pDC, 150, 450, "解麻藥");
@@ -895,7 +896,7 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 400, 500, to_string(characterinf[14]));
 		}
 		else if (propnum == 6) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "萬靈藥");
 			CTextDraw::Print(pDC, 400, 400, to_string(characterinf[15]));
 			CTextDraw::Print(pDC, 150, 450, "活力碎片");
@@ -906,50 +907,50 @@ void CGameStateRun::show_text_by_phase() {
 	}
 	else {
 		if (shopnum == 1) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "購買");
 			CTextDraw::Print(pDC, 150, 450, "出售");
 			CTextDraw::Print(pDC, 150, 500, "退出");
 		}
 		else if (shopnum == 2) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "精靈球    $100");
 			CTextDraw::Print(pDC, 150, 450, "超級球    $300");
 			CTextDraw::Print(pDC, 150, 500, "高級球    $500");
 		}
 		else if (shopnum == 3) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
-			CTextDraw::Print(pDC, 150, 400, "神奇糖果  $1000");
-			CTextDraw::Print(pDC, 150, 450, "傷藥      $300");
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "神奇糖果$1000");
+			CTextDraw::Print(pDC, 150, 450, "傷藥        $300");
 			CTextDraw::Print(pDC, 150, 500, "好傷藥    $500");
 		}
 		else if (shopnum == 4) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
-			CTextDraw::Print(pDC, 150, 400, "厲害傷藥  $100");
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "厲害傷藥$100");
 			CTextDraw::Print(pDC, 150, 450, "全滿藥    $300");
 			CTextDraw::Print(pDC, 150, 500, "解毒藥    $500");
 		}
 		else if (shopnum == 5) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "灼傷藥    $100");
 			CTextDraw::Print(pDC, 150, 450, "解凍藥    $300");
 			CTextDraw::Print(pDC, 150, 500, "解麻藥    $500");
 		}
 		else if (shopnum == 6) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "解眠藥    $100");
 			CTextDraw::Print(pDC, 150, 450, "萬靈藥    $300");
-			CTextDraw::Print(pDC, 150, 500, "活力碎片  $500");
+			CTextDraw::Print(pDC, 150, 500, "活力碎片$500");
 		}
 		else if (shopnum == 7) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "活力塊    $100");
 			CTextDraw::Print(pDC, 150, 450, "");
 			CTextDraw::Print(pDC, 150, 500, "");
 		}
 
 		else if (shopnum == 100) {
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "治療寶可夢");
 			CTextDraw::Print(pDC, 150, 450, "肢解寶可夢");
 			CTextDraw::Print(pDC, 150, 500, "返回");
