@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "../Core/Resource.h"
 #include <mmsystem.h>
 #include <string>
@@ -12,7 +12,7 @@
 using namespace game_framework;
 
 /////////////////////////////////////////////////////////////////////////////
-// ³o­Óclass¬°¹CÀ¸ªº¹CÀ¸°õ¦æª«¥ó¡A¥D­nªº¹CÀ¸µ{¦¡³£¦b³o¸Ì
+// é€™å€‹classç‚ºéŠæˆ²çš„éŠæˆ²åŸ·è¡Œç‰©ä»¶ï¼Œä¸»è¦çš„éŠæˆ²ç¨‹å¼éƒ½åœ¨é€™è£¡
 /////////////////////////////////////////////////////////////////////////////
 
 CGameStateRun::CGameStateRun(CGame* g) : CGameState(g)
@@ -27,7 +27,7 @@ void CGameStateRun::OnBeginState()
 {
 }
 
-void CGameStateRun::OnInit()  								// ¹CÀ¸ªºªì­È¤Î¹Ï§Î³]©w
+void CGameStateRun::OnInit()  								// éŠæˆ²çš„åˆå€¼åŠåœ–å½¢è¨­å®š
 {
 	background.LoadBitmapByString({
 		"resources/map/home_2f.bmp",
@@ -40,12 +40,15 @@ void CGameStateRun::OnInit()  								// ¹CÀ¸ªºªì­È¤Î¹Ï§Î³]©w
 	character.LoadBitmapByString({ "Resources/character/red_front.bmp","resources/character/red_front1.bmp","resources/character/red_front2.bmp","resources/character/red_left.bmp","resources/character/red_left1.bmp","resources/character/red_back.bmp","resources/character/red_back1.bmp","resources/character/red_back2.bmp","resources/character/red_right.bmp","resources/character/red_right1.bmp" }, RGB(255, 255, 255));
 	character.SetTopLeft(300, 272);
 	character.SetAnimation(1000, true);
+	ifstream ifs1("resources/files/character.txt");
+	for (int i = 0; i < 80; i++) {
+		ifs1 >> characterinf[i];
+	}
 	textbox.LoadBitmapByString({ "Resources/text.bmp" });
 	textbox.SetTopLeft(0, 378);
 	menu.LoadBitmapByString({ "Resources/menu.bmp","Resources/team.bmp" });
-	
-	arrow.LoadBitmapByString({ "Resources/arrow.bmp" });
-	
+	menu.SetTopLeft(400, 40);
+	arrow.LoadBitmapByString({ "Resources/arrow.bmp"});
 	battle_scr.LoadBitmapByString({ "Resources/battle1.bmp","Resources/battle2.bmp" });
 
 	ifstream ifs("mapdoc/home2f.txt");
@@ -56,7 +59,7 @@ void CGameStateRun::OnInit()  								// ¹CÀ¸ªºªì­È¤Î¹Ï§Î³]©w
 			home2fmap.push_back(a);
 		}
 	}
-	ifs.close();							//Åª¦a¹Ïtxt¶i¨Ó
+	ifs.close();							//è®€åœ°åœ–txté€²ä¾†
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 6; j++) {
 			int a = 0;
@@ -64,7 +67,7 @@ void CGameStateRun::OnInit()  								// ¹CÀ¸ªºªì­È¤Î¹Ï§Î³]©w
 			home2fmap.erase(home2fmap.begin());
 			if (a == 1) {
 				hitbox.insert(hitbox.begin(), CMovingBitmap());
-				hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
+				hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
 				hitbox.begin()->SetTopLeft(235 + j * 32, 170 + i * 32);
 			}
 			else if (a == 2) {
@@ -76,52 +79,50 @@ void CGameStateRun::OnInit()  								// ¹CÀ¸ªºªì­È¤Î¹Ï§Î³]©w
 	}
 }
 
-void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
+void CGameStateRun::OnMove()							// ç§»å‹•éŠæˆ²å…ƒç´ 
 {	
+	int nowtop = character.GetTop();
+	int nowleft = character.GetLeft();	
+	if (nownum > 3){
+		nownum = 0;
+	}
+	nownum++;
 	overlapleft = 0;
 	overlapright = 0;
 	overlaptop = 0;
 	overlapdown = 0;
-	int x = background.GetLeft();
-	int y = background.GetTop();
 	if (bag == false && textnum == 0) {
-		for (auto i = hitbox.begin(); i != hitbox.end(); i++) {                                   //§P©w¥dhitbox
+		for (auto i = hitbox.begin(); i != hitbox.end(); i++) { 
 			if (CMovingBitmap::IsOverlap(character, *i)) {
 				if (character.GetLeft() > i->GetLeft()) {
 					overlapleft = 1;
 				}
-				if (character.GetLeft() < i->GetLeft()) {                                         //¤£¦P¦a¤è©ñelse·|¥X²{¤@¨Ç«Ü¯«©_ªº®ÄªG
+				else if (character.GetLeft() < i->GetLeft()) {     
 					overlapright = 1;
 				}
 				if (character.GetTop() < i->GetTop()) {
 					overlaptop = 1;
 				}
-				if (character.GetTop() > i->GetTop()) {
+				else if (character.GetTop() > i->GetTop()) {
 					overlapdown = 1;
 				}
 			}
 		}
-		//§P©w¥dhitbox¡A¤£¦P¦a¤è©ñelse·|¥X²{¤@¨Ç«Ü¯«©_ªº®ÄªG
-		int frame = character.GetFrameIndexOfBitmap();
-		
+		//åˆ¤å®šå¡hitbox
 		if (overlapleft && speedX > 0) {
 			speedX = 0;//background.SetTopLeft(background.GetLeft(), background.GetTop() + speedY);
-			background.SetTopLeft(x, y);
 		}
-		if (overlapright && speedX < 0) {
+		else if (overlapright && speedX < 0) {
 			speedX = 0;// background.SetTopLeft(background.GetLeft(), background.GetTop() + speedY);
-			background.SetTopLeft(x, y);
 		}
 		if (overlaptop && speedY < 0) {
 			speedY = 0; //background.SetTopLeft(background.GetLeft() + speedX, background.GetTop());
-			background.SetTopLeft(x, y);
 		}
-		if (overlapdown && speedY > 0) {
+		else if (overlapdown && speedY > 0) {
 			speedY = 0; //background.SetTopLeft(background.GetLeft() + speedX, background.GetTop());
-			background.SetTopLeft(x, y);
 		}
-		background.SetTopLeft(background.GetLeft() + speedX, background.GetTop() + speedY);    //ÂÂªº²¾°Ê¨¤¦â
-		for (auto i = hitbox.begin(); i != hitbox.end(); i++) {                                 //·sªº²¾°Êª«¥ó
+		background.SetTopLeft(background.GetLeft() + speedX, background.GetTop() + speedY);    //èˆŠçš„ç§»å‹•è§’è‰²
+		for (auto i = hitbox.begin(); i != hitbox.end(); i++) {                                 //æ–°çš„ç§»å‹•ç‰©ä»¶
 			i->SetTopLeft(i->GetLeft() + speedX, i->GetTop() + speedY);
 		}
 		for (auto i = tppoint.begin(); i != tppoint.end(); i++) {
@@ -133,8 +134,14 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 		for (auto i = dialog.begin(); i != dialog.end(); i++) {
 			i->SetTopLeft(i->GetLeft() + speedX, i->GetTop() + speedY);
 		}
-		//ª«¥ó²¾°Ê
-
+		//ç‰©ä»¶ç§»å‹•
+/*for (int i = 0; i < hitbox.size(); i++) {
+	hitbox[i].SetTopLeft(hitbox[i].GetLeft() + speedX, hitbox[i].GetTop() + speedY);         //èˆŠçš„ç§»å‹•ç‰©ä»¶
+}
+for (int i = 0; i < tppointnum; i++) {
+	tppoint[i].SetTopLeft(tppoint[i].GetLeft() + speedX, tppoint[i].GetTop() + speedY);
+}*/
+		int frame = character.GetFrameIndexOfBitmap();
 		if (speedX != 0 || speedY != 0) {
 			if (characterFrameCounter == 4) {
 				if (speedY < 0) {
@@ -154,7 +161,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 			else {
 				characterFrameCounter += 1;
 			}
-		}   //­I´º¦a¹Ï²¾°Ê
+		}   //èƒŒæ™¯åœ°åœ–ç§»å‹•
 		else
 		{
 			if (frame == 1 || frame == 2) {
@@ -170,7 +177,8 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 				character.SetFrameIndexOfBitmap(8);
 			}
 		}//
-
+		//è§’è‰²ç§»å‹•å‹•ç•«
+		//è§’è‰²åœæ­¢ç•«é¢
 		if (phase == 1) {
 			if (CMovingBitmap::IsOverlap(character, tppoint[1])) {
 				phase = 2;
@@ -187,7 +195,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home2fmap.push_back(a);
 					}
 				}
-				ifs.close();							//Åª¦a¹Ïtxt¶i¨Ó
+				ifs.close();							//è®€åœ°åœ–txté€²ä¾†
 				for (int i = 0; i < 6; i++) {
 					for (int j = 0; j < 6; j++) {
 						int a = 0;
@@ -195,7 +203,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home2fmap.erase(home2fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(170 + j * 32, 170 + i * 32);
 						}
 
@@ -206,7 +214,6 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						}
 					}
 				}
-				Sleep(500);
 			}
 			else if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
 				phase = 3;
@@ -224,7 +231,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home1fmap.push_back(a);
 					}
 				}
-				ifs.close();							//Åª¦a¹Ïtxt¶i¨Ó
+				ifs.close();							//è®€åœ°åœ–txté€²ä¾†
 				for (int i = 0; i < 22; i++) {
 					for (int j = 0; j < 50; j++) {
 						int a = 0;
@@ -232,7 +239,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-240 + j * 32, -115 + i * 32);
 						}
 						else if (a == 2) {
@@ -247,7 +254,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						}
 					}
 				}
-				Sleep(500);
+
 			}
 		}
 		else if (phase == 2) {
@@ -266,7 +273,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home1fmap.push_back(a);
 					}
 				}
-				ifs.close();							//Åª¦a¹Ïtxt¶i¨Ó
+				ifs.close();							//è®€åœ°åœ–txté€²ä¾†
 				for (int i = 0; i < 8; i++) {
 					for (int j = 0; j < 7; j++) {
 						int a = 0;
@@ -274,7 +281,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(140 + j * 32, 205 + i * 32);
 						}
 						else if (a == 2) {
@@ -284,7 +291,6 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						}
 					}
 				}
-				Sleep(500);
 			}
 		}
 		else if (phase == 3) {
@@ -304,7 +310,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home1fmap.push_back(a);
 					}
 				}
-				ifs.close();							//Åª¦a¹Ïtxt¶i¨Ó
+				ifs.close();							//è®€åœ°åœ–txté€²ä¾†
 				for (int i = 0; i < 8; i++) {
 					for (int j = 0; j < 7; j++) {
 						int a = 0;
@@ -312,7 +318,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(205 + j * 32, 80 + i * 32);
 						}
 						else if (a == 2) {
@@ -322,7 +328,6 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						}
 					}
 				}
-				Sleep(500);
 			}
 			else if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
 				phase = 4;
@@ -340,7 +345,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home1fmap.push_back(a);
 					}
 				}
-				ifs.close();							//Åª¦a¹Ïtxt¶i¨Ó
+				ifs.close();							//è®€åœ°åœ–txté€²ä¾†
 				for (int i = 0; i < 9; i++) {
 					for (int j = 0; j < 12; j++) {
 						int a = 0;
@@ -348,7 +353,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(105 + j * 32, 50 + i * 32);
 						}
 						else if (a == 2) {
@@ -363,14 +368,13 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						}
 					}
 				}
-				Sleep(500);
 			}
 		}
 		else if (phase == 4) {
 			if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
 				phase = 3;
 				background.SetFrameIndexOfBitmap(2);
-				background.SetTopLeft(870, -115);
+				background.SetTopLeft(-870, -115);
 				character.SetFrameIndexOfBitmap(0);
 				hitbox.clear();
 				tppoint.clear();
@@ -384,7 +388,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home1fmap.push_back(a);
 					}
 				}
-				ifs.close();							//Åª¦a¹Ïtxt¶i¨Ó
+				ifs.close();							//è®€åœ°åœ–txté€²ä¾†
 				for (int i = 0; i < 22; i++) {
 					for (int j = 0; j < 50; j++) {
 						int a = 0;
@@ -392,7 +396,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-870 + j * 32, -115 + i * 32);
 						}
 						else if (a == 2) {
@@ -407,12 +411,11 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						}
 					}
 				}
-				Sleep(500);
 			}
 			else if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
 				phase = 3;
 				background.SetFrameIndexOfBitmap(2);
-				background.SetTopLeft(-240, -115);
+				background.SetTopLeft(-870, -115);
 				character.SetFrameIndexOfBitmap(0);
 				hitbox.clear();
 				tppoint.clear();
@@ -426,7 +429,7 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home1fmap.push_back(a);
 					}
 				}
-				ifs.close();							//Åª¦a¹Ïtxt¶i¨Ó
+				ifs.close();							//è®€åœ°åœ–txté€²ä¾†
 				for (int i = 0; i < 22; i++) {
 					for (int j = 0; j < 50; j++) {
 						int a = 0;
@@ -434,22 +437,21 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" } , RGB(100, 100, 100));
-							hitbox.begin()->SetTopLeft(-240 + j * 32, -115 + i * 32);
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->SetTopLeft(-870 + j * 32, -115 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
 							tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-							tppoint.begin()->SetTopLeft(-240 + j * 32, -115 + i * 32);
+							tppoint.begin()->SetTopLeft(-870 + j * 32, -115 + i * 32);
 						}
 						else if (a == 3) {
 							grass.insert(grass.begin(), CMovingBitmap());
 							grass.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-							grass.begin()->SetTopLeft(-240 + j * 32, -115 + i * 32);
+							grass.begin()->SetTopLeft(-870 + j * 32, -115 + i * 32);
 						}
 					}
 				}
-				Sleep(500);
 			}
 		}
 	}
@@ -457,123 +459,287 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {	
-	if (nChar == VK_ESCAPE) {	//¼È°±¨ÃÅã¥Ü½bÀY
-		if (textnum == 0) {
+	if (nChar == VK_ESCAPE) {	//æš«åœä¸¦é¡¯ç¤ºç®­é ­
+		if (shopnum == 0) {
 			bag = !bag;
 			arrow.SetTopLeft(430, 75);
+			arrownum = 1;
 			menu.SetFrameIndexOfBitmap(0);
 			menu.SetTopLeft(400, 30);
+			propnum = 0;
 		}
-		else if(textnum == 2 || textnum == 3)
+		// stop the game
+		else if (shopnum)
 		{
-			textnum = 1;
-			arrow.SetTopLeft(100,415);
+			shopnum = 0;
+			arrownum = 0;
 		}
-		else if (textnum == 10) {
-			textnum = 0;
+		// turn off shop
+		else if (team) {
+			shopnum = 0;
 			arrow.SetTopLeft(430, 75);
+			arrownum = 0;
 			menu.SetFrameIndexOfBitmap(0);
 			menu.SetTopLeft(400, 40);
 		}
+		//team?
 		else {
-			textnum = 0;
+			shopnum = 0;
+			arrownum = 0;
+		}
+		//close the window
+		if (battle) {
+			battle = !battle;
 		}
 	}
-	if (nChar == VK_RETURN) {
+	if (nChar == VK_RETURN && confirmenter == false) {
+		if (shopnum == 0) {
+			confirmenter = true;
+		}
 		if (bag == true) {
 			int arrow_y = arrow.GetTop();
-			if (arrow_y == 75) {
-				textnum = 10;
-				arrow.SetTopLeft(30, 30);
-				menu.SetFrameIndexOfBitmap(1);
-				menu.SetTopLeft(0,0);
-			}
-			else if (arrow_y == 255)		//Â÷¶}¥\¯à
+			if (arrow_y == 255) {
 				exit(0);
-
-		}
-		
-		if (textnum == 1) {
-			if (arrow.GetTop() == 415) {
-				textnum = 2;
 			}
-			else if (arrow.GetTop() == 465) {
-				textnum = 3;
+			//é›¢é–‹åŠŸèƒ½
+			else if (arrow_y == 195) {
+				ofstream ofs("resources/files/character.txt");
+				for (int i = 0; i < 80; i++) {
+					ofs << characterinf[i];
+				}
+				
+				ofs.close();
 			}
-			else {
-				textnum = 0;
-				sub_textnum = 1;
-			}
-		}
-		if (phase == 4 && sub_textnum == 0 && textnum == 0) {
-			if (CMovingBitmap::IsOverlap(character, dialog[0])) {
-				textnum = 1;
+			//å­˜æª”
+			else if (arrow_y == 135) {
+				propnum = 1;
 				arrow.SetTopLeft(100, 415);
+				arrownum = 2;
 			}
-			else if (CMovingBitmap::IsOverlap(character, dialog[1])) {
-				textnum = 100;
+			//æŸ¥çœ‹èƒŒåŒ…
+			else if (arrow_y == 75) {
+				team = 1;
+				arrow.SetTopLeft(30, 30);
+				arrownum = 3;//æš«å®šéšŠä¼
+				menu.SetFrameIndexOfBitmap(1);
+				menu.SetTopLeft(0, 0);
 			}
+			//æŸ¥çœ‹éšŠä¼
 		}
+		//stop function
 		for (auto i = grass.begin(); i != grass.end(); i++) {
 			if (CMovingBitmap::IsOverlap(character, *i)) {
 				battle = !battle;
+				battle_phase = 1;
+				battle_scr.SetFrameIndexOfBitmap(1);
+				battle_scr.SetTopLeft(0, 0);
 			}
 		}
-		
+		// éæ­·è‰å¢enteré€²å…¥æˆ°é¬¥
+		if (phase == 4 && bag == false) {
+			if (CMovingBitmap::IsOverlap(character, dialog[0]) && shopnum == 0) {
+				shopnum = 1;
+				arrow.SetTopLeft(100, 415);
+				arrownum = 2;
+			}
+			//into shop
+			else if (CMovingBitmap::IsOverlap(character, dialog[1])) {
+				
+			}
+			//into pokemon
+		}
+		//into shop and pokemon
+		if (shopnum == 1 && confirmenter == false) {
+			if (arrow.GetTop() == 415) {
+				shopnum = 2;
+			}
+			//innto buy
+			else if (arrow.GetTop() == 465) {
+				
+			}
+			//into sell
+			else {
+				shopnum = 0;
+			}
+			//exit shop
+		}
+		//in shop
+		if (shopnum == 2) {
+			if (arrow.GetTop() == 415) {
+				characterinf[0] = characterinf[0] - 100;
+				characterinf[1]++;
+			}
+			else if (arrow.GetTop() == 465) {
+				characterinf[0] = characterinf[0] - 300;
+				characterinf[2]++;
+			}
+			else {
+				characterinf[0] = characterinf[0] - 500;
+				characterinf[3]++;
+			}
+		}
+		else if (shopnum == 3) {
+			if (arrow.GetTop() == 415) {
+				characterinf[0] = characterinf[0] - 100;
+				characterinf[4]++;
+			}
+			else if (arrow.GetTop() == 465) {
+				characterinf[0] = characterinf[0] - 300;
+				characterinf[5]++;
+			}
+			else {
+				characterinf[0] = characterinf[0] - 500;
+				characterinf[6]++;
+			}
+		}
+		else if (shopnum == 4) {
+			if (arrow.GetTop() == 415) {
+				characterinf[0] = characterinf[0] - 100;
+				characterinf[7]++;
+			}
+			else if (arrow.GetTop() == 465) {
+				characterinf[0] = characterinf[0] - 300;
+				characterinf[8]++;
+			}
+			else {
+				characterinf[0] = characterinf[0] - 500;
+				characterinf[9]++;
+			}
+		}
+		else if (shopnum == 5) {
+			if (arrow.GetTop() == 415) {
+				characterinf[0] = characterinf[0] - 100;
+				characterinf[10]++;
+			}
+			else if (arrow.GetTop() == 465) {
+				characterinf[0] = characterinf[0] - 300;
+				characterinf[11]++;
+			}
+			else {
+				characterinf[0] = characterinf[0] - 500;
+				characterinf[12]++;
+			}
+		}
+		else if (shopnum == 6) {
+			if (arrow.GetTop() == 415) {
+				characterinf[0] = characterinf[0] - 100;
+				characterinf[13]++;
+			}
+			else if (arrow.GetTop() == 465) {
+				characterinf[0] = characterinf[0] - 300;
+				characterinf[14]++;
+			}
+			else {
+				characterinf[0] = characterinf[0] - 500;
+				characterinf[15]++;
+			}
+		}
+		if (shopnum == 7) {
+			if (arrow.GetTop() == 415) {
+				characterinf[0] = characterinf[0] - 100;
+				characterinf[16]++;
+			}
+		}
+		//buy
 	}
 
-	if(nChar == VK_LEFT )
-	{	
-		speedX = 5;
-		speedY = 0;
-	}
-	if (nChar == VK_UP )
+
+	if (nChar == VK_UP)
 	{
-		if (bag == false && textnum == 0) {
-			speedY = 5;
+		if (bag == false && shopnum == 0 ) {
+			speedY = 8;
 			speedX = 0;
 		}
-		if (bag == true) {
-			if (textnum == 10) {
-				if (arrow.GetTop() != 30)					//¿ï³æ½bÀY
-					arrow.SetTopLeft(30, arrow.GetTop() - 60);
-			}
-			else {
-				if (arrow.GetTop() != 75)					//¿ï³æ½bÀY
-					arrow.SetTopLeft(430, arrow.GetTop() - 60);
-			}
+		//walk
+
+		if (propnum > 1 && arrow.GetTop() == 415 && shopnum == 0) {
+			propnum--;
+			arrow.SetTopLeft(100, 565);
 		}
-		if (textnum == 1|| textnum == 2) {
-			if (arrow.GetTop() != 415)		
+		//prop page up	å¤šäº”åè£œæ­£
+		
+		if (shopnum > 2 && arrow.GetTop() == 415 && propnum == 0) {
+			shopnum--;
+			arrow.SetTopLeft(100, 565);
+		}
+		//shop page up	å¤šäº”åè£œæ­£
+		//éš¨è‘—å°è©±å¢åŠ è¦å¢åŠ ç¯©é¸æ¢ä»¶
+		if (arrownum == 1) {
+			if (arrow.GetTop() != 75 && propnum == 0)
+				arrow.SetTopLeft(430, arrow.GetTop() - 60);
+		}
+		// å³ä¸Šå››é …æš«åœç®­é ­
+		else if (arrownum == 2) {
+			if (arrow.GetTop() != 415)
 				arrow.SetTopLeft(100, arrow.GetTop() - 50);
 		}
-														//¤T¶µ¿ï³æ
+		// ä¸‹æ–¹ä¸‰é …ç®­é ­
+		
+		//if (team) {
+		//	if (arrow.GetTop() != 30)
+		//		arrow.SetTopLeft(30, arrow.GetTop() - 60);
+		//}
+		////team?
 	}
+	//è¨˜å¾—è£œæ­£
 	if (nChar == VK_DOWN )
 	{
-		if (bag == false && textnum == 0) {
-			speedY = -5;
+		if (bag == false && shopnum == 0) {
+			speedY = -8;
 			speedX = 0;
 		}
-		if (bag == true) {
-			if (textnum == 10) {
-				if (arrow.GetTop() != 330)					//¿ï³æ½bÀY
-					arrow.SetTopLeft(30, arrow.GetTop() + 60);
-			}
-			else {
-				if (arrow.GetTop() != 255)					//¿ï³æ½bÀY
-					arrow.SetTopLeft(430, arrow.GetTop() + 60);
-			}
+		//walk
+		if (propnum < 6 && arrow.GetTop() == 515 && shopnum == 0) {
+			propnum++;
+			arrow.SetTopLeft(100, 365);
 		}
-		if (textnum == 1 || textnum == 2) {
-			if (arrow.GetTop() != 515)		
+		//prop page down  å°‘äº”åè£œæ­£ 
+
+		if (shopnum < 6 && arrow.GetTop() == 515 && propnum == 0) {
+			shopnum++;
+			arrow.SetTopLeft(100, 365);
+		}
+		//shop page down  å°‘äº”åè£œæ­£
+		//éš¨è‘—å°è©±å¢åŠ è¦å¢åŠ ç¯©é¸æ¢ä»¶
+		if (arrownum == 1) {
+			if (arrow.GetTop() != 255 && propnum == 0)
+				arrow.SetTopLeft(430, arrow.GetTop() + 60);
+		}
+		// å³ä¸Šå››é …æš«åœç®­é ­
+		else if (arrownum == 2) {
+			if (arrow.GetTop() != 515)
 				arrow.SetTopLeft(100, arrow.GetTop() + 50);
 		}
-														//¤T¶µ¿ï³æ
+		// ä¸‹æ–¹ä¸‰é …ç®­é ­
+		
 	}
-	if (nChar == VK_RIGHT )
+	//è¨˜å¾—è£œæ­£
+	if (nChar == VK_LEFT)
 	{
-		speedX = -5;
+		speedX = 8;
+		speedY = 0;
+		/*if (nChar == VK_UP) {
+			switch (nownum) {
+				case 1:
+					speedY = -8;
+					break;
+				case 2:
+					speedY = -16;
+					break;
+				case 3:
+					speedY = 8;
+					break;
+				case 4:
+					speedY = 16;
+					break;
+
+			}
+		}*/
+		// try to finish walking bug
+	}
+	if (nChar == VK_RIGHT)
+	{
+		speedX = -8;
 		speedY = 0;
 	}
 
@@ -582,12 +748,16 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	if (nChar == VK_RETURN) {
-		sub_textnum = 0;
+		confirmenter = false;
 	}
 	if (nChar == VK_LEFT)
 	{
 		speedX = 0;
 
+	}
+	else if (nChar == VK_RIGHT)
+	{
+		speedX = 0;
 	}
 	else if (nChar == VK_UP)
 	{
@@ -597,30 +767,25 @@ void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	{
 		speedY = 0;
 	}
-	else if (nChar == VK_RIGHT)
-	{
-		speedX = 0;
-	}
-
 }
 
-void CGameStateRun::OnLButtonDown(UINT nFlags, CPoint point)  // ³B²z·Æ¹«ªº°Ê§@
+void CGameStateRun::OnLButtonDown(UINT nFlags, CPoint point)  // è™•ç†æ»‘é¼ çš„å‹•ä½œ
 {
 }
 
-void CGameStateRun::OnLButtonUp(UINT nFlags, CPoint point)	// ³B²z·Æ¹«ªº°Ê§@
+void CGameStateRun::OnLButtonUp(UINT nFlags, CPoint point)	// è™•ç†æ»‘é¼ çš„å‹•ä½œ
 {
 }
 
-void CGameStateRun::OnMouseMove(UINT nFlags, CPoint point)	// ³B²z·Æ¹«ªº°Ê§@
+void CGameStateRun::OnMouseMove(UINT nFlags, CPoint point)	// è™•ç†æ»‘é¼ çš„å‹•ä½œ
 {
 }
 
-void CGameStateRun::OnRButtonDown(UINT nFlags, CPoint point)  // ³B²z·Æ¹«ªº°Ê§@
+void CGameStateRun::OnRButtonDown(UINT nFlags, CPoint point)  // è™•ç†æ»‘é¼ çš„å‹•ä½œ
 {
 }
 
-void CGameStateRun::OnRButtonUp(UINT nFlags, CPoint point)	// ³B²z·Æ¹«ªº°Ê§@
+void CGameStateRun::OnRButtonUp(UINT nFlags, CPoint point)	// è™•ç†æ»‘é¼ çš„å‹•ä½œ
 {
 }
 
@@ -642,13 +807,14 @@ void CGameStateRun::show_image_by_phase() {
 	}*/
 	background.ShowBitmap();
 	character.ShowBitmap();
-	if (textnum != 0) {
+	
+	if (shopnum || propnum) {
 		textbox.ShowBitmap();
 		arrow.ShowBitmap();
 	}
 	if (bag == true) {
-			menu.ShowBitmap();
-			arrow.ShowBitmap();
+		menu.ShowBitmap();
+		arrow.ShowBitmap();
 	}
 	for (auto i = hitbox.begin(); i != hitbox.end(); i++) {
 		i->ShowBitmap();
@@ -661,16 +827,31 @@ void CGameStateRun::show_image_by_phase() {
 	}
 	for (auto i = dialog.begin(); i != dialog.end(); i++) {
 		i->ShowBitmap();
+	}	
+	if (battle) {
+		battle_scr.ShowBitmap();
 	}
-	
 }
-
 void CGameStateRun::battle_value() {
 	/*
-		HP = ((ºØ±Ú­È+7)*LV)/50+10+LV
-		¨ä¥L¼Æ­È = ((ºØ±Ú­È+7)*LV)/50+5
-		¶Ë®` = (((2*§ğÀ»¤èµ¥¯Å+10)/250) * (§ğÀ»¤è§ğÀ»/¨¾¦u¤è¨¾¿m)*©Û¦¡«Â¤O +2)*Äİ©Ê¥[¦¨ ,40%¾÷²v©Ê¼ÉÀ»,¨`¿N³y¦¨ªºª«²z©Û¦¡´î®z¤@¥b
-	
+		HP = ((ç¨®æ—å€¼+7)*LV)/50+10+LV
+		å…¶ä»–æ•¸å€¼ = ((ç¨®æ—å€¼+7)*LV)/50+5
+		å‚·å®³ = (((2*æ”»æ“Šæ–¹ç­‰ç´š+10)/250) * (æ”»æ“Šæ–¹æ”»æ“Š/é˜²å®ˆæ–¹é˜²ç¦¦)*æ‹›å¼å¨åŠ› +2)*å±¬æ€§åŠ æˆ ,40%æ©Ÿç‡æ€§æš´æ“Š,ç¼ç‡’é€ æˆçš„ç‰©ç†æ‹›å¼æ¸›å¼±ä¸€åŠ
+
+	*/
+}
+void battle_turn() {
+	/*
+		if(æ”»æ“Š){
+			åˆ¤æ–·é›™æ–¹é€Ÿåº¦å€¼
+			é€²è¡Œæ”»å®ˆ
+			if(å°æ–¹å…ˆæ”»){
+				if(æˆ‘æ–¹è¡€é‡æ­¸0)
+					é¸æ“‡ä¸Šå ´çš„å¯¶å¯å¤¢
+				else
+					æ˜¯å¦æœƒé€ æˆç•°å¸¸ç‹€æ…‹
+			}
+		}
 	*/
 }
 
@@ -679,49 +860,135 @@ void CGameStateRun::show_text_by_phase() {
 	CDC* pDC = CDDraw::GetBackCDC();
 	string x = to_string(background.GetLeft());
 	string y = to_string(background.GetTop());
+	string moneyout = to_string(characterinf[0]);
 
-	CTextDraw::ChangeFontLog(pDC, 21, "·L³n¥¿¶ÂÅé", RGB(255, 0, 0), 800);
+	CTextDraw::ChangeFontLog(pDC, 21, "å¾®è»Ÿæ­£é»‘é«”", RGB(255, 0, 0), 800);
 	CTextDraw::Print(pDC, 0, 0, x);
 	CTextDraw::Print(pDC, 90, 0, y);
-	if (bag == true) {				//¿ï³æ¤å¦r
-		if (textnum == 0) {
-			CTextDraw::ChangeFontLog(pDC, 40, "·L³n¥¿¶ÂÅé", RGB(0, 0, 0), 800);
-			CTextDraw::Print(pDC, 450, 60, "¶¤¥î");
-			CTextDraw::Print(pDC, 450, 120, "­I¥]");
-			CTextDraw::Print(pDC, 450, 180, "¦sÀÉ");
-			CTextDraw::Print(pDC, 450, 240, "Â÷¶}");
+	CTextDraw::ChangeFontLog(pDC, 21, "å¾®è»Ÿæ­£é»‘é«”", RGB(255, 255, 51), 800);
+	//CTextDraw::Print(pDC, 535, 0, "$");
+	CTextDraw::Print(pDC, 300, 0, moneyout);//550
+	if (bag == true) {				//é¸å–®æ–‡å­—
+		if (shopnum == 0) {
+			CTextDraw::ChangeFontLog(pDC, 40, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 800);
+			CTextDraw::Print(pDC, 450, 60, "éšŠä¼");
+			CTextDraw::Print(pDC, 450, 120, "èƒŒåŒ…");
+			CTextDraw::Print(pDC, 450, 180, "å­˜æª”");
+			CTextDraw::Print(pDC, 450, 240, "é›¢é–‹");
 		}
-		else if (textnum == 10) {
-			CTextDraw::ChangeFontLog(pDC, 30, "·L³n¥¿¶ÂÅé", RGB(0, 0, 0), 800);
-			CTextDraw::Print(pDC, 90 , 10, "¦W¦r");
-			CTextDraw::ChangeFontLog(pDC, 40, "·L³n¥¿¶ÂÅé", RGB(0, 0, 0), 800);
-			CTextDraw::Print(pDC, 30, 400, "½Ğ¿ï¾Ü¤@°¦Ä_¥i¹Ú");
+		if (team) {
+			CTextDraw::ChangeFontLog(pDC, 30, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 800);
+			CTextDraw::Print(pDC, 90, 10, "åå­—");
+			CTextDraw::ChangeFontLog(pDC, 40, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 800);
+			CTextDraw::Print(pDC, 30, 400, "è«‹é¸æ“‡ä¸€éš»å¯¶å¯å¤¢");
+		}
+		if (propnum == 1) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "ä»£å¹£");
+			CTextDraw::Print(pDC, 400, 400, moneyout);
+			CTextDraw::Print(pDC, 150, 450, "ç²¾éˆçƒ");
+			CTextDraw::Print(pDC, 400, 450, to_string(characterinf[1]));
+			CTextDraw::Print(pDC, 150, 500, "è¶…ç´šçƒ");
+			CTextDraw::Print(pDC, 400, 500, to_string(characterinf[2]));
+		}
+		else if (propnum == 2) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "é«˜ç´šçƒ");
+			CTextDraw::Print(pDC, 400, 400, to_string(characterinf[3]));
+			CTextDraw::Print(pDC, 150, 450, "å¤§å¸«çƒ");
+			CTextDraw::Print(pDC, 400, 450, to_string(characterinf[4]));
+			CTextDraw::Print(pDC, 150, 500, "ç¥å¥‡ç³–æœ");
+			CTextDraw::Print(pDC, 400, 500, to_string(characterinf[5]));
+		}
+		else if (propnum == 3) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "å‚·è—¥");
+			CTextDraw::Print(pDC, 400, 400, to_string(characterinf[6]));
+			CTextDraw::Print(pDC, 150, 450, "å¥½å‚·è—¥");
+			CTextDraw::Print(pDC, 400, 450, to_string(characterinf[7]));
+			CTextDraw::Print(pDC, 150, 500, "å²å®³å‚·è—¥");
+			CTextDraw::Print(pDC, 400, 500, to_string(characterinf[8]));
+		}
+		else if (propnum == 4) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "å…¨æ»¿è—¥");
+			CTextDraw::Print(pDC, 400, 400, to_string(characterinf[9]));
+			CTextDraw::Print(pDC, 150, 450, "è§£æ¯’è—¥");
+			CTextDraw::Print(pDC, 400, 450, to_string(characterinf[10]));
+			CTextDraw::Print(pDC, 150, 500, "ç¼å‚·è—¥");
+			CTextDraw::Print(pDC, 400, 500, to_string(characterinf[11]));
+		}
+		else if (propnum == 5) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "è§£å‡è—¥");
+			CTextDraw::Print(pDC, 400, 400, to_string(characterinf[12]));
+			CTextDraw::Print(pDC, 150, 450, "è§£éº»è—¥");
+			CTextDraw::Print(pDC, 400, 450, to_string(characterinf[13]));
+			CTextDraw::Print(pDC, 150, 500, "è§£çœ è—¥");
+			CTextDraw::Print(pDC, 400, 500, to_string(characterinf[14]));
+		}
+		else if (propnum == 6) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "è¬éˆè—¥");
+			CTextDraw::Print(pDC, 400, 400, to_string(characterinf[15]));
+			CTextDraw::Print(pDC, 150, 450, "æ´»åŠ›ç¢ç‰‡");
+			CTextDraw::Print(pDC, 400, 450, to_string(characterinf[16]));
+			CTextDraw::Print(pDC, 150, 500, "æ´»åŠ›å¡Š");
+			CTextDraw::Print(pDC, 400, 500, to_string(characterinf[17]));
 		}
 	}
-	if (textnum == 1) {
-		CTextDraw::ChangeFontLog(pDC, 40, "·L³n¥¿¶ÂÅé", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 150, 400, "ÁÊ¶R");
-		CTextDraw::Print(pDC, 150, 450, "¥X°â");
-		CTextDraw::Print(pDC, 150, 500, "ªğ¦^");
+	else {
+		if (shopnum == 1) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "è³¼è²·");
+			CTextDraw::Print(pDC, 150, 450, "å‡ºå”®");
+			CTextDraw::Print(pDC, 150, 500, "é€€å‡º");
+		}
+		else if (shopnum == 2) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "ç²¾éˆçƒ    $100");
+			CTextDraw::Print(pDC, 150, 450, "è¶…ç´šçƒ    $300");
+			CTextDraw::Print(pDC, 150, 500, "é«˜ç´šçƒ    $500");
+		}
+		else if (shopnum == 3) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "ç¥å¥‡ç³–æœ$1000");
+			CTextDraw::Print(pDC, 150, 450, "å‚·è—¥        $300");
+			CTextDraw::Print(pDC, 150, 500, "å¥½å‚·è—¥    $500");
+		}
+		else if (shopnum == 4) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "å²å®³å‚·è—¥$100");
+			CTextDraw::Print(pDC, 150, 450, "å…¨æ»¿è—¥    $300");
+			CTextDraw::Print(pDC, 150, 500, "è§£æ¯’è—¥    $500");
+		}
+		else if (shopnum == 5) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "ç¼å‚·è—¥    $100");
+			CTextDraw::Print(pDC, 150, 450, "è§£å‡è—¥    $300");
+			CTextDraw::Print(pDC, 150, 500, "è§£éº»è—¥    $500");
+		}
+		else if (shopnum == 6) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "è§£çœ è—¥    $100");
+			CTextDraw::Print(pDC, 150, 450, "è¬éˆè—¥    $300");
+			CTextDraw::Print(pDC, 150, 500, "æ´»åŠ›ç¢ç‰‡$500");
+		}
+		else if (shopnum == 7) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "æ´»åŠ›å¡Š    $100");
+			CTextDraw::Print(pDC, 150, 450, "");
+			CTextDraw::Print(pDC, 150, 500, "");
+		}
+
+		else if (shopnum == 100) {
+			CTextDraw::ChangeFontLog(pDC, 35, "å¾®è»Ÿæ­£é»‘é«”", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 150, 400, "æ²»ç™‚å¯¶å¯å¤¢");
+			CTextDraw::Print(pDC, 150, 450, "è‚¢è§£å¯¶å¯å¤¢");
+			CTextDraw::Print(pDC, 150, 500, "è¿”å›");
+		}
 	}
-	if (textnum == 2) {
-		CTextDraw::ChangeFontLog(pDC, 40, "·L³n¥¿¶ÂÅé", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 150, 400, "ªì¯Å²y   $100");
-		CTextDraw::Print(pDC, 150, 450, "¤¤¯Å²y   $300");
-		CTextDraw::Print(pDC, 150, 500, "°ª¯Å²y   $500");
-	}
-	if (textnum == 3) {
-		CTextDraw::ChangeFontLog(pDC, 40, "·L³n¥¿¶ÂÅé", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 150, 400, "ªì¯Å²y1   $100");
-		CTextDraw::Print(pDC, 150, 450, "¤¤¯Å²y   $300");
-		CTextDraw::Print(pDC, 150, 500, "°ª¯Å²y   $500");
-	}
-	if (textnum == 100) {
-		CTextDraw::ChangeFontLog(pDC, 40, "·L³n¥¿¶ÂÅé", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 150, 400, "ªvÀøÄ_¥i¹Ú");
-		CTextDraw::Print(pDC, 150, 450, "ªÏ¸ÑÄ_¥i¹Ú");
-		CTextDraw::Print(pDC, 150, 500, "ªğ¦^");
-	}
+	
 	CDDraw::ReleaseBackCDC();
 }
 

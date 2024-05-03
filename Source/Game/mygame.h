@@ -101,7 +101,8 @@ namespace game_framework {
 		int driection=0;
 		int characterFrameCounter = 0;
 		bool bag = false;
-		bool battle = false; 
+		bool battle = false;
+		int propnum = 0;
 		bool text = false;
 		CMovingBitmap house_1f;
 		CMovingBitmap house_2f;
@@ -123,15 +124,23 @@ namespace game_framework {
 		bool overlapright = 0;
 		bool overlaptop = 0;
 		bool overlapdown = 0;
+		bool team = 0;
+		bool confirmenter = false;
+		bool confirmup = false;
+		bool confirmdown = false;
+		int shopnum = 0;
 		int hitboxnum = 0;
 		int grassnum = 0;
 		int tppointnum = 0;
 		int textnum = 0;
-		int sub_textnum = 0;
-		int money = 0;
+		int nownum = 0;
+		int nownum1 = 0;
+		int arrownum = 0;
+		int battle_phase = 0;
 		void show_image_by_phase();
 		void show_text_by_phase();
 		void battle_value();
+		void battle_turn();
 		/*void phase_house();
 		void phase_map();*/
 	};
@@ -154,5 +163,23 @@ namespace game_framework {
 		CMovingBitmap background;
 		void load_background();
 	};
+	//struct pokemon {
+	//	int level = 1;
+	//	int experience = 0;
+	//	int race = 0;										//ºØ±Úattack life
+	//	int pokemonnum = 0;
+	//	int skill[4] = { 0,0,0,0 };
+	//};
+	//struct characterinf {
+	//	int money = 0;
+	//	int prop[17] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};									//¹D¨ã
+	//	int dojonum = 0;
+	//	int phase = 2;
+	//	int sitex = 210;
+	//	int sitey = 205;
+	//	pokemon pokemoninpack[6];
+	//};
+	//int meninf[80];
+	
 	
 }
