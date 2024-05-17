@@ -104,6 +104,10 @@ namespace game_framework {
 		bool battle = false;
 		int propnum = 0;
 		bool text = false;
+		bool ran = true;
+		bool accel = false;
+		int temptop = 0;
+		int templeft = 0;
 		CMovingBitmap house_1f;
 		CMovingBitmap house_2f;
 		CMovingBitmap background;
@@ -137,6 +141,7 @@ namespace game_framework {
 		int nownum1 = 0;
 		int arrownum = 0;
 		int battle_phase = 0;
+		int judge;
 		void show_image_by_phase();
 		void show_text_by_phase();
 		void battle_value();

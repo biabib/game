@@ -8,6 +8,9 @@
 #include "../Library/gamecore.h"
 #include "mygame.h"
 #include <fstream>
+#include<iostream>
+#include<cstdlib>
+#include<ctime>
 
 using namespace game_framework;
 
@@ -29,6 +32,7 @@ void CGameStateRun::OnBeginState()
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 {
+	
 	background.LoadBitmapByString({
 		"resources/map/home_2f.bmp",
 		"resources/map/home_1f.bmp",
@@ -81,17 +85,18 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {	
-	int nowtop = character.GetTop();
-	int nowleft = character.GetLeft();	
+	int nowtop = background.GetTop();
+	int nowleft = background.GetLeft();	
 	if (nownum > 3){
 		nownum = 0;
 	}
+	
 	nownum++;
 	overlapleft = 0;
 	overlapright = 0;
 	overlaptop = 0;
 	overlapdown = 0;
-	if (bag == false && textnum == 0) {
+	if (bag == false && battle == false && textnum == 0) {
 		for (auto i = hitbox.begin(); i != hitbox.end(); i++) { 
 			if (CMovingBitmap::IsOverlap(character, *i)) {
 				if (character.GetLeft() > i->GetLeft()) {
@@ -294,6 +299,29 @@ for (int i = 0; i < tppointnum; i++) {
 			}
 		}
 		else if (phase == 3) {
+			if (abs(nowtop - temptop) == 30 || abs(nowleft - templeft) == 30) {
+				ran = true;
+			}
+			for (auto i = grass.begin(); i != grass.end(); i++) {
+				if (CMovingBitmap::IsOverlap(character, *i)) {
+					if (ran) {
+						judge = rand() % 1000;
+						ran = false;
+						if (judge > 800) {
+							battle = true;
+							temptop = nowtop;
+							templeft = nowleft;
+							battle_phase = 1;
+							battle_scr.SetFrameIndexOfBitmap(1);
+							battle_scr.SetTopLeft(0, 0);
+							arrow.SetTopLeft(300, 440);
+							arrownum = 4;
+						}
+					}
+					//程式碼放這邊
+				}
+			}
+			// 遍歷草叢進入戰鬥
 			if (CMovingBitmap::IsOverlap(character, tppoint[1])) {
 				phase = 1;
 				background.SetFrameIndexOfBitmap(1);
@@ -457,6 +485,7 @@ for (int i = 0; i < tppointnum; i++) {
 	}
 }
 
+
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {	
 	if (nChar == VK_ESCAPE) {	//暫停並顯示箭頭
@@ -489,7 +518,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 		//close the window
 		if (battle) {
-			battle = !battle;
+			battle = false;
 		}
 	}
 	if (nChar == VK_RETURN && confirmenter == false) {
@@ -527,15 +556,15 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			//查看隊伍
 		}
 		//stop function
-		for (auto i = grass.begin(); i != grass.end(); i++) {
-			if (CMovingBitmap::IsOverlap(character, *i)) {
-				battle = !battle;
-				battle_phase = 1;
-				battle_scr.SetFrameIndexOfBitmap(1);
-				battle_scr.SetTopLeft(0, 0);
-			}
-		}
-		// 遍歷草叢enter進入戰鬥
+		//for (auto i = grass.begin(); i != grass.end(); i++) {
+		//	if (CMovingBitmap::IsOverlap(character, *i)) {
+		//		battle = !battle;
+		//		battle_phase = 1;
+		//		battle_scr.SetFrameIndexOfBitmap(1);
+		//		battle_scr.SetTopLeft(0, 0);
+		//	}
+		//}
+		//// 遍歷草叢enter進入戰鬥
 		if (phase == 4 && bag == false) {
 			if (CMovingBitmap::IsOverlap(character, dialog[0]) && shopnum == 0) {
 				shopnum = 1;
@@ -646,9 +675,15 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 	if (nChar == VK_UP)
 	{
-		if (bag == false && shopnum == 0 ) {
-			speedY = 8;
-			speedX = 0;
+		if (bag == false && battle == false && shopnum == 0 ) {
+			if (accel) {
+				speedY = 10;
+				speedX = 0;
+			}
+			else {
+				speedY = 5;
+				speedX = 0;
+			}
 		}
 		//walk
 
@@ -685,8 +720,15 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (nChar == VK_DOWN )
 	{
 		if (bag == false && shopnum == 0) {
-			speedY = -8;
-			speedX = 0;
+			if (accel) {
+				speedY = -10;
+				speedX = 0;
+			}
+			else {
+				speedY = -5;
+				speedX = 0;
+			}
+
 		}
 		//walk
 		if (propnum < 6 && arrow.GetTop() == 515 && shopnum == 0) {
@@ -716,8 +758,14 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	//記得補正
 	if (nChar == VK_LEFT)
 	{
-		speedX = 8;
-		speedY = 0;
+		if(accel){
+			speedX = 10;
+			speedY = 0;
+		}
+		else {
+			speedX = 5;
+			speedY = 0;
+		}
 		/*if (nChar == VK_UP) {
 			switch (nownum) {
 				case 1:
@@ -739,8 +787,18 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 	if (nChar == VK_RIGHT)
 	{
-		speedX = -8;
-		speedY = 0;
+		if (accel) {
+			speedX = -10;
+			speedY = 0;
+		}
+		else {
+			speedX = -5;
+			speedY = 0;
+		}
+	}
+	if (nChar == VK_SHIFT)
+	{
+		accel = !accel;
 	}
 
 }
@@ -830,6 +888,7 @@ void CGameStateRun::show_image_by_phase() {
 	}	
 	if (battle) {
 		battle_scr.ShowBitmap();
+		arrow.ShowBitmap();
 	}
 }
 void CGameStateRun::battle_value() {
@@ -860,11 +919,16 @@ void CGameStateRun::show_text_by_phase() {
 	CDC* pDC = CDDraw::GetBackCDC();
 	string x = to_string(background.GetLeft());
 	string y = to_string(background.GetTop());
+	string tx = to_string(templeft);
+	string ty = to_string(temptop);
 	string moneyout = to_string(characterinf[0]);
-
+	string j = to_string(judge % 1000);
 	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 0, 0), 800);
 	CTextDraw::Print(pDC, 0, 0, x);
 	CTextDraw::Print(pDC, 90, 0, y);
+	CTextDraw::Print(pDC, 0, 20, tx);
+	CTextDraw::Print(pDC, 90, 20, ty);
+	CTextDraw::Print(pDC, 180, 0, j);
 	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 255, 51), 800);
 	//CTextDraw::Print(pDC, 535, 0, "$");
 	CTextDraw::Print(pDC, 300, 0, moneyout);//550
@@ -987,6 +1051,13 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 150, 450, "肢解寶可夢");
 			CTextDraw::Print(pDC, 150, 500, "返回");
 		}
+	}
+	if (battle == true) {
+		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+		CTextDraw::Print(pDC, 330, 430, "戰鬥");
+		CTextDraw::Print(pDC, 470, 430, "寶可夢");
+		CTextDraw::Print(pDC, 330, 490, "背包");
+		CTextDraw::Print(pDC, 470, 490, "逃跑");
 	}
 	
 	CDDraw::ReleaseBackCDC();
