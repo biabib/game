@@ -113,10 +113,12 @@ namespace game_framework {
 		CMovingBitmap menu;
 		CMovingBitmap point;
 		CMovingBitmap arrow;
+		CMovingBitmap boss[5];
 		std::vector<CMovingBitmap> pack;
 		std::vector<CMovingBitmap> hitbox;				//先用兩百個物件看看夠不夠
 		std::vector<CMovingBitmap> tppoint;
 		std::vector<CMovingBitmap> grass;
+		std::vector<CMovingBitmap> sign;
 		std::vector<CMovingBitmap> dialog;
 		bool overlapleft = 0;
 		bool overlapright = 0;
@@ -134,6 +136,9 @@ namespace game_framework {
 		int nownum = 0;
 		int nownum1 = 0;
 		int arrownum = 0;
+		int signnum = 0;
+		int pokemoninf[67][13];
+		string pokemonname[67];
 		void show_image_by_phase();
 		void show_text_by_phase();
 		/*void phase_house();

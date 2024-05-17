@@ -33,46 +33,57 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 		"resources/map/home_2f.bmp",
 		"resources/map/home_1f.bmp",
 		"resources/map/town.bmp",
-		"resources/map/pokemon.bmp"
+		"resources/map/pokemon.bmp",
+		"resources/map/gym1.bmp",
+		"resources/map/road.bmp"
 		});//,RGB(100,100,100));
 	background.SetTopLeft(235, 170);
 	/*background.SetTopLeft(-215, -1885);*/
 	character.LoadBitmapByString({ "Resources/character/red_front.bmp","resources/character/red_front1.bmp","resources/character/red_front2.bmp","resources/character/red_left.bmp","resources/character/red_left1.bmp","resources/character/red_back.bmp","resources/character/red_back1.bmp","resources/character/red_back2.bmp","resources/character/red_right.bmp","resources/character/red_right1.bmp" }, RGB(255, 255, 255));
 	character.SetTopLeft(300, 272);
-	character.SetAnimation(1000, true);
-	ifstream ifs1("resources/files/character.txt");
-	for (int i = 0; i < 80; i++) {
-		ifs1 >> characterinf[i];
-	}
+	character.SetAnimation(1000, true);	
 	textbox.LoadBitmapByString({ "Resources/text.bmp" });
 	textbox.SetTopLeft(0, 378);
 	menu.LoadBitmapByString({ "Resources/menu.bmp" });
 	menu.SetTopLeft(400, 40);
 	arrow.LoadBitmapByString({ "Resources/arrow.bmp"});
-
-	ifstream ifs("mapdoc/home2f.txt");
-	for (int i = 0; i < 6; i++) {
-		for (int j = 0; j < 6; j++) {
+	ifstream ifs1("resources/files/character.txt");
+		for (int i = 0; i < 73; i++) {
+			ifs1 >> characterinf[i];
+		}
+	ifstream ifs2("resources/files/pokemonlib.txt");
+		for (int i = 0; i < 67; i++) {
+			for (int j = 0; j < 13; j++) {
+				ifs2 >> pokemoninf[j][i];
+			}
+		}
+	ifstream ifs3("resources/files/pokemonname.txt");
+		for (int i = 0; i < 67; i++) {
+			ifs3 >> pokemonname[i];
+		}
+	ifstream ifs("Resources/mapdoc/home2f.txt");
+	for (int i = 0; i < 7; i++) {
+		for (int j = 0; j < 8; j++) {
 			int a = 0;
 			ifs >> a;
-			home2fmap.push_back(a);
+			home1fmap.push_back(a);
 		}
 	}
 	ifs.close();							//讀地圖txt進來
-	for (int i = 0; i < 6; i++) {
-		for (int j = 0; j < 6; j++) {
+	for (int i = 0; i < 7; i++) {
+		for (int j = 0; j < 8; j++) {
 			int a = 0;
-			a = home2fmap.front();
-			home2fmap.erase(home2fmap.begin());
+			a = home1fmap.front();
+			home1fmap.erase(home1fmap.begin());
 			if (a == 1) {
 				hitbox.insert(hitbox.begin(), CMovingBitmap());
 				hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-				hitbox.begin()->SetTopLeft(235 + j * 32, 170 + i * 32);
+				hitbox.begin()->SetTopLeft(203 + j * 32, 170 + i * 32);
 			}
 			else if (a == 2) {
 				tppoint.insert(tppoint.begin(), CMovingBitmap());
 				tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-				tppoint.begin()->SetTopLeft(235 + j * 32, 170 + i * 32);
+				tppoint.begin()->SetTopLeft(203 + j * 32, 170 + i * 32);
 			}
 		}
 	}
@@ -90,7 +101,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	overlapright = 0;
 	overlaptop = 0;
 	overlapdown = 0;
-	if (bag == false && textnum == 0) {
+	if (bag == false && shopnum == 0) {
 		for (auto i = hitbox.begin(); i != hitbox.end(); i++) { 
 			if (CMovingBitmap::IsOverlap(character, *i)) {
 				if (character.GetLeft() > i->GetLeft()) {
@@ -132,6 +143,12 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		}
 		for (auto i = dialog.begin(); i != dialog.end(); i++) {
 			i->SetTopLeft(i->GetLeft() + speedX, i->GetTop() + speedY);
+		}
+		for (auto i = sign.begin(); i != sign.end(); i++) {
+			i->SetTopLeft(i->GetLeft() + speedX, i->GetTop() + speedY);
+		}
+		if (phase == 5) {
+			boss[0].SetTopLeft(boss[0].GetLeft() + speedX, boss[0].GetTop() + speedY);
 		}
 		//物件移動
 /*for (int i = 0; i < hitbox.size(); i++) {
@@ -186,30 +203,29 @@ for (int i = 0; i < tppointnum; i++) {
 				character.SetFrameIndexOfBitmap(3);
 				hitbox.clear();
 				tppoint.clear();
-				ifstream ifs("mapdoc/home2f.txt");
-				for (int i = 0; i < 6; i++) {
-					for (int j = 0; j < 6; j++) {
+				ifstream ifs("Resources/mapdoc/home2f.txt");
+				for (int i = 0; i < 7; i++) {
+					for (int j = 0; j < 8; j++) {
 						int a = 0;
 						ifs >> a;
-						home2fmap.push_back(a);
+						home1fmap.push_back(a);
 					}
 				}
 				ifs.close();							//讀地圖txt進來
-				for (int i = 0; i < 6; i++) {
-					for (int j = 0; j < 6; j++) {
+				for (int i = 0; i < 7; i++) {
+					for (int j = 0; j < 8; j++) {
 						int a = 0;
-						a = home2fmap.front();
-						home2fmap.erase(home2fmap.begin());
+						a = home1fmap.front();
+						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
 							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-							hitbox.begin()->SetTopLeft(170 + j * 32, 170 + i * 32);
+							hitbox.begin()->SetTopLeft(138 + j * 32, 170 + i * 32);
 						}
-
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
 							tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-							tppoint.begin()->SetTopLeft(170 + j * 32, 170 + i * 32);
+							tppoint.begin()->SetTopLeft(138 + j * 32, 170 + i * 32);
 						}
 					}
 				}
@@ -217,43 +233,47 @@ for (int i = 0; i < tppointnum; i++) {
 			else if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
 				phase = 3;
 				background.SetFrameIndexOfBitmap(2);
-				background.SetTopLeft(-240, -115);
+				background.SetTopLeft(-245, -115);
 				character.SetFrameIndexOfBitmap(0);
 				hitbox.clear();
 				tppoint.clear();
 				grass.clear();
-				ifstream ifs("mapdoc/town.txt");
-				for (int i = 0; i < 22; i++) {
-					for (int j = 0; j < 50; j++) {
+				ifstream ifs("Resources/mapdoc/town.txt");
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
 						int a = 0;
 						ifs >> a;
 						home1fmap.push_back(a);
 					}
 				}
 				ifs.close();							//讀地圖txt進來
-				for (int i = 0; i < 22; i++) {
-					for (int j = 0; j < 50; j++) {
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
 						int a = 0;
 						a = home1fmap.front();
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
 							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-							hitbox.begin()->SetTopLeft(-240 + j * 32, -115 + i * 32);
+							hitbox.begin()->SetTopLeft(-277 + j * 32, -147 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-							tppoint.begin()->SetTopLeft(-240 + j * 32, -115 + i * 32);
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(-277 + j * 32, -147 + i * 32);
 						}
 						else if (a == 3) {
 							grass.insert(grass.begin(), CMovingBitmap());
 							grass.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-							grass.begin()->SetTopLeft(-240 + j * 32, -115 + i * 32);
+							grass.begin()->SetTopLeft(-277 + j * 32, -147 + i * 32);
+						}
+						else if (a == 4) {
+							sign.insert(sign.begin(), CMovingBitmap());
+							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" });
+							sign.begin()->SetTopLeft(-277 + j * 32, -147 + i * 32);
 						}
 					}
 				}
-
 			}
 		}
 		else if (phase == 2) {
@@ -264,36 +284,36 @@ for (int i = 0; i < tppointnum; i++) {
 				character.SetFrameIndexOfBitmap(3);
 				hitbox.clear();
 				tppoint.clear();
-				ifstream ifs("mapdoc/home1f.txt");
-				for (int i = 0; i < 8; i++) {
-					for (int j = 0; j < 7; j++) {
+				ifstream ifs("Resources/mapdoc/home1f.txt");
+				for (int i = 0; i < 9; i++) {
+					for (int j = 0; j < 9; j++) {
 						int a = 0;
 						ifs >> a;
 						home1fmap.push_back(a);
 					}
 				}
 				ifs.close();							//讀地圖txt進來
-				for (int i = 0; i < 8; i++) {
-					for (int j = 0; j < 7; j++) {
+				for (int i = 0; i < 9; i++) {
+					for (int j = 0; j < 9; j++) {
 						int a = 0;
 						a = home1fmap.front();
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
 							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-							hitbox.begin()->SetTopLeft(140 + j * 32, 205 + i * 32);
+							hitbox.begin()->SetTopLeft(108 + j * 32, 205 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-							tppoint.begin()->SetTopLeft(140 + j * 32, 205 + i * 32);
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(108 + j * 32, 205 + i * 32);
 						}
 					}
 				}
 			}
 		}
 		else if (phase == 3) {
-			if (CMovingBitmap::IsOverlap(character, tppoint[1])) {
+			if (CMovingBitmap::IsOverlap(character, tppoint[5])) {
 				phase = 1;
 				background.SetFrameIndexOfBitmap(1);
 				background.SetTopLeft(205, 80);
@@ -301,44 +321,46 @@ for (int i = 0; i < tppointnum; i++) {
 				hitbox.clear();
 				tppoint.clear();
 				grass.clear();
-				ifstream ifs("mapdoc/home1f.txt");
-				for (int i = 0; i < 8; i++) {
-					for (int j = 0; j < 7; j++) {
+				sign.clear();
+				ifstream ifs("Resources/mapdoc/home1f.txt");
+				for (int i = 0; i < 9; i++) {
+					for (int j = 0; j < 9; j++) {
 						int a = 0;
 						ifs >> a;
 						home1fmap.push_back(a);
 					}
 				}
 				ifs.close();							//讀地圖txt進來
-				for (int i = 0; i < 8; i++) {
-					for (int j = 0; j < 7; j++) {
+				for (int i = 0; i < 9; i++) {
+					for (int j = 0; j < 9; j++) {
 						int a = 0;
 						a = home1fmap.front();
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
 							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-							hitbox.begin()->SetTopLeft(205 + j * 32, 80 + i * 32);
+							hitbox.begin()->SetTopLeft(173 + j * 32, 80 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-							tppoint.begin()->SetTopLeft(205 + j * 32, 80 + i * 32);
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(173 + j * 32, 80 + i * 32);
 						}
 					}
 				}
 			}
-			else if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
+			else if (CMovingBitmap::IsOverlap(character, tppoint[4])) {
 				phase = 4;
 				background.SetFrameIndexOfBitmap(3);
 				background.SetTopLeft(105, 50);
-				character.SetFrameIndexOfBitmap(5);
+				character.SetFrameIndexOfBitmap(5);	
 				hitbox.clear();
 				tppoint.clear();
 				grass.clear();
-				ifstream ifs("mapdoc/pokemon.txt");
+				sign.clear();
+				ifstream ifs("Resources/mapdoc/pokemon.txt");
 				for (int i = 0; i < 9; i++) {
-					for (int j = 0; j < 12; j++) {
+					for (int j = 0; j < 14; j++) {
 						int a = 1;
 						ifs >> a;
 						home1fmap.push_back(a);
@@ -346,67 +368,266 @@ for (int i = 0; i < tppointnum; i++) {
 				}
 				ifs.close();							//讀地圖txt進來
 				for (int i = 0; i < 9; i++) {
-					for (int j = 0; j < 12; j++) {
+					for (int j = 0; j < 14; j++) {
 						int a = 0;
 						a = home1fmap.front();
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
 							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-							hitbox.begin()->SetTopLeft(105 + j * 32, 50 + i * 32);
+							hitbox.begin()->SetTopLeft(73 + j * 32, 50 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-							tppoint.begin()->SetTopLeft(105 + j * 32, 50 + i * 32);
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(73 + j * 32, 50 + i * 32);
+						}
+						else if (a == 4) {
+							sign.insert(sign.begin(), CMovingBitmap());
+							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" });
+							sign.begin()->SetTopLeft(73 + j * 32, 50 + i * 32);
 						}
 						else if (a == 5) {
 							dialog.insert(dialog.begin(), CMovingBitmap());
 							dialog.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-							dialog.begin()->SetTopLeft(105 + j * 32, 50 + i * 32);
+							dialog.begin()->SetTopLeft(73 + j * 32, 50 + i * 32);
 						}
 					}
 				}
 			}
-		}
-		else if (phase == 4) {
-			if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
-				phase = 3;
-				background.SetFrameIndexOfBitmap(2);
-				background.SetTopLeft(-870, -115);
-				character.SetFrameIndexOfBitmap(0);
+			else if (CMovingBitmap::IsOverlap(character, tppoint[6])) {
+				phase = 5;
+				background.SetFrameIndexOfBitmap(4);
+				background.SetTopLeft(230,144);
+				character.SetFrameIndexOfBitmap(5);
+				hitbox.clear();
+				tppoint.clear();
+				grass.clear();
+				sign.clear();
+				ifstream ifs("Resources/mapdoc/gym1.txt");
+				for (int i = 0; i < 7; i++) {
+					for (int j = 0; j < 7; j++) {
+						int a = 1;
+						ifs >> a;
+						home1fmap.push_back(a);
+					}
+				}
+				ifs.close();							//讀地圖txt進來
+				for (int i = 0; i < 7; i++) {
+					for (int j = 0; j < 7; j++) {
+						int a = 0;
+						a = home1fmap.front();
+						home1fmap.erase(home1fmap.begin());
+						if (a == 1) {
+							hitbox.insert(hitbox.begin(), CMovingBitmap());
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->SetTopLeft(198 + j * 32, 112 + i * 32);
+						}
+						else if (a == 2) {
+							tppoint.insert(tppoint.begin(), CMovingBitmap());
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(198 + j * 32, 112 + i * 32);
+						}
+					}
+				}
+				boss[0].LoadBitmapByString({ "Resources/boss/boss1.bmp " }, RGB(100, 100, 100));
+				boss[0].SetTopLeft(285, 176);
+			}
+			else if (CMovingBitmap::IsOverlap(character, tppoint[7])) {
+				phase = 6;
+				background.SetFrameIndexOfBitmap(5);
+				background.SetTopLeft(-760, -650);
+				character.SetFrameIndexOfBitmap(8);
 				hitbox.clear();
 				tppoint.clear();
 				grass.clear();
 				dialog.clear();
-				ifstream ifs("mapdoc/town.txt");
-				for (int i = 0; i < 22; i++) {
-					for (int j = 0; j < 50; j++) {
+				sign.clear();
+				ifstream ifs("Resources/mapdoc/road.txt");
+				for (int i = 0; i < 32; i++) {
+					for (int j = 0; j < 52; j++) {
 						int a = 0;
 						ifs >> a;
 						home1fmap.push_back(a);
 					}
 				}
 				ifs.close();							//讀地圖txt進來
-				for (int i = 0; i < 22; i++) {
-					for (int j = 0; j < 50; j++) {
+				for (int i = 0; i < 32; i++) {
+					for (int j = 0; j < 52; j++) {
 						int a = 0;
 						a = home1fmap.front();
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
 							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-							hitbox.begin()->SetTopLeft(-870 + j * 32, -115 + i * 32);
+							hitbox.begin()->SetTopLeft(-792 + j * 32, -682 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-							tppoint.begin()->SetTopLeft(-870 + j * 32, -115 + i * 32);
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(-792 + j * 32, -682 + i * 32);
 						}
 						else if (a == 3) {
 							grass.insert(grass.begin(), CMovingBitmap());
 							grass.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-							grass.begin()->SetTopLeft(-870 + j * 32, -115 + i * 32);
+							grass.begin()->SetTopLeft(-792 + j * 32, -682 + i * 32);
+						}
+						else if (a == 4) {
+							sign.insert(sign.begin(), CMovingBitmap());
+							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" });
+							sign.begin()->SetTopLeft(-792 + j * 32, -682 + i * 32);
+						}
+					}
+				}
+			}
+			else if (CMovingBitmap::IsOverlap(character, tppoint[8])) {
+				phase = 6;
+				background.SetFrameIndexOfBitmap(5);
+				background.SetTopLeft(-728, -650);
+				character.SetFrameIndexOfBitmap(8);
+				hitbox.clear();
+				tppoint.clear();
+				grass.clear();
+				dialog.clear();
+				sign.clear();
+				ifstream ifs("Resources/mapdoc/road.txt");
+				for (int i = 0; i < 32; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						ifs >> a;
+						home1fmap.push_back(a);
+					}
+				}
+				ifs.close();							//讀地圖txt進來
+				for (int i = 0; i < 32; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						a = home1fmap.front();
+						home1fmap.erase(home1fmap.begin());
+						if (a == 1) {
+							hitbox.insert(hitbox.begin(), CMovingBitmap());
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->SetTopLeft(-760 + j * 32, -682 + i * 32);
+						}
+						else if (a == 2) {
+							tppoint.insert(tppoint.begin(), CMovingBitmap());
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(-760 + j * 32, -682 + i * 32);
+						}
+						else if (a == 3) {
+							grass.insert(grass.begin(), CMovingBitmap());
+							grass.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							grass.begin()->SetTopLeft(-760 + j * 32, -682 + i * 32);
+						}
+						else if (a == 4) {
+							sign.insert(sign.begin(), CMovingBitmap());
+							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" });
+							sign.begin()->SetTopLeft(-760 + j * 32, -682 + i * 32);
+						}
+					}
+				}
+				}
+			else if (CMovingBitmap::IsOverlap(character, tppoint[9])) {
+				phase = 6;
+				background.SetFrameIndexOfBitmap(5);
+				background.SetTopLeft(-696, -650);
+				character.SetFrameIndexOfBitmap(8);
+				hitbox.clear();
+				tppoint.clear();
+				grass.clear();
+				dialog.clear();
+				sign.clear();
+				ifstream ifs("Resources/mapdoc/road.txt");
+				for (int i = 0; i < 32; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						ifs >> a;
+						home1fmap.push_back(a);
+					}
+				}
+				ifs.close();							//讀地圖txt進來
+				for (int i = 0; i < 32; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						a = home1fmap.front();
+						home1fmap.erase(home1fmap.begin());
+						if (a == 1) {
+							hitbox.insert(hitbox.begin(), CMovingBitmap());
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->SetTopLeft(-728 + j * 32, -682 + i * 32);
+						}
+						else if (a == 2) {
+							tppoint.insert(tppoint.begin(), CMovingBitmap());
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(-728 + j * 32, -682 + i * 32);
+						}
+						else if (a == 3) {
+							grass.insert(grass.begin(), CMovingBitmap());
+							grass.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							grass.begin()->SetTopLeft(-728 + j * 32, -682 + i * 32);
+						}
+						else if (a == 4) {
+							sign.insert(sign.begin(), CMovingBitmap());
+							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" });
+							sign.begin()->SetTopLeft(-728 + j * 32, -682 + i * 32);
+						}
+					}
+				}
+			}
+			else if (CMovingBitmap::IsOverlap(character, sign[0])) {
+				signnum = 2;
+			}
+			else if (CMovingBitmap::IsOverlap(character, sign[1])) {
+				signnum = 3;
+			}
+			else {
+				signnum = 0;
+			}
+		}
+		else if (phase == 4) {
+			if (CMovingBitmap::IsOverlap(character, tppoint[1])) {
+				phase = 3;
+				background.SetFrameIndexOfBitmap(2);
+				background.SetTopLeft(-816, -115);
+				character.SetFrameIndexOfBitmap(0);
+				hitbox.clear();
+				tppoint.clear();
+				grass.clear();
+				dialog.clear();
+				sign.clear();
+				ifstream ifs("Resources/mapdoc/town.txt");
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						ifs >> a;
+						home1fmap.push_back(a);
+					}
+				}
+				ifs.close();							//讀地圖txt進來
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						a = home1fmap.front();
+						home1fmap.erase(home1fmap.begin());
+						if (a == 1) {
+							hitbox.insert(hitbox.begin(), CMovingBitmap());
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 2) {
+							tppoint.insert(tppoint.begin(), CMovingBitmap());
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 3) {
+							grass.insert(grass.begin(), CMovingBitmap());
+							grass.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							grass.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 4) {
+							sign.insert(sign.begin(), CMovingBitmap());
+							sign.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							sign.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
 						}
 					}
 				}
@@ -414,45 +635,350 @@ for (int i = 0; i < tppointnum; i++) {
 			else if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
 				phase = 3;
 				background.SetFrameIndexOfBitmap(2);
-				background.SetTopLeft(-870, -115);
+				background.SetTopLeft(-848, -115);
 				character.SetFrameIndexOfBitmap(0);
 				hitbox.clear();
 				tppoint.clear();
 				grass.clear();
 				dialog.clear();
-				ifstream ifs("mapdoc/town.txt");
-				for (int i = 0; i < 22; i++) {
-					for (int j = 0; j < 50; j++) {
+				sign.clear();
+				ifstream ifs("Resources/mapdoc/town.txt");
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
 						int a = 0;
 						ifs >> a;
 						home1fmap.push_back(a);
 					}
 				}
 				ifs.close();							//讀地圖txt進來
-				for (int i = 0; i < 22; i++) {
-					for (int j = 0; j < 50; j++) {
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
 						int a = 0;
 						a = home1fmap.front();
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
 							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
-							hitbox.begin()->SetTopLeft(-870 + j * 32, -115 + i * 32);
+							hitbox.begin()->SetTopLeft(-880 + j * 32, -147 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-							tppoint.begin()->SetTopLeft(-870 + j * 32, -115 + i * 32);
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(-880 + j * 32, -147 + i * 32);
 						}
 						else if (a == 3) {
 							grass.insert(grass.begin(), CMovingBitmap());
 							grass.begin()->LoadBitmapByString({ "Resources/air.bmp" });
-							grass.begin()->SetTopLeft(-870 + j * 32, -115 + i * 32);
+							grass.begin()->SetTopLeft(-880 + j * 32, -147 + i * 32);
+						}
+						else if (a == 4) {
+							sign.insert(sign.begin(), CMovingBitmap());
+							sign.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							sign.begin()->SetTopLeft(-880 + j * 32, -147 + i * 32);
+						}
+					}
+				}
+			}
+			else if (CMovingBitmap::IsOverlap(character, sign[0])) {
+				signnum = 1;
+			}
+			else {
+				signnum = 0;
+			}
+		}
+		else if (phase == 5) {
+			if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
+				phase = 3;
+				background.SetFrameIndexOfBitmap(2);
+				background.SetTopLeft(-1080, 140);
+				character.SetFrameIndexOfBitmap(0);
+				hitbox.clear();
+				tppoint.clear();
+				grass.clear();
+				ifstream ifs("Resources/mapdoc/town.txt");
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						ifs >> a;
+						home1fmap.push_back(a);
+					}
+				}
+				ifs.close();							//讀地圖txt進來
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						a = home1fmap.front();
+						home1fmap.erase(home1fmap.begin());
+						if (a == 1) {
+							hitbox.insert(hitbox.begin(), CMovingBitmap());
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->SetTopLeft(-1112 + j * 32, 108 + i * 32);
+						}
+						else if (a == 2) {
+							tppoint.insert(tppoint.begin(), CMovingBitmap());
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(-1112 + j * 32, 108 + i * 32);
+						}
+						else if (a == 3) {
+							grass.insert(grass.begin(), CMovingBitmap());
+							grass.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							grass.begin()->SetTopLeft(-1112 + j * 32, 108 + i * 32);
+						}
+						else if (a == 4) {
+							sign.insert(sign.begin(), CMovingBitmap());
+							sign.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							sign.begin()->SetTopLeft(-1112 + j * 32, 108+ i * 32);
 						}
 					}
 				}
 			}
 		}
+		else if (phase == 6) {
+			if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
+				phase = 3;
+				background.SetFrameIndexOfBitmap(2);
+				background.SetTopLeft(-816, -115);
+				character.SetFrameIndexOfBitmap(0);
+				hitbox.clear();
+				tppoint.clear();
+				grass.clear();
+				dialog.clear();
+				sign.clear();
+				ifstream ifs("Resources/mapdoc/town.txt");
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						ifs >> a;
+						home1fmap.push_back(a);
+					}
+				}
+				ifs.close();							//讀地圖txt進來
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						a = home1fmap.front();
+						home1fmap.erase(home1fmap.begin());
+						if (a == 1) {
+							hitbox.insert(hitbox.begin(), CMovingBitmap());
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 2) {
+							tppoint.insert(tppoint.begin(), CMovingBitmap());
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 3) {
+							grass.insert(grass.begin(), CMovingBitmap());
+							grass.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							grass.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 4) {
+							sign.insert(sign.begin(), CMovingBitmap());
+							sign.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							sign.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+					}
+				}
+			}
+			else if (CMovingBitmap::IsOverlap(character, tppoint[1])) {
+				phase = 3;
+				background.SetFrameIndexOfBitmap(2);
+				background.SetTopLeft(-816, -115);
+				character.SetFrameIndexOfBitmap(0);
+				hitbox.clear();
+				tppoint.clear();
+				grass.clear();
+				dialog.clear();
+				sign.clear();
+				ifstream ifs("Resources/mapdoc/town.txt");
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						ifs >> a;
+						home1fmap.push_back(a);
+					}
+				}
+				ifs.close();							//讀地圖txt進來
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						a = home1fmap.front();
+						home1fmap.erase(home1fmap.begin());
+						if (a == 1) {
+							hitbox.insert(hitbox.begin(), CMovingBitmap());
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 2) {
+							tppoint.insert(tppoint.begin(), CMovingBitmap());
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 3) {
+							grass.insert(grass.begin(), CMovingBitmap());
+							grass.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							grass.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 4) {
+							sign.insert(sign.begin(), CMovingBitmap());
+							sign.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							sign.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+					}
+				}
+			}
+			else if (CMovingBitmap::IsOverlap(character, tppoint[2])) {
+				phase = 3;
+				background.SetFrameIndexOfBitmap(2);
+				background.SetTopLeft(-816, -115);
+				character.SetFrameIndexOfBitmap(0);
+				hitbox.clear();
+				tppoint.clear();
+				grass.clear();
+				dialog.clear();
+				sign.clear();
+				ifstream ifs("Resources/mapdoc/town.txt");
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						ifs >> a;
+						home1fmap.push_back(a);
+					}
+				}
+				ifs.close();							//讀地圖txt進來
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						a = home1fmap.front();
+						home1fmap.erase(home1fmap.begin());
+						if (a == 1) {
+							hitbox.insert(hitbox.begin(), CMovingBitmap());
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 2) {
+							tppoint.insert(tppoint.begin(), CMovingBitmap());
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 3) {
+							grass.insert(grass.begin(), CMovingBitmap());
+							grass.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							grass.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 4) {
+							sign.insert(sign.begin(), CMovingBitmap());
+							sign.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							sign.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+					}
+				}
+			}
+			else if (CMovingBitmap::IsOverlap(character, tppoint[3])) {
+				phase = 3;
+				background.SetFrameIndexOfBitmap(2);
+				background.SetTopLeft(-816, -115);
+				character.SetFrameIndexOfBitmap(0);
+				hitbox.clear();
+				tppoint.clear();
+				grass.clear();
+				dialog.clear();
+				sign.clear();
+				ifstream ifs("Resources/mapdoc/town.txt");
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						ifs >> a;
+						home1fmap.push_back(a);
+					}
+				}
+				ifs.close();							//讀地圖txt進來
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						a = home1fmap.front();
+						home1fmap.erase(home1fmap.begin());
+						if (a == 1) {
+							hitbox.insert(hitbox.begin(), CMovingBitmap());
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 2) {
+							tppoint.insert(tppoint.begin(), CMovingBitmap());
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 3) {
+							grass.insert(grass.begin(), CMovingBitmap());
+							grass.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							grass.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 4) {
+							sign.insert(sign.begin(), CMovingBitmap());
+							sign.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							sign.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+					}
+				}
+			}
+			else if (CMovingBitmap::IsOverlap(character, tppoint[4])) {
+				phase = 3;
+				background.SetFrameIndexOfBitmap(2);
+				background.SetTopLeft(-816, -115);
+				character.SetFrameIndexOfBitmap(0);
+				hitbox.clear();
+				tppoint.clear();
+				grass.clear();
+				dialog.clear();
+				sign.clear();
+				ifstream ifs("Resources/mapdoc/town.txt");
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						ifs >> a;
+						home1fmap.push_back(a);
+					}
+				}
+				ifs.close();							//讀地圖txt進來
+				for (int i = 0; i < 24; i++) {
+					for (int j = 0; j < 52; j++) {
+						int a = 0;
+						a = home1fmap.front();
+						home1fmap.erase(home1fmap.begin());
+						if (a == 1) {
+							hitbox.insert(hitbox.begin(), CMovingBitmap());
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 2) {
+							tppoint.insert(tppoint.begin(), CMovingBitmap());
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 3) {
+							grass.insert(grass.begin(), CMovingBitmap());
+							grass.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							grass.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+						else if (a == 4) {
+							sign.insert(sign.begin(), CMovingBitmap());
+							sign.begin()->LoadBitmapByString({ "Resources/air.bmp" });
+							sign.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
+						}
+					}
+				}
+			}
+			else if (CMovingBitmap::IsOverlap(character, sign[0])) {
+				signnum = 4;
+			}
+			else if (CMovingBitmap::IsOverlap(character, sign[1])) {
+				signnum = 5;
+			}
+			else {
+				signnum = 0;
+			}
+			}
 	}
 }
 
@@ -500,8 +1026,9 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			//離開功能
 			else if (arrow_y == 195) {
 				ofstream ofs("resources/files/character.txt");
-				for (int i = 0; i < 80; i++) {
+				for (int i = 0; i < 73; i++) {
 					ofs << characterinf[i];
+					ofs << " ";
 				}
 				
 				ofs.close();
@@ -523,20 +1050,15 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			//查看隊伍
 		}
 		//stop function
-		for (auto i = grass.begin(); i != grass.end(); i++) {
-			if (CMovingBitmap::IsOverlap(character, *i)) {
-				bag = true;
-			}
-		}
-		// 遍歷草叢enter進入戰鬥
+		
 		if (phase == 4 && bag == false) {
-			if (CMovingBitmap::IsOverlap(character, dialog[0]) && shopnum == 0) {
+			if (CMovingBitmap::IsOverlap(character, dialog[1]) && shopnum == 0) {
 				shopnum = 1;
 				arrow.SetTopLeft(100, 415);
 				arrownum = 2;
 			}
 			//into shop
-			else if (CMovingBitmap::IsOverlap(character, dialog[1])) {
+			else if (CMovingBitmap::IsOverlap(character, dialog[0])) {
 				
 			}
 			//into pokemon
@@ -553,6 +1075,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			//into sell
 			else {
 				shopnum = 0;
+				arrownum = 0;
 			}
 			//exit shop
 		}
@@ -635,7 +1158,6 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 		//buy
 	}
-
 
 	if (nChar == VK_UP)
 	{
@@ -732,10 +1254,9 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 	if (nChar == VK_RIGHT)
 	{
-		speedX = -8;
-		speedY = 0;
+			speedX = -8;
+			speedY = 0;
 	}
-
 }
 
 void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -743,23 +1264,24 @@ void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (nChar == VK_RETURN) {
 		confirmenter = false;
 	}
+	if (nChar == VK_UP)
+	{
+		speedY = 0;
+	}
+	if (nChar == VK_DOWN)
+	{
+		speedY = 0;
+	}
 	if (nChar == VK_LEFT)
 	{
 		speedX = 0;
 
 	}
-	else if (nChar == VK_RIGHT)
+	if (nChar == VK_RIGHT)
 	{
 		speedX = 0;
 	}
-	else if (nChar == VK_UP)
-	{
-		speedY = 0;
-	}
-	else if (nChar == VK_DOWN)
-	{
-		speedY = 0;
-	}
+	
 }
 
 void CGameStateRun::OnLButtonDown(UINT nFlags, CPoint point)  // 處理滑鼠的動作
@@ -800,10 +1322,15 @@ void CGameStateRun::show_image_by_phase() {
 	}*/
 	background.ShowBitmap();
 	character.ShowBitmap();
-	
+	if (phase == 5) {
+		boss[0].ShowBitmap();
+	}
 	if (shopnum || propnum) {
 		textbox.ShowBitmap();
-		arrow.ShowBitmap();
+		arrow.ShowBitmap();	
+	}
+	if (signnum) {
+		textbox.ShowBitmap();
 	}
 	if (bag == true) {
 		menu.ShowBitmap();
@@ -821,6 +1348,9 @@ void CGameStateRun::show_image_by_phase() {
 	for (auto i = dialog.begin(); i != dialog.end(); i++) {
 		i->ShowBitmap();
 	}	
+	for (auto i = sign.begin(); i != sign.end(); i++) {
+		i->ShowBitmap();
+	}
 }
 
 void CGameStateRun::show_text_by_phase() {
@@ -948,13 +1478,32 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 150, 450, "");
 			CTextDraw::Print(pDC, 150, 500, "");
 		}
-
 		else if (shopnum == 100) {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "治療寶可夢");
 			CTextDraw::Print(pDC, 150, 450, "肢解寶可夢");
 			CTextDraw::Print(pDC, 150, 500, "返回");
 		}
+	}
+	if (signnum == 1) {
+		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+		CTextDraw::Print(pDC, 50, 400, "還是不要亂進去店裡面好了");
+	}
+	else if (signnum == 2) {
+		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+		CTextDraw::Print(pDC, 50, 400, "往森林");
+	}
+	else if (signnum == 3) {
+		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+		CTextDraw::Print(pDC, 50, 400, "往豪宅");
+	}
+	else if (signnum == 4) {
+		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+		CTextDraw::Print(pDC, 50, 400, "往並不是真新鎮");
+	}
+	else if (signnum == 5) {
+		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+		CTextDraw::Print(pDC, 50, 400, "往荒野");
 	}
 	
 	CDDraw::ReleaseBackCDC();
