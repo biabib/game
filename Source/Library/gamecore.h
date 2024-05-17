@@ -156,7 +156,7 @@ namespace game_framework {
 		CGame *game;
 		CMovingBitmap loadingBitmap;
 		vector <int> home1fmap;
-		int characterinf[73] = {};
+		int characterinf[97] = {};
 
 	};
 

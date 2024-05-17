@@ -44,11 +44,14 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	character.SetAnimation(1000, true);	
 	textbox.LoadBitmapByString({ "Resources/text.bmp" });
 	textbox.SetTopLeft(0, 378);
-	menu.LoadBitmapByString({ "Resources/menu.bmp" });
+	menu.LoadBitmapByString({ 
+		"Resources/menu.bmp" ,
+		"Resources/white.bmp"
+		});
 	menu.SetTopLeft(400, 40);
 	arrow.LoadBitmapByString({ "Resources/arrow.bmp"});
 	ifstream ifs1("resources/files/character.txt");
-		for (int i = 0; i < 73; i++) {
+		for (int i = 0; i < 97; i++) {
 			ifs1 >> characterinf[i];
 		}
 	ifstream ifs2("resources/files/pokemonlib.txt");
@@ -1000,19 +1003,20 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			arrownum = 0;
 		}
 		// turn off shop
-		else if (team) {
+		else {
 			shopnum = 0;
+			arrownum = 0;
+		}
+		//close the window
+		if (team) {
+			shopnum = 0;
+			team = false;
 			arrow.SetTopLeft(430, 75);
 			arrownum = 0;
 			menu.SetFrameIndexOfBitmap(0);
 			menu.SetTopLeft(400, 40);
 		}
 		//team?
-		else {
-			shopnum = 0;
-			arrownum = 0;
-		}
-		//close the window
 	}
 	if (nChar == VK_RETURN && confirmenter == false) {
 		if (shopnum == 0) {
@@ -1026,7 +1030,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			//離開功能
 			else if (arrow_y == 195) {
 				ofstream ofs("resources/files/character.txt");
-				for (int i = 0; i < 73; i++) {
+				for (int i = 0; i < 97; i++) {
 					ofs << characterinf[i];
 					ofs << " ";
 				}
@@ -1041,7 +1045,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 			//查看背包
 			else if (arrow_y == 75) {
-				team = 1;
+				team = true;
 				arrow.SetTopLeft(30, 30);
 				arrownum = 3;//暫定隊伍
 				menu.SetFrameIndexOfBitmap(1);
@@ -1166,7 +1170,6 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			speedX = 0;
 		}
 		//walk
-
 		if (propnum > 1 && arrow.GetTop() == 415 && shopnum == 0) {
 			propnum--;
 			arrow.SetTopLeft(100, 565);
@@ -1332,9 +1335,12 @@ void CGameStateRun::show_image_by_phase() {
 	if (signnum) {
 		textbox.ShowBitmap();
 	}
-	if (bag == true) {
+	if (bag && !team) {
 		menu.ShowBitmap();
 		arrow.ShowBitmap();
+	}
+	else if (team) {
+		menu.ShowBitmap();
 	}
 	for (auto i = hitbox.begin(); i != hitbox.end(); i++) {
 		i->ShowBitmap();
@@ -1359,6 +1365,24 @@ void CGameStateRun::show_text_by_phase() {
 	string x = to_string(background.GetLeft());
 	string y = to_string(background.GetTop());
 	string moneyout = to_string(characterinf[0]);
+	string pokemon[6] ;
+	for (int i = 0; i < 6; i++) {
+		pokemon[i].append(to_string(19 + 13 * i));
+		pokemon[i].append(to_string(20 + 13 * i));
+		pokemon[i].append(to_string(21 + 13 * i));
+		pokemon[i].append(to_string(22 + 13 * i));
+		pokemon[i].append(to_string(23 + 13 * i));
+		pokemon[i].append(to_string(24 + 13 * i));
+		pokemon[i].append(to_string(25 + 13 * i));
+		pokemon[i].append(to_string(26 + 13 * i));
+		pokemon[i].append(to_string(27 + 13 * i));
+		pokemon[i].append(to_string(28 + 13 * i));
+		pokemon[i].append(to_string(29 + 13 * i));
+		pokemon[i].append(to_string(30 + 13 * i));
+		pokemon[i].append(to_string(31 + 13 * i));
+	}
+	
+	
 
 	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 0, 0), 800);
 	CTextDraw::Print(pDC, 0, 0, x);
@@ -1367,18 +1391,12 @@ void CGameStateRun::show_text_by_phase() {
 	//CTextDraw::Print(pDC, 535, 0, "$");
 	CTextDraw::Print(pDC, 300, 0, moneyout);//550
 	if (bag == true) {				//選單文字
-		if (shopnum == 0) {
+		if (shopnum == 0 && team == false) {
 			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 800);
 			CTextDraw::Print(pDC, 450, 60, "隊伍");
 			CTextDraw::Print(pDC, 450, 120, "背包");
 			CTextDraw::Print(pDC, 450, 180, "存檔");
 			CTextDraw::Print(pDC, 450, 240, "離開");
-		}
-		if (team) {
-			CTextDraw::ChangeFontLog(pDC, 30, "微軟正黑體", RGB(0, 0, 0), 800);
-			CTextDraw::Print(pDC, 90, 10, "名字");
-			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 800);
-			CTextDraw::Print(pDC, 30, 400, "請選擇一隻寶可夢");
 		}
 		if (propnum == 1) {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
@@ -1435,7 +1453,7 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 400, 500, to_string(characterinf[17]));
 		}
 	}
-	else {
+	else if (shopnum){
 		if (shopnum == 1) {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "購買");
@@ -1485,25 +1503,37 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 150, 500, "返回");
 		}
 	}
-	if (signnum == 1) {
-		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 50, 400, "還是不要亂進去店裡面好了");
+	else if (signnum) {
+		if (signnum == 1) {
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 50, 400, "還是不要亂進去店裡面好了");
+		}
+		else if (signnum == 2) {
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 50, 400, "往森林");
+		}
+		else if (signnum == 3) {
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 50, 400, "往豪宅");
+		}
+		else if (signnum == 4) {
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 50, 400, "往並不是真新鎮");
+		}
+		else if (signnum == 5) {
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 50, 400, "往荒野");
+		}
 	}
-	else if (signnum == 2) {
-		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 50, 400, "往森林");
-	}
-	else if (signnum == 3) {
-		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 50, 400, "往豪宅");
-	}
-	else if (signnum == 4) {
-		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 50, 400, "往並不是真新鎮");
-	}
-	else if (signnum == 5) {
-		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 50, 400, "往荒野");
+	if (team) {
+		CTextDraw::ChangeFontLog(pDC, 30, "微軟正黑體", RGB(0, 0, 0), 1000);
+		CTextDraw::Print(pDC, 30, 30, pokemon[0]);
+		CTextDraw::Print(pDC, 30, 100, pokemon[1]);
+		CTextDraw::Print(pDC, 30, 170, pokemon[2]);
+		CTextDraw::Print(pDC, 30, 240, pokemon[3]);
+		CTextDraw::Print(pDC, 30, 310, pokemon[4]);
+		CTextDraw::Print(pDC, 30, 380, pokemon[5]);
+
 	}
 	
 	CDDraw::ReleaseBackCDC();

@@ -113,6 +113,7 @@ namespace game_framework {
 		CMovingBitmap menu;
 		CMovingBitmap point;
 		CMovingBitmap arrow;
+		CMovingBitmap white;
 		CMovingBitmap boss[5];
 		std::vector<CMovingBitmap> pack;
 		std::vector<CMovingBitmap> hitbox;				//先用兩百個物件看看夠不夠
