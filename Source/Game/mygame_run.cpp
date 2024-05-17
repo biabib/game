@@ -305,9 +305,9 @@ for (int i = 0; i < tppointnum; i++) {
 			for (auto i = grass.begin(); i != grass.end(); i++) {
 				if (CMovingBitmap::IsOverlap(character, *i)) {
 					if (ran) {
-						judge = rand() % 1000;
+						judge = rand() / 100 % 10;
 						ran = false;
-						if (judge > 800) {
+						if (judge > 6) {
 							battle = true;
 							temptop = nowtop;
 							templeft = nowleft;
@@ -316,6 +316,7 @@ for (int i = 0; i < tppointnum; i++) {
 							battle_scr.SetTopLeft(0, 0);
 							arrow.SetTopLeft(300, 440);
 							arrownum = 4;
+							battle_start();
 						}
 					}
 					//程式碼放這邊
@@ -670,6 +671,24 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 		}
 		//buy
+		if (arrownum == 4){
+			if (arrow.GetLeft() == 300) {
+				if (arrow.GetTop() == 440) {
+
+				}
+				else {
+
+				}
+			}
+			else {
+				if (arrow.GetTop() == 440) {
+
+				}
+				else {
+					battle = false;
+				}
+			}
+		}
 	}
 
 
@@ -708,6 +727,11 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			if (arrow.GetTop() != 415)
 				arrow.SetTopLeft(100, arrow.GetTop() - 50);
 		}
+		else if (arrownum == 4) {
+			if (arrow.GetTop() != 440)
+				arrow.SetTopLeft(arrow.GetLeft(), arrow.GetTop() - 60);
+		}
+
 		// 下方三項箭頭
 		
 		//if (team) {
@@ -752,6 +776,10 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			if (arrow.GetTop() != 515)
 				arrow.SetTopLeft(100, arrow.GetTop() + 50);
 		}
+		else if (arrownum == 4) {
+			if (arrow.GetTop() != 500)
+				arrow.SetTopLeft(arrow.GetLeft(), arrow.GetTop() + 60);
+		}
 		// 下方三項箭頭
 		
 	}
@@ -766,23 +794,11 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			speedX = 5;
 			speedY = 0;
 		}
-		/*if (nChar == VK_UP) {
-			switch (nownum) {
-				case 1:
-					speedY = -8;
-					break;
-				case 2:
-					speedY = -16;
-					break;
-				case 3:
-					speedY = 8;
-					break;
-				case 4:
-					speedY = 16;
-					break;
-
-			}
-		}*/
+		if (arrownum == 4) {
+			if (arrow.GetLeft() != 300)
+				arrow.SetTopLeft(arrow.GetLeft() - 140, arrow.GetTop());
+		}
+		
 		// try to finish walking bug
 	}
 	if (nChar == VK_RIGHT)
@@ -794,6 +810,10 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		else {
 			speedX = -5;
 			speedY = 0;
+		}
+		if (arrownum == 4) {
+			if (arrow.GetLeft() != 440)
+				arrow.SetTopLeft(arrow.GetLeft() + 140, arrow.GetTop());
 		}
 	}
 	if (nChar == VK_SHIFT)
@@ -891,29 +911,50 @@ void CGameStateRun::show_image_by_phase() {
 		arrow.ShowBitmap();
 	}
 }
-void CGameStateRun::battle_value() {
+void CGameStateRun::battle_start() {
 	/*
-		HP = ((種族值+7)*LV)/50+10+LV
+	*	資料讀入
+	*	turn = 0; //回合清零	
+		我方HP = (((種族值+7)*LV)/50+10+LV)/100*目前血量
+		對面HP = ((種族值+7)*LV)/50+10+LV)
 		其他數值 = ((種族值+7)*LV)/50+5
-		傷害 = (((2*攻擊方等級+10)/250) * (攻擊方攻擊/防守方防禦)*招式威力 +2)*屬性加成 ,40%機率性暴擊,灼燒造成的物理招式減弱一半
-
+		
+		battle_turn();
 	*/
 }
-void battle_turn() {
+void CGameStateRun::battle_turn() {
 	/*
-		if(攻擊){
+	*	turn += 1;
+	*	if(不使用道具){ 
 			判斷雙方速度值
 			進行攻守
 			if(對方先攻){
-				if(我方血量歸0)
-					選擇上場的寶可夢
-				else
-					是否會造成異常狀態
+				傷害 = (((2*攻擊方等級+10)/250) * (攻擊方攻擊/防守方防禦)*招式威力 +2)*屬性加成 ,灼燒造成的物理招式減弱一半
+				我方HP = HP - 傷害;
+				if(我方HP<=0)
+					我方HP　= 0;
+					if(我方血量歸0)
+						if(背包中有可以戰鬥的寶可夢)
+							選擇上場的寶可夢
+						else
+							退出戰鬥 
+							扣錢500
+					else
+						是否會造成異常狀態
 			}
+		}
+		else{
+			判斷道具使用類型
+
 		}
 	*/
 }
+void CGameStateRun::battle_end() {
+	/*
+		
 
+	*/
+}
 void CGameStateRun::show_text_by_phase() {
 
 	CDC* pDC = CDDraw::GetBackCDC();

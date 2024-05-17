@@ -142,9 +142,11 @@ namespace game_framework {
 		int arrownum = 0;
 		int battle_phase = 0;
 		int judge;
+		int turn = 0;
 		void show_image_by_phase();
 		void show_text_by_phase();
-		void battle_value();
+		void battle_start();
+		void battle_end();
 		void battle_turn();
 		/*void phase_house();
 		void phase_map();*/
