@@ -53,7 +53,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	menu.LoadBitmapByString({ "Resources/menu.bmp","Resources/team.bmp" });
 	menu.SetTopLeft(400, 40);
 	arrow.LoadBitmapByString({ "Resources/arrow.bmp"});
-	battle_scr.LoadBitmapByString({ "Resources/battle1.bmp","Resources/battle2.bmp" });
+	battle_scr.LoadBitmapByString({ "Resources/battle2.bmp","Resources/battle.bmp" });
 
 	ifstream ifs("mapdoc/home2f.txt");
 	for (int i = 0; i < 6; i++) {
@@ -490,7 +490,7 @@ for (int i = 0; i < tppointnum; i++) {
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {	
 	if (nChar == VK_ESCAPE) {	//暫停並顯示箭頭
-		if (shopnum == 0) {
+		if (shopnum == 0 && battle!=true) {
 			bag = !bag;
 			arrow.SetTopLeft(430, 75);
 			arrownum = 1;
@@ -519,7 +519,13 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 		//close the window
 		if (battle) {
-			battle = false;
+			if (arrownum != 4) {
+				battle_scr.SetFrameIndexOfBitmap(1);
+				battle_scr.SetTopLeft(0, 0);
+				arrow.SetTopLeft(300, 440);
+				arrownum = 4;
+				propnum = 0;
+			}
 		}
 	}
 	if (nChar == VK_RETURN && confirmenter == false) {
@@ -674,15 +680,22 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		if (arrownum == 4){
 			if (arrow.GetLeft() == 300) {
 				if (arrow.GetTop() == 440) {
-
+					arrownum = 5;
+					battle_scr.SetFrameIndexOfBitmap(0);
+					battle_scr.SetTopLeft(0, 0);
+					arrow.SetTopLeft(40, 440);
 				}
 				else {
-
+					propnum = 1;
+					battle_scr.SetFrameIndexOfBitmap(0);
+					battle_scr.SetTopLeft(0, 0);
+					arrow.SetTopLeft(100, 415);
+					arrownum = 2;
 				}
 			}
 			else {
 				if (arrow.GetTop() == 440) {
-
+					arrownum = 3;
 				}
 				else {
 					battle = false;
@@ -728,6 +741,10 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				arrow.SetTopLeft(100, arrow.GetTop() - 50);
 		}
 		else if (arrownum == 4) {
+			if (arrow.GetTop() != 440)
+				arrow.SetTopLeft(arrow.GetLeft(), arrow.GetTop() - 60);
+		}
+		else if (arrownum == 5) {
 			if (arrow.GetTop() != 440)
 				arrow.SetTopLeft(arrow.GetLeft(), arrow.GetTop() - 60);
 		}
@@ -780,6 +797,10 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			if (arrow.GetTop() != 500)
 				arrow.SetTopLeft(arrow.GetLeft(), arrow.GetTop() + 60);
 		}
+		else if (arrownum == 5) {
+			if (arrow.GetTop() != 500)
+				arrow.SetTopLeft(arrow.GetLeft(), arrow.GetTop() + 60);
+		}
 		// 下方三項箭頭
 		
 	}
@@ -798,6 +819,10 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			if (arrow.GetLeft() != 300)
 				arrow.SetTopLeft(arrow.GetLeft() - 140, arrow.GetTop());
 		}
+		else if (arrownum == 5) {
+			if (arrow.GetLeft() != 40)
+				arrow.SetTopLeft(arrow.GetLeft() - 300, arrow.GetTop());
+		}
 		
 		// try to finish walking bug
 	}
@@ -814,6 +839,10 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		if (arrownum == 4) {
 			if (arrow.GetLeft() != 440)
 				arrow.SetTopLeft(arrow.GetLeft() + 140, arrow.GetTop());
+		}
+		else if (arrownum == 5) {
+			if (arrow.GetLeft() != 340)
+				arrow.SetTopLeft(arrow.GetLeft() + 300, arrow.GetTop());
 		}
 	}
 	if (nChar == VK_SHIFT)
@@ -1026,8 +1055,8 @@ void CGameStateRun::show_text_by_phase() {
 	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 255, 51), 800);
 	//CTextDraw::Print(pDC, 535, 0, "$");
 	CTextDraw::Print(pDC, 300, 0, moneyout);//550
-	if (bag == true) {				//選單文字
-		if (shopnum == 0) {
+	if (bag == true || battle == true) {				//選單文字
+		if (shopnum == 0 && battle == false) {
 			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 800);
 			CTextDraw::Print(pDC, 450, 60, "隊伍");
 			CTextDraw::Print(pDC, 450, 120, "背包");
@@ -1148,10 +1177,29 @@ void CGameStateRun::show_text_by_phase() {
 	}
 	if (battle == true) {
 		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 330, 430, "戰鬥");
+		/*CTextDraw::Print(pDC, 330, 430, "戰鬥");
 		CTextDraw::Print(pDC, 470, 430, "寶可夢");
 		CTextDraw::Print(pDC, 330, 490, "背包");
-		CTextDraw::Print(pDC, 470, 490, "逃跑");
+		CTextDraw::Print(pDC, 470, 490, "逃跑");*/
+		if (arrownum == 4) {
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 330, 430, "戰鬥");
+			CTextDraw::Print(pDC, 470, 430, "寶可夢");
+			CTextDraw::Print(pDC, 330, 490, "背包");
+			CTextDraw::Print(pDC, 470, 490, "逃跑");
+		}
+		else if (arrownum == 5) {
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 60, 430, "技能1");
+			CTextDraw::Print(pDC, 360, 430, "技能2");
+			CTextDraw::Print(pDC, 60, 490, "技能3");
+			CTextDraw::Print(pDC, 360, 490, "技能4");
+			CTextDraw::ChangeFontLog(pDC, 30, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 220, 430, "pp/pp");
+			CTextDraw::Print(pDC, 520, 430, "pp/pp");
+			CTextDraw::Print(pDC, 220, 490, "pp/pp");
+			CTextDraw::Print(pDC, 520, 490, "pp/pp");
+		}
 	}
 	
 	CDDraw::ReleaseBackCDC();
