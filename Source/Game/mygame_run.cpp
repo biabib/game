@@ -53,7 +53,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	menu.LoadBitmapByString({ "Resources/menu.bmp","Resources/team.bmp" });
 	menu.SetTopLeft(400, 40);
 	arrow.LoadBitmapByString({ "Resources/arrow.bmp"});
-	battle_scr.LoadBitmapByString({ "Resources/battle2.bmp","Resources/battle.bmp" });
+	battle_scr.LoadBitmapByString({ "Resources/battle2.bmp","Resources/battle.bmp","Resources/team.bmp" });
 
 	ifstream ifs("mapdoc/home2f.txt");
 	for (int i = 0; i < 6; i++) {
@@ -497,6 +497,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			menu.SetFrameIndexOfBitmap(0);
 			menu.SetTopLeft(400, 30);
 			propnum = 0;
+			team = 0;
 		}
 		// stop the game
 		else if (shopnum)
@@ -525,6 +526,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				arrow.SetTopLeft(300, 440);
 				arrownum = 4;
 				propnum = 0;
+				team = 0;
 			}
 		}
 	}
@@ -696,6 +698,11 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			else {
 				if (arrow.GetTop() == 440) {
 					arrownum = 3;
+					team = 1;
+					arrow.SetTopLeft(30, 30);
+					arrownum = 3;//暫定隊伍
+					battle_scr.SetFrameIndexOfBitmap(2);
+					battle_scr.SetTopLeft(0, 0);
 				}
 				else {
 					battle = false;
@@ -751,10 +758,10 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 		// 下方三項箭頭
 		
-		//if (team) {
-		//	if (arrow.GetTop() != 30)
-		//		arrow.SetTopLeft(30, arrow.GetTop() - 60);
-		//}
+		if (team) {
+			if (arrow.GetTop() != 30)
+				arrow.SetTopLeft(30, arrow.GetTop() - 60);
+		}
 		////team?
 	}
 	//記得補正
@@ -803,6 +810,10 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 		// 下方三項箭頭
 		
+		if (team) {
+			if (arrow.GetTop() != 330)
+				arrow.SetTopLeft(30, arrow.GetTop() + 60);
+		}
 	}
 	//記得補正
 	if (nChar == VK_LEFT)
@@ -1056,7 +1067,7 @@ void CGameStateRun::show_text_by_phase() {
 	//CTextDraw::Print(pDC, 535, 0, "$");
 	CTextDraw::Print(pDC, 300, 0, moneyout);//550
 	if (bag == true || battle == true) {				//選單文字
-		if (shopnum == 0 && battle == false) {
+		if (shopnum == 0 && battle == false && team == 0) {
 			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 800);
 			CTextDraw::Print(pDC, 450, 60, "隊伍");
 			CTextDraw::Print(pDC, 450, 120, "背包");
@@ -1175,7 +1186,7 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 150, 500, "返回");
 		}
 	}
-	if (battle == true) {
+	if (battle == true && team == 0) {
 		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 		/*CTextDraw::Print(pDC, 330, 430, "戰鬥");
 		CTextDraw::Print(pDC, 470, 430, "寶可夢");
