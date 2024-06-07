@@ -679,6 +679,34 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 		}
 		//buy
+		if (arrownum == 5) {
+			if (battle_phase == 1) {
+				if (arrow.GetTop() == 440) {
+					if (arrow.GetLeft() == 40) {
+						battle_phase = 2;
+						//招式威力
+						//PP-1
+						
+					}
+					else
+					{
+						battle_phase = 2;
+						
+					}
+				}
+				else {
+					if (arrow.GetLeft() == 40) {
+						battle_phase = 2;
+						
+					}
+					else
+					{
+						battle_phase = 2;
+						
+					}
+				}
+			}
+		}
 		if (arrownum == 4){
 			if (arrow.GetLeft() == 300) {
 				if (arrow.GetTop() == 440) {
@@ -709,6 +737,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				}
 			}
 		}
+		
 	}
 
 
@@ -952,26 +981,38 @@ void CGameStateRun::show_image_by_phase() {
 	}
 }
 void CGameStateRun::battle_start() {
-	/*
-	*	資料讀入
-	*	turn = 0; //回合清零	
-		我方HP = (((種族值+7)*LV)/50+10+LV)/100*目前血量
-		對面HP = ((種族值+7)*LV)/50+10+LV)
-		其他數值 = ((種族值+7)*LV)/50+5
-		
+	
+		/*資料讀入*/
+		turn = 0; //回合清零	
+		hp1 = (((39 + 7) * 5) / 50 + 10 + 5) / 100;
+		hp2 = ((45 + 7) * 5) / 50 + 10 + 5;
+		att1 = ((52 + 7) * 5) / 50 + 5;
+		att2 = ((49 + 7) * 5) / 50 + 5;
+		def1 = ((43 + 7) * 5) / 50 + 5;
+		def2 = ((49 + 7) * 5) / 50 + 5;
+		/*Satt1 = ((種族值 + 7) * 5) / 50 + 5;
+		Satt2 = ((種族值 + 7) * 5) / 50 + 5;
+		Sdef1 = ((種族值 + 7) * 5) / 50 + 5;
+		Sdef2 = ((種族值 + 7) * 5) / 50 + 5;*/
+		spe1 = ((65 + 7) * 5) / 50 + 5;
+		spe2 = ((45 + 7) * 5) / 50 + 5;
+		dam1 = (((2 * 5 + 10) / 250) * (att1 / def2) * 30 + 2) * 1;
+		dam2 = (((2 * 5 + 10) / 250) * (att2 / def1) * 30 + 2) * 1;
+		/*判斷雙方速度值*/
 		battle_turn();
-	*/
+	
 }
 void CGameStateRun::battle_turn() {
-	/*
-	*	turn += 1;
-	*	if(不使用道具){ 
-			判斷雙方速度值
+	
+		turn += 1;
+
+		/*if(不使用道具){ 
+			
 			進行攻守
 			if(睡眠){
 				if (turn-tempturn >= 2)
 					睡眠解除
-				傷害 = (((2*攻擊方等級+10)/250) * (攻擊方攻擊/防守方防禦)*招式威力 +2)*屬性加成 ,灼燒造成的物理招式減弱一半
+				
 				我方HP = HP - 傷害;
 				if(傷害==0)
 					提示無效果 結束該回合
@@ -980,6 +1021,7 @@ void CGameStateRun::battle_turn() {
 					if(我方血量歸0)
 						if(背包中有可以戰鬥的寶可夢)
 							選擇上場的寶可夢
+							turn_end();
 						else
 							退出戰鬥
 							扣錢500
@@ -1039,10 +1081,10 @@ void CGameStateRun::battle_turn() {
 		else{
 			判斷道具使用類型
 
-		}
-	*/
+		}*/
+	
 }
-void CGameStateRun::battle_end() {
+void CGameStateRun::turn_end() {
 	/*
 		
 
@@ -1076,7 +1118,7 @@ void CGameStateRun::show_text_by_phase() {
 		}
 		if (team) {
 			CTextDraw::ChangeFontLog(pDC, 30, "微軟正黑體", RGB(0, 0, 0), 800);
-			CTextDraw::Print(pDC, 90, 10, "名字");
+			CTextDraw::Print(pDC, 90, 10, "小火龍");
 			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 800);
 			CTextDraw::Print(pDC, 30, 400, "請選擇一隻寶可夢");
 		}
@@ -1187,12 +1229,15 @@ void CGameStateRun::show_text_by_phase() {
 		}
 	}
 	if (battle == true && team == 0) {
-		CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-		/*CTextDraw::Print(pDC, 330, 430, "戰鬥");
-		CTextDraw::Print(pDC, 470, 430, "寶可夢");
-		CTextDraw::Print(pDC, 330, 490, "背包");
-		CTextDraw::Print(pDC, 470, 490, "逃跑");*/
-		if (arrownum == 4) {
+		CTextDraw::ChangeFontLog(pDC, 25, "微軟正黑體", RGB(0, 0, 0), 1000);
+		CTextDraw::Print(pDC, 60, 50, "妙蛙種子");
+		CTextDraw::Print(pDC, 240, 50, "LV:5");
+		CTextDraw::Print(pDC, 60, 75, "HP:");
+		CTextDraw::Print(pDC, 130, 75, to_string(hp2));
+		CTextDraw::Print(pDC, 330, 300, "小火龍");
+		CTextDraw::Print(pDC, 510, 300, "LV:5");
+		CTextDraw::Print(pDC, 330, 325, "HP:");
+		if (arrownum == 4 && battle_phase == 1) {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 330, 430, "戰鬥");
 			CTextDraw::Print(pDC, 470, 430, "寶可夢");

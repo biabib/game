@@ -146,10 +146,26 @@ namespace game_framework {
 		void show_image_by_phase();
 		void show_text_by_phase();
 		void battle_start();
-		void battle_end();
+		void turn_end();
 		void battle_turn();
 		/*void phase_house();
 		void phase_map();*/
+		int hp1;
+		int hp2;
+		int att1;
+		int att2;
+		int def1;
+		int def2;
+		int Satt1;
+		int Satt2;
+		int Sdef1;
+		int Sdef2;
+		int spe1;
+		int spe2;
+		int dam1;
+		int dam2;
+
+		//´ú¸Õ¥Î
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
