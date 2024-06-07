@@ -129,6 +129,8 @@ namespace game_framework {
 		bool confirmenter = false;
 		bool confirmup = false;
 		bool confirmdown = false;
+		bool sell = false;
+		int storynum = 1;
 		int shopnum = 0;
 		int hitboxnum = 0;
 		int grassnum = 0;

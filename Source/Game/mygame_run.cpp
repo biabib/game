@@ -90,6 +90,8 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 			}
 		}
 	}
+	textnum = 100;
+	storynum = 1;
 }
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
@@ -1001,6 +1003,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		{
 			shopnum = 0;
 			arrownum = 0;
+			sell = false;
 		}
 		// turn off shop
 		else {
@@ -1021,6 +1024,14 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (nChar == VK_RETURN && confirmenter == false) {
 		if (shopnum == 0) {
 			confirmenter = true;
+		}
+		if (storynum == 1) {
+			confirmenter = true;
+			storynum = 2;
+		}
+		else if (storynum == 2) {
+			confirmenter = true;
+			storynum = 0;
 		}
 		if (bag == true) {
 			int arrow_y = arrow.GetTop();
@@ -1071,10 +1082,16 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		if (shopnum == 1 && confirmenter == false) {
 			if (arrow.GetTop() == 415) {
 				shopnum = 2;
+				confirmenter = true;
 			}
 			//innto buy
 			else if (arrow.GetTop() == 465) {
-				
+				confirmenter = true;
+				sell = true;
+				menu.SetFrameIndexOfBitmap(1);
+				menu.SetTopLeft(0, 0);
+				arrow.SetTopLeft(30, 30);
+				arrownum = 3;
 			}
 			//into sell
 			else {
@@ -1084,8 +1101,8 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			//exit shop
 		}
 		//in shop
-		if (shopnum == 2) {
-			if (arrow.GetTop() == 415) {
+		if (shopnum == 2 && confirmenter == false) {
+			if (arrow.GetTop() == 415 && characterinf[0] >= 100) {
 				characterinf[0] = characterinf[0] - 100;
 				characterinf[1]++;
 			}
@@ -1161,11 +1178,21 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 		}
 		//buy
+		if (sell && !confirmenter) {
+			for (int i = 0; i < 6; i++) {
+				if (arrow.GetTop() == 30+i*70) {
+					for (int j = 0; j < 13; j++) {
+						characterinf[19 + i * 13 + j] = 0;
+						sell = false;
+					}
+				}
+			}
+		}
 	}
 
 	if (nChar == VK_UP)
 	{
-		if (bag == false && shopnum == 0 ) {
+		if (bag == false && shopnum == 0 && storynum == 0) {
 			speedY = 8;
 			speedX = 0;
 		}
@@ -1192,17 +1219,16 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				arrow.SetTopLeft(100, arrow.GetTop() - 50);
 		}
 		// 下方三項箭頭
-		
-		//if (team) {
-		//	if (arrow.GetTop() != 30)
-		//		arrow.SetTopLeft(30, arrow.GetTop() - 60);
-		//}
-		////team?
+		else if (arrownum == 3) {
+			if (arrow.GetTop() != 30)
+				arrow.SetTopLeft(30, arrow.GetTop() - 70);
+		}
+		//隊伍
 	}
 	//記得補正
 	if (nChar == VK_DOWN )
 	{
-		if (bag == false && shopnum == 0) {
+		if (bag == false && shopnum == 0 && storynum == 0) {
 			speedY = -8;
 			speedX = 0;
 		}
@@ -1229,36 +1255,45 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				arrow.SetTopLeft(100, arrow.GetTop() + 50);
 		}
 		// 下方三項箭頭
-		
+		else if (arrownum == 3) {
+			if (arrow.GetTop() != 380)
+				arrow.SetTopLeft(30, arrow.GetTop() +70);
+		}
+		// 隊伍
 	}
 	//記得補正
 	if (nChar == VK_LEFT)
 	{
-		speedX = 8;
-		speedY = 0;
-		/*if (nChar == VK_UP) {
-			switch (nownum) {
-				case 1:
-					speedY = -8;
-					break;
-				case 2:
-					speedY = -16;
-					break;
-				case 3:
-					speedY = 8;
-					break;
-				case 4:
-					speedY = 16;
-					break;
+		if (storynum == 0) {
+			speedX = 8;
+			speedY = 0;
+			/*if (nChar == VK_UP) {
+				switch (nownum) {
+					case 1:
+						speedY = -8;
+						break;
+					case 2:
+						speedY = -16;
+						break;
+					case 3:
+						speedY = 8;
+						break;
+					case 4:
+						speedY = 16;
+						break;
 
-			}
-		}*/
-		// try to finish walking bug
+				}
+			}*/
+			// try to finish walking bug
+		}
 	}
 	if (nChar == VK_RIGHT)
 	{
+		if (storynum == 0) {
 			speedX = -8;
 			speedY = 0;
+			
+		}
 	}
 }
 
@@ -1332,8 +1367,12 @@ void CGameStateRun::show_image_by_phase() {
 		textbox.ShowBitmap();
 		arrow.ShowBitmap();	
 	}
-	if (signnum) {
+	if (signnum || storynum) {
 		textbox.ShowBitmap();
+	}
+	if (sell) {
+		menu.ShowBitmap();
+		arrow.ShowBitmap();
 	}
 	if (bag && !team) {
 		menu.ShowBitmap();
@@ -1366,20 +1405,15 @@ void CGameStateRun::show_text_by_phase() {
 	string y = to_string(background.GetTop());
 	string moneyout = to_string(characterinf[0]);
 	string pokemon[6] ;
+	string pokemonname[6];
 	for (int i = 0; i < 6; i++) {
-		pokemon[i].append(to_string(19 + 13 * i));
-		pokemon[i].append(to_string(20 + 13 * i));
-		pokemon[i].append(to_string(21 + 13 * i));
-		pokemon[i].append(to_string(22 + 13 * i));
-		pokemon[i].append(to_string(23 + 13 * i));
-		pokemon[i].append(to_string(24 + 13 * i));
-		pokemon[i].append(to_string(25 + 13 * i));
-		pokemon[i].append(to_string(26 + 13 * i));
-		pokemon[i].append(to_string(27 + 13 * i));
-		pokemon[i].append(to_string(28 + 13 * i));
-		pokemon[i].append(to_string(29 + 13 * i));
-		pokemon[i].append(to_string(30 + 13 * i));
-		pokemon[i].append(to_string(31 + 13 * i));
+		pokemonname[i].append(pokemonname[characterinf[19 + 13 * i]]);
+		pokemon[i].append("等級：");
+		pokemon[i].append(to_string(characterinf[20 + 13 * i]));
+		pokemon[i].append("經驗值：");
+		pokemon[i].append(to_string(characterinf[21 + 13 * i]));
+		pokemon[i].append("生命值：");
+		pokemon[i].append(to_string(characterinf[22 + 13 * i]));
 	}
 	
 	
@@ -1453,7 +1487,7 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 400, 500, to_string(characterinf[17]));
 		}
 	}
-	else if (shopnum){
+	else if (shopnum && !sell){
 		if (shopnum == 1) {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 150, 400, "購買");
@@ -1525,14 +1559,31 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 50, 400, "往荒野");
 		}
 	}
-	if (team) {
-		CTextDraw::ChangeFontLog(pDC, 30, "微軟正黑體", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 30, 30, pokemon[0]);
-		CTextDraw::Print(pDC, 30, 100, pokemon[1]);
-		CTextDraw::Print(pDC, 30, 170, pokemon[2]);
-		CTextDraw::Print(pDC, 30, 240, pokemon[3]);
-		CTextDraw::Print(pDC, 30, 310, pokemon[4]);
-		CTextDraw::Print(pDC, 30, 380, pokemon[5]);
+	else if (storynum) {
+		if (storynum == 1) {
+			CTextDraw::ChangeFontLog(pDC, 30, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 50, 400, "你是來自假舊鎮的小智障");
+		}
+		else if (storynum == 2) {
+			CTextDraw::ChangeFontLog(pDC, 30, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 50, 400, "為了成為寶可夢大師踏上旅途吧");
+		}
+
+	}
+	if (team || sell) {
+		CTextDraw::ChangeFontLog(pDC, 25, "微軟正黑體", RGB(0, 0, 0), 1000);
+		CTextDraw::Print(pDC, 50, 30, pokemonname[0]);
+		CTextDraw::Print(pDC, 150, 30, pokemon[0]);
+		CTextDraw::Print(pDC, 50, 100, pokemonname[1]);
+		CTextDraw::Print(pDC, 150, 100, pokemon[1]);
+		CTextDraw::Print(pDC, 50, 170, pokemonname[2]);
+		CTextDraw::Print(pDC, 150, 170, pokemon[2]);
+		CTextDraw::Print(pDC, 50, 240, pokemonname[3]);
+		CTextDraw::Print(pDC, 150, 240, pokemon[3]);
+		CTextDraw::Print(pDC, 50, 310, pokemonname[4]);
+		CTextDraw::Print(pDC, 150, 310, pokemon[4]);
+		CTextDraw::Print(pDC, 50, 380, pokemonname[5]);
+		CTextDraw::Print(pDC, 150, 380, pokemon[5]);
 
 	}
 	
