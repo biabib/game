@@ -21,3 +21,7 @@ battle_phase:
 
 隊伍資料:
 編號 等級 目前血量(0~100) 招式編號 
+
+地圖物件編號從左下開始
+characterinf：money,prop[17],dojonum, pokemoninpack[6];
+pokemon：pokemonnum,level,exp,life,att,def,raceatt,racedef,speed,skill1,skill2,skill3,skill4

@@ -529,6 +529,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				team = 0;
 			}
 		}
+		//戰鬥選單退出
 	}
 	if (nChar == VK_RETURN && confirmenter == false) {
 		if (shopnum == 0) {
@@ -564,16 +565,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 			//查看隊伍
 		}
-		//stop function
-		//for (auto i = grass.begin(); i != grass.end(); i++) {
-		//	if (CMovingBitmap::IsOverlap(character, *i)) {
-		//		battle = !battle;
-		//		battle_phase = 1;
-		//		battle_scr.SetFrameIndexOfBitmap(1);
-		//		battle_scr.SetTopLeft(0, 0);
-		//	}
-		//}
-		//// 遍歷草叢enter進入戰鬥
+
 		if (phase == 4 && bag == false) {
 			if (CMovingBitmap::IsOverlap(character, dialog[0]) && shopnum == 0) {
 				shopnum = 1;
@@ -726,6 +718,8 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				battle = false;
 			}
 		}
+		//招式選擇與對話框
+
 		if (arrownum == 4){
 			if (arrow.GetLeft() == 300) {
 				if (arrow.GetTop() == 440) {
@@ -744,7 +738,6 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 			else {
 				if (arrow.GetTop() == 440) {
-					arrownum = 3;
 					team = 1;
 					arrow.SetTopLeft(30, 30);
 					arrownum = 3;//暫定隊伍
@@ -756,7 +749,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				}
 			}
 		}
-		
+		//行動選擇
 	}
 
 
@@ -908,7 +901,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	{
 		accel = !accel;
 	}
-
+	//移動加速
 }
 
 void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -999,40 +992,40 @@ void CGameStateRun::show_image_by_phase() {
 		if (battle_phase == 1) {
 			arrow.ShowBitmap();
 		}
-	}
+	}//戰鬥畫面顯示
 }
 void CGameStateRun::battle_start() {
 	
 		/*資料讀入*/
 		turn = 0; //回合清零	
-		hp1 = (((39 + 7) * 5) / 50 + 10 + 5);
+		hp1 = (((39 + 7) * 5) / 50 + 10 + 5)/* *(血量占比/100) */;
 		hp2 = ((45 + 7) * 5) / 50 + 10 + 5;
 		att1 = ((52 + 7) * 5) / 50 + 5;
 		att2 = ((49 + 7) * 5) / 50 + 5;
 		def1 = ((43 + 7) * 5) / 50 + 5;
 		def2 = ((49 + 7) * 5) / 50 + 5;
-		/*Satt1 = ((種族值 + 7) * 5) / 50 + 5;
+		/*Satt1 = ((種族值 + 7) * LV) / 50 + LV;
 		Satt2 = ((種族值 + 7) * 5) / 50 + 5;
 		Sdef1 = ((種族值 + 7) * 5) / 50 + 5;
 		Sdef2 = ((種族值 + 7) * 5) / 50 + 5;*/
 		spe1 = ((65 + 7) * 5) / 50 + 5;
 		spe2 = ((45 + 7) * 5) / 50 + 5;
 		
-		/*判斷雙方速度值*/
 		
 		
-	
 }
 void CGameStateRun::battle_turn() {
-		dam1 = (((2 * 5 + 10) / 250) * (att1 / def2) * 30 + 2) * 2;
+		dam1 = (((2 * 5/*等級*/ + 10) / 250) * (att1 / def2) * 30/*招式傷害*/ + 2) * 1;
 		dam2 = (((2 * 5 + 10) / 250) * (att2 / def1) * 30 + 2) * 1;
 		int t = turn % 3;
+
 		if (battle_phase == 2) {
 			if (spe1 >= spe2)
 				battle_phase = 3;
 			else if (spe1 < spe2)
 				battle_phase = 4;
 		}
+		//判斷雙方速度值
 
 		if (battle_phase == 3) {
 			if (t == 2)
@@ -1062,6 +1055,13 @@ void CGameStateRun::battle_turn() {
 
 					battle_phase = 3;
 				}
+				else if (hp1 <= 0) {
+					team = 1;
+					arrow.SetTopLeft(30, 30);
+					arrownum = 3;//暫定隊伍
+					battle_scr.SetFrameIndexOfBitmap(2);
+					battle_scr.SetTopLeft(0, 0);
+				}
 				else {
 					battle_phase = 5;
 					turn_end();
@@ -1070,13 +1070,25 @@ void CGameStateRun::battle_turn() {
 		}
 	
 }
+void CGameStateRun::team_change() {
+	arrownum = 3;
+	team = 1;
+	arrow.SetTopLeft(30, 30);
+	arrownum = 3;//暫定隊伍
+	battle_scr.SetFrameIndexOfBitmap(2);
+	battle_scr.SetTopLeft(0, 0);
+}
 void CGameStateRun::turn_end() {
 	/*
 		xp = LV2/10;
 		if(xp<=1) 
 			exp = exp+ 500;
+			coin+= rand%100;
 		else if(xp>=2)
 			exp = exp + 500*xp;
+			coin+= rand%200*xp;
+
+		hp_percent =   hp1/((((血量種族值+7)*LV)/50+10+LV))*100
 	*/
 }
 void CGameStateRun::show_text_by_phase() {

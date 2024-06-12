@@ -147,6 +147,7 @@ namespace game_framework {
 		void show_text_by_phase();
 		void battle_start();
 		void turn_end();
+		void team_change();
 		void battle_turn();
 		/*void phase_house();
 		void phase_map();*/
