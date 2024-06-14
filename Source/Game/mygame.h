@@ -137,6 +137,7 @@ namespace game_framework {
 		bool confirmdown = false;
 		bool sell = false;
 		bool usingprop = false;
+		bool d = false;
 		int useprop = 0;
 		int storynum = 1;
 		int shopnum = 0;
@@ -175,9 +176,10 @@ namespace game_framework {
 		"快龍",
 		"超夢"
 		};
-		int skilldam[33];
-		string skillname[33] = {
+		int skilldam[35];
+		string skillname[35] = {
 		"火焰拳",
+		"抓 ",
 		"起風",
 		"翅膀攻擊",
 		"藤鞭",
@@ -209,6 +211,7 @@ namespace game_framework {
 		"高速星星",
 		"神鳥猛擊",
 		"大爆炸",
+		"岩崩",
 		"三重攻擊" };
 		void show_image_by_phase();
 		void show_text_by_phase();
@@ -232,6 +235,9 @@ namespace game_framework {
 		int spe2;
 		int dam1;
 		int dam2;
+		int LV2;
+		int pokeid = 0;
+		int pokest = 0;
 	};
 
 	/////////////////////////////////////////////////////////////////////////////

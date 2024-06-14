@@ -66,7 +66,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 			ifs3 >> pokemonname[i];
 		}*/
 	ifstream ifs4("resources/files/skilldam.txt");
-	for (int i = 0; i < 33; i++) {
+	for (int i = 0; i < 35; i++) {
 		ifs4 >> skilldam[i];
 	}
 	/*ifstream ifs5("resources/files/skillname.txt");
@@ -1617,14 +1617,16 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				if (arrow.GetTop() == 440) {
 					if (arrow.GetLeft() == 40) {
 						battle_phase = 2;
+						dam1 = skilldam[characterinf[28 + 13 * pokest]];
 						//招式威力
-						//PP-1
+
 						battle_turn();
 						turn += 1;
 					}
 					else
 					{
 						battle_phase = 2;
+						dam1 = skilldam[characterinf[29 + 13 * pokest]];
 						battle_turn();
 						turn += 1;
 					}
@@ -1632,12 +1634,14 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				else {
 					if (arrow.GetLeft() == 40) {
 						battle_phase = 2;
+						dam1 = skilldam[characterinf[30 + 13 * pokest]];
 						battle_turn();
 						turn += 1;
 					}
 					else
 					{
 						battle_phase = 2;
+						dam1 = skilldam[characterinf[31 + 13 * pokest]];
 						battle_turn();
 						turn += 1;
 					}
@@ -1907,28 +1911,27 @@ void CGameStateRun::OnRButtonUp(UINT nFlags, CPoint point)	// 處理滑鼠的動
 }
 
 void CGameStateRun::battle_start() {
-
+	pokeid = rand() % 20 + 1;
+	LV2 = (characterinf[18]) * 10 + (rand() / 10 % 10) + 2;
 	/*資料讀入*/
-	turn = 0; //回合清零	
-	hp1 = (((39 + 7) * 5) / 50 + 10 + 5)/* *(血量占比/100) */;
-	hp2 = ((45 + 7) * 5) / 50 + 10 + 5;
-	att1 = ((52 + 7) * 5) / 50 + 5;
-	att2 = ((49 + 7) * 5) / 50 + 5;
-	def1 = ((43 + 7) * 5) / 50 + 5;
-	def2 = ((49 + 7) * 5) / 50 + 5;
+	turn = 0; //回合清零
+	d = false;
+	hp1 = (((pokemoninf[1][characterinf[19 + 13 * pokest]] + 7) * characterinf[20 + 13 * pokest]) / 50 + 10 + characterinf[20 + 13 * pokest]) * (characterinf[22 + 13 * pokest] / 100);
+	hp2 = ((pokemoninf[1][pokeid] + 7) * LV2) / 50 + 10 + LV2;
+	att1 = characterinf[23 + 13 * pokest];
+	att2 = ((pokemoninf[2][pokeid] + 7) * 5) / 50 + LV2;
+	def1 = characterinf[24 + 13 * pokest];
+	def2 = ((pokemoninf[3][pokeid] + 7) * 5) / 50 + LV2;
 	/*Satt1 = ((種族值 + 7) * LV) / 50 + LV;
 	Satt2 = ((種族值 + 7) * 5) / 50 + 5;
 	Sdef1 = ((種族值 + 7) * 5) / 50 + 5;
 	Sdef2 = ((種族值 + 7) * 5) / 50 + 5;*/
-	spe1 = ((65 + 7) * 5) / 50 + 5;
-	spe2 = ((45 + 7) * 5) / 50 + 5;
-
-
-
+	spe1 = characterinf[27 + 13 * pokest];
+	spe2 = ((pokemoninf[8][pokeid] + 7) * 5) / 50 + LV2;
 }
 void CGameStateRun::battle_turn() {
-	dam1 = (((2 * 5/*等級*/ + 10) / 250) * (att1 / def2) * 30/*招式傷害*/ + 2) * 1;
-	dam2 = (((2 * 5 + 10) / 250) * (att2 / def1) * 30 + 2) * 1;
+	dam1 = (((2 * characterinf[20 + 13 * pokest]/*等級*/ + 10) / 250) * (att1 / def2) * dam1/*招式傷害*/ + 2) * 1;
+	dam2 = (((2 * LV2 + 10) / 250) * (att2 / def1) * skilldam[pokemoninf[8 + rand() / 10 % 4][pokeid]] + 2) * 1;
 	int t = turn % 3;
 
 	if (battle_phase == 2) {
@@ -1991,19 +1994,39 @@ void CGameStateRun::team_change() {
 	battle_scr.SetTopLeft(0, 0);
 }
 void CGameStateRun::turn_end() {
-	/*
-		xp = LV2/10;
-		if(xp<=1)
-			exp = exp+ 500;
-			coin+= rand%100;
-		else if(xp>=2)
-			exp = exp + 500*xp;
-			coin+= rand%200*xp;
+	if (d) {
+		characterinf[0] -= 200;
+	}
+	else {
+		int xp = LV2 / 10;
+		characterinf[22 + 13 * pokest] = hp1 / (((pokemoninf[1][characterinf[19 + 13 * pokest]] + 7) * characterinf[20 + 13 * pokest]) / 50 + 10 + characterinf[20 + 13 * pokest]) * 100;
+		for (int i = 0; i < 6; i++) {
+			if (characterinf[19 + 13 * i] != 0) {
+				if (xp <= 1)
+					characterinf[21 + 13 * i] = characterinf[21 + 13 * i] + 500;
+				else if (xp >= 2)
+					characterinf[21 + 13 * i] = characterinf[21 + 13 * i] + 500 * xp;
+				if (characterinf[21 + 13 * i] >= 10000) {
+					characterinf[20 + 13 * i] += 1;
+					characterinf[21 + 13 * i] = 0;
+					if ((characterinf[19 + 13 * i] == 1 || characterinf[19 + 13 * i] == 4 || characterinf[19 + 13 * i] == 7 || characterinf[19 + 13 * i] == 10 || characterinf[19 + 13 * i] == 15 || characterinf[19 + 13 * i] == 18) && (characterinf[20 + 13 * i] == 20)) {
+						characterinf[19 + 13 * i] += 1;
+					}
+					else if ((characterinf[19 + 13 * i] == 2 || characterinf[19 + 13 * i] == 5 || characterinf[19 + 13 * i] == 8 || characterinf[19 + 13 * i] == 11 || characterinf[19 + 13 * i] == 16) && (characterinf[20 + 13 * i] == 35)) {
+						characterinf[19 + 13 * i] += 1;
+					}
+					characterinf[23 + 13 * i] = (((pokemoninf[2][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
+					characterinf[24 + 13 * i] = (((pokemoninf[3][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
+					characterinf[27 + 13 * i] = (((pokemoninf[8][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
+					characterinf[22 + 13 * i] = (((pokemoninf[1][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + 10 + characterinf[20 + 13 * i]);
 
-		hp_percent =   hp1/((((血量種族值+7)*LV)/50+10+LV))*100
-	*/
+				}
+				characterinf[22 + 13 * i] = characterinf[22 + 13 * i] / (((pokemoninf[1][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + 10 + characterinf[20 + 13 * i]) * 100;
+
+			}
+		}
+	}
 }
-
 void CGameStateRun::OnShow()
 {
 	show_image_by_phase();
@@ -2290,7 +2313,14 @@ void CGameStateRun::show_text_by_phase() {
 			{
 				CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 				CTextDraw::Print(pDC, 60, 430, "隊伍全體獲得了");
-				CTextDraw::Print(pDC, 60, 430, "經驗");
+				if (LV2 < 10) {
+					CTextDraw::Print(pDC, 300, 430, to_string(500));
+				}
+				else {
+					CTextDraw::Print(pDC, 300, 430, to_string(500 * (LV2 / 10)));
+				}
+				CTextDraw::Print(pDC, 360, 430, "經驗");
+
 			}
 		}
 	}
