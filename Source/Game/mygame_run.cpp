@@ -1344,193 +1344,235 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 		}
 		//sell
-		if (team) {
+		if (team ) {
 			if (useprop == 5) {
 				if (arrow.GetTop() == 30 && characterinf[19] != 0 && characterinf[19] < 100) {
 					characterinf[20]++;
 					characterinf[5]--;
+					confirmenter = true;
 				}
 				else if (arrow.GetTop() == 100 && characterinf[32] != 0 && characterinf[32] < 100) {
 					characterinf[33]++;
 					characterinf[5]--;
+					confirmenter = true;
 				}
 				else if (arrow.GetTop() == 170 && characterinf[45] != 0 && characterinf[45] < 100) {
 					characterinf[46]++;
 					characterinf[5]--;
+					confirmenter = true;
 				}
 				else if (arrow.GetTop() == 240 && characterinf[58] != 0 && characterinf[58] < 100) {
 					characterinf[59]++;
 					characterinf[5]--;
+					confirmenter = true;
 				}
 				else if (arrow.GetTop() == 310 && characterinf[71] != 0 && characterinf[71] < 100) {
 					characterinf[72]++;
 					characterinf[5]--;
+					confirmenter = true;
 				}
 				else if (arrow.GetTop() == 380 && characterinf[84] != 0 && characterinf[84] < 100) {
 					characterinf[85]++;
 					characterinf[5]--;
+					confirmenter = true;
 				}
 			}
 			//神奇糖果
 			else if (useprop == 6) {
-				if (arrow.GetTop() == 30 && characterinf[21] != 0 && characterinf[6] > 0) {
-					characterinf[21] += 20;
+				if (arrow.GetTop() == 30 && characterinf[22] != 0 && characterinf[6] > 0) {
+					characterinf[22] += 20;
 					characterinf[6]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 100 && characterinf[30] != 0 && characterinf[6] > 0) {
-					characterinf[30] += 20;
+				else if (arrow.GetTop() == 100 && characterinf[35] != 0 && characterinf[6] > 0) {
+					characterinf[35] += 20;
 					characterinf[6]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 170 && characterinf[43] != 0 && characterinf[6] > 0) {
-					characterinf[43] += 20;
+				else if (arrow.GetTop() == 170 && characterinf[48] != 0 && characterinf[6] > 0) {
+					characterinf[48] += 20;
 					characterinf[6]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 240 && characterinf[56] != 0 && characterinf[6] > 0) {
-					characterinf[56] += 20;
+				else if (arrow.GetTop() == 240 && characterinf[61] != 0 && characterinf[6] > 0) {
+					characterinf[61] += 20;
 					characterinf[6]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 310 && characterinf[69] != 0 && characterinf[6] > 0) {
-					characterinf[69] += 20;
+				else if (arrow.GetTop() == 310 && characterinf[74] != 0 && characterinf[6] > 0) {
+					characterinf[74] += 20;
 					characterinf[6]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 380 && characterinf[82] != 0 && characterinf[6] > 0) {
-					characterinf[82] += 20;
+				else if (arrow.GetTop() == 380 && characterinf[87] != 0 && characterinf[6] > 0) {
+					characterinf[87] += 20;
 					characterinf[6]--;
+					confirmenter = true;
 				}
 			}
 			//傷藥
 			else if (useprop == 7) {
-				if (arrow.GetTop() == 30 && characterinf[21] != 0 && characterinf[7] > 0) {
-					characterinf[21] += 50;
+				if (arrow.GetTop() == 30 && characterinf[22] != 0 && characterinf[7] > 0) {
+					characterinf[22] += 50;
 					characterinf[7]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 100 && characterinf[30] != 0 && characterinf[7] > 0) {
-					characterinf[30] += 50;
+				else if (arrow.GetTop() == 100 && characterinf[35] != 0 && characterinf[7] > 0) {
+					characterinf[35] += 50;
 					characterinf[7]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 170 && characterinf[43] != 0 && characterinf[7] > 0) {
-					characterinf[43] += 50;
+				else if (arrow.GetTop() == 170 && characterinf[48] != 0 && characterinf[7] > 0) {
+					characterinf[48] += 50;
 					characterinf[7]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 240 && characterinf[56] != 0 && characterinf[7] > 0) {
-					characterinf[56] += 50;
+				else if (arrow.GetTop() == 240 && characterinf[61] != 0 && characterinf[7] > 0) {
+					characterinf[61] += 50;
 					characterinf[7]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 310 && characterinf[69] != 0 && characterinf[7] > 0) {
-					characterinf[69] += 50;
+				else if (arrow.GetTop() == 310 && characterinf[74] != 0 && characterinf[7] > 0) {
+					characterinf[74] += 50;
 					characterinf[7]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 380 && characterinf[82] != 0 && characterinf[7] > 0) {
-					characterinf[82] += 50;
+				else if (arrow.GetTop() == 380 && characterinf[87] != 0 && characterinf[7] > 0) {
+					characterinf[87] += 50;
 					characterinf[7]--;
+					confirmenter = true;
 				}
 			}
 			//好傷藥
 			else if (useprop == 8) {
-				if (arrow.GetTop() == 30 && characterinf[21] != 0 && characterinf[8] > 0) {
-					characterinf[21] += 200;
+				if (arrow.GetTop() == 30 && characterinf[22] != 0 && characterinf[8] > 0) {
+					characterinf[22] += 200;
 					characterinf[8]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 100 && characterinf[30] != 0 && characterinf[8] > 0) {
-					characterinf[30] += 200;
+				else if (arrow.GetTop() == 100 && characterinf[35] != 0 && characterinf[8] > 0) {
+					characterinf[35] += 200;
 					characterinf[8]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 170 && characterinf[43] != 0 && characterinf[8] > 0) {
-					characterinf[43] += 200;
+				else if (arrow.GetTop() == 170 && characterinf[48] != 0 && characterinf[8] > 0) {
+					characterinf[48] += 200;
 					characterinf[8]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 240 && characterinf[56] != 0 && characterinf[8] > 0) {
-					characterinf[56] += 200;
+				else if (arrow.GetTop() == 240 && characterinf[61] != 0 && characterinf[8] > 0) {
+					characterinf[61] += 200;
 					characterinf[8]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 310 && characterinf[69] != 0 && characterinf[8] > 0) {
-					characterinf[69] += 200;
+				else if (arrow.GetTop() == 310 && characterinf[74] != 0 && characterinf[8] > 0) {
+					characterinf[74] += 200;
 					characterinf[8]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 380 && characterinf[82] != 0 && characterinf[8] > 0) {
-					characterinf[82] += 200;
+				else if (arrow.GetTop() == 380 && characterinf[87] != 0 && characterinf[8] > 0) {
+					characterinf[87] += 200;
 					characterinf[8]--;
+					confirmenter = true;
 				}
 			}
 			//厲害傷藥
 			else if (useprop == 9) {
-				if (arrow.GetTop() == 30 && characterinf[21] != 0 && characterinf[9] > 0) {
-					characterinf[21] = pokemoninf[characterinf[19]][4];
+				if (arrow.GetTop() == 30 && characterinf[22] != 0 && characterinf[9] > 0) {
+					characterinf[22] = pokemoninf[characterinf[19]][4];
 					characterinf[9]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 100 && characterinf[30] != 0 && characterinf[9] > 0) {
-					characterinf[30] = pokemoninf[characterinf[28]][4];
+				else if (arrow.GetTop() == 100 && characterinf[35] != 0 && characterinf[9] > 0) {
+					characterinf[35] = pokemoninf[characterinf[28]][4];
 					characterinf[9]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 170 && characterinf[43] != 0 && characterinf[9] > 0) {
-					characterinf[43] = pokemoninf[characterinf[41]][4];
+				else if (arrow.GetTop() == 170 && characterinf[48] != 0 && characterinf[9] > 0) {
+					characterinf[48] = pokemoninf[characterinf[41]][4];
 					characterinf[9]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 240 && characterinf[56] != 0 && characterinf[9] > 0) {
-					characterinf[56] = pokemoninf[characterinf[54]][4];
+				else if (arrow.GetTop() == 240 && characterinf[61] != 0 && characterinf[9] > 0) {
+					characterinf[61] = pokemoninf[characterinf[54]][4];
 					characterinf[9]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 310 && characterinf[69] != 0 && characterinf[9] > 0) {
-					characterinf[69] = pokemoninf[characterinf[67]][4];
+				else if (arrow.GetTop() == 310 && characterinf[74] != 0 && characterinf[9] > 0) {
+					characterinf[74] = pokemoninf[characterinf[67]][4];
 					characterinf[9]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 380 && characterinf[82] != 0 && characterinf[9] > 0) {
-					characterinf[82] = pokemoninf[characterinf[80]][4];
+				else if (arrow.GetTop() == 380 && characterinf[87] != 0 && characterinf[9] > 0) {
+					characterinf[87] = pokemoninf[characterinf[80]][4];
 					characterinf[9]--;
+					confirmenter = true;
 				}
 			}
 			//全滿藥
 			else if (useprop == 16) {
-				if (arrow.GetTop() == 30 && characterinf[21] == 0 && characterinf[16] > 0) {
-					characterinf[21] = pokemoninf[characterinf[19]][4]/2;
+				if (arrow.GetTop() == 30 && characterinf[22] == 0 && characterinf[16] > 0) {
+					characterinf[22] = pokemoninf[characterinf[19]][4] / 2;
 					characterinf[16]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 100 && characterinf[30] == 0 && characterinf[16] > 0) {
-					characterinf[30] = pokemoninf[characterinf[28]][4]/2;
+				else if (arrow.GetTop() == 100 && characterinf[35] == 0 && characterinf[16] > 0) {
+					characterinf[35] = pokemoninf[characterinf[28]][4] / 2;
 					characterinf[16]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 170 && characterinf[43] == 0 && characterinf[16] > 0) {
-					characterinf[43] = pokemoninf[characterinf[41]][4]/2;
+				else if (arrow.GetTop() == 170 && characterinf[48] == 0 && characterinf[16] > 0) {
+					characterinf[48] = pokemoninf[characterinf[41]][4] / 2;
 					characterinf[16]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 240 && characterinf[56] == 0 && characterinf[16] > 0) {
-					characterinf[56] = pokemoninf[characterinf[54]][4]/2;
+				else if (arrow.GetTop() == 240 && characterinf[61] == 0 && characterinf[16] > 0) {
+					characterinf[61] = pokemoninf[characterinf[54]][4] / 2;
 					characterinf[16]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 310 && characterinf[69] == 0 && characterinf[16] > 0) {
-					characterinf[69] = pokemoninf[characterinf[67]][4]/2;
+				else if (arrow.GetTop() == 310 && characterinf[74] == 0 && characterinf[16] > 0) {
+					characterinf[74] = pokemoninf[characterinf[67]][4] / 2;
 					characterinf[16]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 380 && characterinf[82] == 0 && characterinf[16] > 0) {
-					characterinf[82] = pokemoninf[characterinf[80]][4]/2;
+				else if (arrow.GetTop() == 380 && characterinf[87] == 0 && characterinf[16] > 0) {
+					characterinf[87] = pokemoninf[characterinf[80]][4] / 2;
 					characterinf[16]--;
+					confirmenter = true;
 				}
 			}
 			//活力碎片
 			else if (useprop == 17) {
-				if (arrow.GetTop() == 30 && characterinf[21] == 0 && characterinf[17] > 0) {
-					characterinf[21] = pokemoninf[characterinf[19]][4];
+				if (arrow.GetTop() == 30 && characterinf[22] == 0 && characterinf[17] > 0) {
+					characterinf[22] = pokemoninf[characterinf[19]][4];
 					characterinf[17]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 100 && characterinf[30] == 0 && characterinf[17] > 0) {
-					characterinf[30] = pokemoninf[characterinf[28]][4];
+				else if (arrow.GetTop() == 100 && characterinf[35] == 0 && characterinf[17] > 0) {
+					characterinf[35] = pokemoninf[characterinf[28]][4];
 					characterinf[17]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 170 && characterinf[43] == 0 && characterinf[17] > 0) {
-					characterinf[43] = pokemoninf[characterinf[41]][4];
+				else if (arrow.GetTop() == 170 && characterinf[48] == 0 && characterinf[17] > 0) {
+					characterinf[48] = pokemoninf[characterinf[41]][4];
 					characterinf[17]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 240 && characterinf[56] == 0 && characterinf[17] > 0) {
-					characterinf[56] = pokemoninf[characterinf[54]][4];
+				else if (arrow.GetTop() == 240 && characterinf[61] == 0 && characterinf[17] > 0) {
+					characterinf[61] = pokemoninf[characterinf[54]][4];
 					characterinf[17]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 310 && characterinf[69] == 0 && characterinf[17] > 0) {
-					characterinf[69] = pokemoninf[characterinf[67]][4];
+				else if (arrow.GetTop() == 310 && characterinf[74] == 0 && characterinf[17] > 0) {
+					characterinf[74] = pokemoninf[characterinf[67]][4];
 					characterinf[17]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 380 && characterinf[82] == 0 && characterinf[17] > 0) {
-					characterinf[82] = pokemoninf[characterinf[80]][4];
+				else if (arrow.GetTop() == 380 && characterinf[87] == 0 && characterinf[17] > 0) {
+					characterinf[87] = pokemoninf[characterinf[80]][4];
 					characterinf[17]--;
+					confirmenter = true;
 				}
 			}
 			//活力塊
@@ -1987,9 +2029,9 @@ void CGameStateRun::show_text_by_phase() {
 	string y = to_string(background.GetTop());
 	string moneyout = to_string(characterinf[0]);
 	string pokemon[6] ;
-	string pokemonname[6];
+	string pokemonname1[6];
 	for (int i = 0; i < 6; i++) {
-		pokemonname[i].append(pokemonname[characterinf[19 + 13 * i]]);
+		pokemonname1[i].append(pokemonname1[characterinf[19 + 13 * i]]);
 		pokemon[i].append("等級：");
 		pokemon[i].append(to_string(characterinf[20 + 13 * i]));
 		pokemon[i].append("經驗值：");
