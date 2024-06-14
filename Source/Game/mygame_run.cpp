@@ -679,7 +679,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					if (arrow.GetLeft() == 40) {
 						battle_phase = 2;
 						//招式威力
-						//PP-1
+						
 						battle_turn();
 						turn += 1;
 					}
@@ -928,26 +928,6 @@ void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 }
 
-void CGameStateRun::OnLButtonDown(UINT nFlags, CPoint point)  // 處理滑鼠的動作
-{
-}
-
-void CGameStateRun::OnLButtonUp(UINT nFlags, CPoint point)	// 處理滑鼠的動作
-{
-}
-
-void CGameStateRun::OnMouseMove(UINT nFlags, CPoint point)	// 處理滑鼠的動作
-{
-}
-
-void CGameStateRun::OnRButtonDown(UINT nFlags, CPoint point)  // 處理滑鼠的動作
-{
-}
-
-void CGameStateRun::OnRButtonUp(UINT nFlags, CPoint point)	// 處理滑鼠的動作
-{
-}
-
 void CGameStateRun::OnShow()
 {
 	show_image_by_phase();
@@ -1087,6 +1067,10 @@ void CGameStateRun::turn_end() {
 		else if(xp>=2)
 			exp = exp + 500*xp;
 			coin+= rand%200*xp;
+		if(exp>=10000){
+			LV1 += 1;
+
+		}
 
 		hp_percent =   hp1/((((血量種族值+7)*LV)/50+10+LV))*100
 	*/
@@ -1253,11 +1237,11 @@ void CGameStateRun::show_text_by_phase() {
 				CTextDraw::Print(pDC, 360, 430, "技能2");
 				CTextDraw::Print(pDC, 60, 490, "技能3");
 				CTextDraw::Print(pDC, 360, 490, "技能4");
-				CTextDraw::ChangeFontLog(pDC, 30, "微軟正黑體", RGB(0, 0, 0), 1000);
+				/*CTextDraw::ChangeFontLog(pDC, 30, "微軟正黑體", RGB(0, 0, 0), 1000);
 				CTextDraw::Print(pDC, 220, 430, "pp/pp");
 				CTextDraw::Print(pDC, 520, 430, "pp/pp");
 				CTextDraw::Print(pDC, 220, 490, "pp/pp");
-				CTextDraw::Print(pDC, 520, 490, "pp/pp");
+				CTextDraw::Print(pDC, 520, 490, "pp/pp");*/
 			}
 		}
 		else if (battle_phase == 3)

@@ -83,11 +83,6 @@ namespace game_framework {
 		void OnInit();  								// 遊戲的初值及圖形設定
 		void OnKeyDown(UINT, UINT, UINT);
 		void OnKeyUp(UINT, UINT, UINT);
-		void OnLButtonDown(UINT nFlags, CPoint point);  // 處理滑鼠的動作
-		void OnLButtonUp(UINT nFlags, CPoint point);	// 處理滑鼠的動作
-		void OnMouseMove(UINT nFlags, CPoint point);	// 處理滑鼠的動作 
-		void OnRButtonDown(UINT nFlags, CPoint point);  // 處理滑鼠的動作
-		void OnRButtonUp(UINT nFlags, CPoint point);	// 處理滑鼠的動作
 		int lastX = 0;
 		int lastY = 0;
 		int speedX = 0;
@@ -149,18 +144,16 @@ namespace game_framework {
 		void turn_end();
 		void team_change();
 		void battle_turn();
-		/*void phase_house();
-		void phase_map();*/
 		int hp1;
 		int hp2;
 		int att1;
 		int att2;
 		int def1;
 		int def2;
-		int Satt1;
+		/*int Satt1;
 		int Satt2;
 		int Sdef1;
-		int Sdef2;
+		int Sdef2;*/
 		int spe1;
 		int spe2;
 		int dam1;
