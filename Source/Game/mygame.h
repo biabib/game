@@ -151,10 +151,65 @@ namespace game_framework {
 		int battle_phase = 0;	
 		int judge;
 		int turn = 0;
-		int pokemoninf[19][13];
-		string pokemonname[19];
+		int pokemoninf[21][13];
+		string pokemonname[21] = {
+		"妙蛙種子",
+		"妙蛙草",
+		"妙蛙花",
+		"小火龍",
+		"火恐龍",
+		"噴火龍",
+		"傑尼龜",
+		"卡咪龜",
+		"水箭龜",
+		"波波",
+		"比比鳥",
+		"大比鳥",
+		"怪力",
+		"刺甲貝",
+		"鬼斯",
+		"鬼斯通",
+		"耿鬼",
+		"霹靂電球",
+		"頑皮雷彈",
+		"快龍",
+		"超夢"
+		};
 		int skilldam[33];
-		string skillname[33];
+		string skillname[33] = {
+		"火焰拳",
+		"起風",
+		"翅膀攻擊",
+		"藤鞭",
+		"泰山壓頂",
+		"捨身衝撞",
+		"火花",
+		"噴射火焰",
+		"水槍",
+		"水炮",
+		"衝浪",
+		"冰凍光束",
+		"暴風雪",
+		"幻象光線",
+		"極光束",
+		"破壞光線",
+		"地獄翻滾",
+		"飛葉快刀",
+		"日光束",
+		"十萬伏特",
+		"打雷",
+		"地震",
+		"念力",
+		"精神強念",
+		"電光一閃",
+		"黑夜魔影",
+		"自爆",
+		"舌舔",
+		"大字爆炎",
+		"高速星星",
+		"神鳥猛擊",
+		"大爆炸",
+		"三重攻擊" };
 		void show_image_by_phase();
 		void show_text_by_phase();
 		void battle_start();

@@ -61,18 +61,18 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 				ifs2 >> pokemoninf[j][i];
 			}
 		}
-	ifstream ifs3("resources/files/pokemonname.txt");
+	/*ifstream ifs3("resources/files/pokemonname.txt");
 		for (int i = 0; i < 19; i++) {
 			ifs3 >> pokemonname[i];
-		}
+		}*/
 	ifstream ifs4("resources/files/skilldam.txt");
 	for (int i = 0; i < 33; i++) {
 		ifs4 >> skilldam[i];
 	}
-	ifstream ifs5("resources/files/skillname.txt");
+	/*ifstream ifs5("resources/files/skillname.txt");
 	for (int i = 0; i < 19; i++) {
 		ifs5 >> skillname[i];
-	}
+	}*/
 	ifstream ifs("Resources/mapdoc/home2f.txt");
 	for (int i = 0; i < 7; i++) {
 		for (int j = 0; j < 8; j++) {
