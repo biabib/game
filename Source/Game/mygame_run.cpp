@@ -1576,6 +1576,35 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				}
 			}
 			//活力塊
+			else if (useprop == 1) {
+				confirmenter = true;
+				characterinf[1]--;
+				int a1 = rand() % 10;
+				if (a1 == 1) {
+					//finish
+				}
+			}
+			else if (useprop == 2) {
+				confirmenter = true;
+				characterinf[2]--;
+				int a1 = rand() % 5;
+				if (a1 == 1) {
+					//finish
+				}
+			}
+			else if (useprop == 3) {
+				confirmenter = true;
+				characterinf[3]--;
+				int a1 = rand() % 3;
+				if (a1 == 1) {
+					//finish
+				}
+			}
+			else if (useprop == 4) {
+				confirmenter = true;
+				characterinf[4]--;
+				//finish
+			}
 		}
 		if (arrownum == 5) {
 			if (battle_phase == 1) {
