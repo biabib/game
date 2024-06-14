@@ -89,7 +89,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 			home1fmap.erase(home1fmap.begin());
 			if (a == 1) {
 				hitbox.insert(hitbox.begin(), CMovingBitmap());
-				hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+				hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 				hitbox.begin()->SetTopLeft(203 + j * 32, 170 + i * 32);
 			}
 			else if (a == 2) {
@@ -115,7 +115,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	overlapright = 0;
 	overlaptop = 0;
 	overlapdown = 0;
-	if (bag == false && shopnum == 0) {
+	if (bag == false && shopnum == 0 && battle == false) {
 		for (auto i = hitbox.begin(); i != hitbox.end(); i++) { 
 			if (CMovingBitmap::IsOverlap(character, *i)) {
 				if (character.GetLeft() > i->GetLeft()) {
@@ -233,7 +233,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(138 + j * 32, 170 + i * 32);
 						}
 						else if (a == 2) {
@@ -268,12 +268,12 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-277 + j * 32, -147 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" },RGB(255,0,0));
 							tppoint.begin()->SetTopLeft(-277 + j * 32, -147 + i * 32);
 						}
 						else if (a == 3) {
@@ -283,7 +283,7 @@ for (int i = 0; i < tppointnum; i++) {
 						}
 						else if (a == 4) {
 							sign.insert(sign.begin(), CMovingBitmap());
-							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" });
+							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" }, RGB(0,255, 0));
 							sign.begin()->SetTopLeft(-277 + j * 32, -147 + i * 32);
 						}
 					}
@@ -314,12 +314,12 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(108 + j * 32, 205 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" }, RGB(255, 0, 0));
 							tppoint.begin()->SetTopLeft(108 + j * 32, 205 + i * 32);
 						}
 					}
@@ -375,12 +375,12 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(173 + j * 32, 80 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" }, RGB(255, 0, 0));
 							tppoint.begin()->SetTopLeft(173 + j * 32, 80 + i * 32);
 						}
 					}
@@ -411,17 +411,17 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(73 + j * 32, 50 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" }, RGB(255, 0, 0));
 							tppoint.begin()->SetTopLeft(73 + j * 32, 50 + i * 32);
 						}
 						else if (a == 4) {
 							sign.insert(sign.begin(), CMovingBitmap());
-							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" });
+							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" }, RGB(0,255, 0));
 							sign.begin()->SetTopLeft(73 + j * 32, 50 + i * 32);
 						}
 						else if (a == 5) {
@@ -457,12 +457,12 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(198 + j * 32, 112 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" }, RGB(255, 0, 0));
 							tppoint.begin()->SetTopLeft(198 + j * 32, 112 + i * 32);
 						}
 					}
@@ -496,12 +496,12 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-792 + j * 32, -682 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" }, RGB(255, 0, 0));
 							tppoint.begin()->SetTopLeft(-792 + j * 32, -682 + i * 32);
 						}
 						else if (a == 3) {
@@ -511,7 +511,7 @@ for (int i = 0; i < tppointnum; i++) {
 						}
 						else if (a == 4) {
 							sign.insert(sign.begin(), CMovingBitmap());
-							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" });
+							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" }, RGB(0,255, 0));
 							sign.begin()->SetTopLeft(-792 + j * 32, -682 + i * 32);
 						}
 					}
@@ -543,12 +543,12 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-760 + j * 32, -682 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" }, RGB(255, 0, 0));
 							tppoint.begin()->SetTopLeft(-760 + j * 32, -682 + i * 32);
 						}
 						else if (a == 3) {
@@ -558,7 +558,7 @@ for (int i = 0; i < tppointnum; i++) {
 						}
 						else if (a == 4) {
 							sign.insert(sign.begin(), CMovingBitmap());
-							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" });
+							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" }, RGB(0,255, 0));
 							sign.begin()->SetTopLeft(-760 + j * 32, -682 + i * 32);
 						}
 					}
@@ -590,12 +590,12 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-728 + j * 32, -682 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" }, RGB(255, 0, 0));
 							tppoint.begin()->SetTopLeft(-728 + j * 32, -682 + i * 32);
 						}
 						else if (a == 3) {
@@ -605,7 +605,7 @@ for (int i = 0; i < tppointnum; i++) {
 						}
 						else if (a == 4) {
 							sign.insert(sign.begin(), CMovingBitmap());
-							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" });
+							sign.begin()->LoadBitmapByString({ "Resources/sign.bmp" }, RGB(0,255, 0));
 							sign.begin()->SetTopLeft(-728 + j * 32, -682 + i * 32);
 						}
 					}
@@ -648,12 +648,12 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" },RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" }, RGB(255, 0, 0));
 							tppoint.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
 						}
 						else if (a == 3) {
@@ -695,12 +695,12 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-880 + j * 32, -147 + i * 32);
 						}
 						else if (a == 2) {
 							tppoint.insert(tppoint.begin(), CMovingBitmap());
-							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" });
+							tppoint.begin()->LoadBitmapByString({ "Resources/tp.bmp" }, RGB(255, 0, 0));
 							tppoint.begin()->SetTopLeft(-880 + j * 32, -147 + i * 32);
 						}
 						else if (a == 3) {
@@ -754,7 +754,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-1112 + j * 32, 108 + i * 32);
 						}
 						else if (a == 2) {
@@ -803,7 +803,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
 						}
 						else if (a == 2) {
@@ -850,7 +850,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
 						}
 						else if (a == 2) {
@@ -897,7 +897,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
 						}
 						else if (a == 2) {
@@ -944,7 +944,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
 						}
 						else if (a == 2) {
@@ -991,7 +991,7 @@ for (int i = 0; i < tppointnum; i++) {
 						home1fmap.erase(home1fmap.begin());
 						if (a == 1) {
 							hitbox.insert(hitbox.begin(), CMovingBitmap());
-							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" });// , RGB(100, 100, 100));
+							hitbox.begin()->LoadBitmapByString({ "Resources/air.bmp" }, RGB(100, 100, 100));
 							hitbox.begin()->SetTopLeft(-848 + j * 32, -147 + i * 32);
 						}
 						else if (a == 2) {
@@ -1696,6 +1696,10 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				}
 				else {
 					battle = false;
+					team = 0;
+					arrownum = 0;
+					propnum = 0;
+					bag = false;
 				}
 			}
 		}
@@ -1919,7 +1923,7 @@ void CGameStateRun::OnRButtonUp(UINT nFlags, CPoint point)	// 處理滑鼠的動
 
 void CGameStateRun::battle_start() {
 	pokeid = rand() % 20 + 1;
-	LV2 = (characterinf[18]) * 10 + (rand() / 10 % 10) + 2;
+	LV2 = (characterinf[18]) * 10 + (rand() / 10 % 5) + 2*(characterinf[18]+1);
 	/*資料讀入*/
 	turn = 0; //回合清零
 	d = false;
@@ -2107,20 +2111,20 @@ void CGameStateRun::show_image_by_phase() {
 void CGameStateRun::show_text_by_phase() {
 
 	CDC* pDC = CDDraw::GetBackCDC();
-	string x = to_string(background.GetLeft());
+	/*string x = to_string(background.GetLeft());
 	string y = to_string(background.GetTop());
 	string tx = to_string(pokemoninf[1][pokeid]);
-	string ty = to_string(pokeid);
+	string ty = to_string(pokeid);*/
 	string moneyout = to_string(characterinf[0]);
 	string pokemon[6];
 	string teamname[6];
-	string j = to_string(judge % 1000);
+	/*string j = to_string(judge % 1000);
 	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 0, 0), 800);
 	CTextDraw::Print(pDC, 0, 0, x);
 	CTextDraw::Print(pDC, 90, 0, y);
 	CTextDraw::Print(pDC, 0, 20, tx);
 	CTextDraw::Print(pDC, 90, 20, ty);
-	CTextDraw::Print(pDC, 180, 0, j);
+	CTextDraw::Print(pDC, 180, 0, j);*/
 	for (int i = 0; i < 6; i++) {
 		teamname[i].append(pokemonname[characterinf[19 + 13 * i]]);
 		pokemon[i].append("等級：");
@@ -2130,15 +2134,10 @@ void CGameStateRun::show_text_by_phase() {
 		pokemon[i].append("生命值：");
 		pokemon[i].append(to_string(characterinf[22 + 13 * i]));
 	}
-	
-	
 
-	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 0, 0), 800);
-	CTextDraw::Print(pDC, 0, 0, x);
-	CTextDraw::Print(pDC, 90, 0, y);
-	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 255, 51), 800);
-	//CTextDraw::Print(pDC, 535, 0, "$");
-	CTextDraw::Print(pDC, 300, 0, moneyout);//550
+	//CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 255, 51), 800);
+	////CTextDraw::Print(pDC, 535, 0, "$");
+	//CTextDraw::Print(pDC, 300, 0, moneyout);//550
 	if (bag == true) {				//選單文字
 		if (shopnum == 0 && team == false) {
 			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 800);
