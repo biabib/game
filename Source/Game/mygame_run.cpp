@@ -55,8 +55,8 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 		for (int i = 0; i < 97; i++) {
 			ifs1 >> characterinf[i];
 		}
-	ifstream ifs2("resources/files/pokemonlib.txt");
-		for (int i = 0; i < 19; i++) {
+	ifstream ifs2("resources/files/pokemoninf.txt");
+		for (int i = 0; i < 22; i++) {
 			for (int j = 0; j < 13; j++) {
 				ifs2 >> pokemoninf[j][i];
 			}
@@ -718,6 +718,12 @@ for (int i = 0; i < tppointnum; i++) {
 			}
 			else if (CMovingBitmap::IsOverlap(character, sign[0])) {
 				signnum = 1;
+			}
+			else if (CMovingBitmap::IsOverlap(character, dialog[0]) && shopnum == 0) {
+				signnum = 6;
+				for (int i = 0; i < 6; i++) {
+					characterinf[22 + i * 13] = pokemoninf[characterinf[19 + i * 13]][4];
+				}
 			}
 			else {
 				signnum = 0;
@@ -2060,7 +2066,7 @@ void CGameStateRun::show_text_by_phase() {
 	string pokemon[6] ;
 	string pokemonname1[6];
 	for (int i = 0; i < 6; i++) {
-		pokemonname1[i].append(pokemonname1[characterinf[19 + 13 * i]]);
+		pokemonname1[i].append(pokemonname[characterinf[19 + 13 * i]]);
 		pokemon[i].append("等級：");
 		pokemon[i].append(to_string(characterinf[20 + 13 * i]));
 		pokemon[i].append("經驗值：");
@@ -2209,6 +2215,10 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 50, 400, "往荒野");
 		}
+		else if (signnum == 6) {
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 50, 400, "寶可夢們被治癒了");
+		}
 	}
 	else if (storynum) {
 		if (storynum == 1) {
@@ -2223,17 +2233,17 @@ void CGameStateRun::show_text_by_phase() {
 	}
 	if (team || sell) {
 		CTextDraw::ChangeFontLog(pDC, 25, "微軟正黑體", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 50, 30, pokemonname[0]);
+		CTextDraw::Print(pDC, 50, 30, pokemonname1[0]);
 		CTextDraw::Print(pDC, 150, 30, pokemon[0]);
-		CTextDraw::Print(pDC, 50, 100, pokemonname[1]);
+		CTextDraw::Print(pDC, 50, 100, pokemonname1[1]);
 		CTextDraw::Print(pDC, 150, 100, pokemon[1]);
-		CTextDraw::Print(pDC, 50, 170, pokemonname[2]);
+		CTextDraw::Print(pDC, 50, 170, pokemonname1[2]);
 		CTextDraw::Print(pDC, 150, 170, pokemon[2]);
-		CTextDraw::Print(pDC, 50, 240, pokemonname[3]);
+		CTextDraw::Print(pDC, 50, 240, pokemonname1[3]);
 		CTextDraw::Print(pDC, 150, 240, pokemon[3]);
-		CTextDraw::Print(pDC, 50, 310, pokemonname[4]);
+		CTextDraw::Print(pDC, 50, 310, pokemonname1[4]);
 		CTextDraw::Print(pDC, 150, 310, pokemon[4]);
-		CTextDraw::Print(pDC, 50, 380, pokemonname[5]);
+		CTextDraw::Print(pDC, 50, 380, pokemonname1[5]);
 		CTextDraw::Print(pDC, 150, 380, pokemon[5]);
 		if (battle == true && team == 0) {
 			CTextDraw::ChangeFontLog(pDC, 25, "微軟正黑體", RGB(0, 0, 0), 1000);

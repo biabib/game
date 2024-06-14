@@ -151,8 +151,8 @@ namespace game_framework {
 		int battle_phase = 0;	
 		int judge;
 		int turn = 0;
-		int pokemoninf[21][13];
-		string pokemonname[21] = {
+		int pokemoninf[22][13];
+		string pokemonname[22] = {"",
 		"§®µìºØ¤l",
 		"§®µì¯ó",
 		"§®µìªá",
