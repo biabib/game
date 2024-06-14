@@ -101,8 +101,13 @@ namespace game_framework {
 		int driection=0;
 		int characterFrameCounter = 0;
 		bool bag = false;
+		bool battle = false;
 		int propnum = 0;
 		bool text = false;
+		bool ran = true;
+		bool accel = false;
+		int temptop = 0;
+		int templeft = 0;
 		CMovingBitmap house_1f;
 		CMovingBitmap house_2f;
 		CMovingBitmap background;
@@ -114,6 +119,7 @@ namespace game_framework {
 		CMovingBitmap point;
 		CMovingBitmap arrow;
 		CMovingBitmap white;
+		CMovingBitmap battle_scr;
 		CMovingBitmap boss[5];
 		std::vector<CMovingBitmap> pack;
 		std::vector<CMovingBitmap> hitbox;				//先用兩百個物件看看夠不夠
@@ -142,12 +148,35 @@ namespace game_framework {
 		int nownum1 = 0;
 		int arrownum = 0;
 		int signnum = 0;
-		int pokemoninf[67][13];
-		string pokemonname[67];
+		int battle_phase = 0;	
+		int judge;
+		int turn = 0;
+		int pokemoninf[19][13];
+		string pokemonname[19];
+		int skilldam[33];
+		string skillname[33];
 		void show_image_by_phase();
 		void show_text_by_phase();
+		void battle_start();
+		void turn_end();
+		void team_change();
+		void battle_turn();
 		/*void phase_house();
 		void phase_map();*/
+		int hp1;
+		int hp2;
+		int att1;
+		int att2;
+		int def1;
+		int def2;
+		int Satt1;
+		int Satt2;
+		int Sdef1;
+		int Sdef2;
+		int spe1;
+		int spe2;
+		int dam1;
+		int dam2;
 	};
 
 	/////////////////////////////////////////////////////////////////////////////

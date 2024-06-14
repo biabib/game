@@ -5,13 +5,13 @@ text:
 2	shopbuy1
 3	shopbuy2
 arrow:
-1	左上
+1	右上
 2	下	
-3	隊伍
+3	隊伍 100,415、465、515
 prop:
 1
 2
 3
 地圖物件編號從左下開始
 characterinf：money,prop[17],dojonum, pokemoninpack[6];
-pokemon：pokemonnum,level,exp,life,att,def,raceatt,racedef,speed,skill1,skill2,skill3,skill4
+pokemon：pokemonnum,level,exp,life,att,def,raceatt 0,racedef 0,speed,skill1,skill2,skill3,skill4
