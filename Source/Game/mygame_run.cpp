@@ -8,9 +8,6 @@
 #include "../Library/gamecore.h"
 #include "mygame.h"
 #include <fstream>
-#include<iostream>
-#include<cstdlib>
-#include<ctime>
 
 using namespace game_framework;
 
@@ -55,27 +52,27 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	arrow.LoadBitmapByString({ "Resources/arrow.bmp"});
 	battle_scr.LoadBitmapByString({ "Resources/battle2.bmp","Resources/battle.bmp","Resources/team.bmp" });
 	ifstream ifs1("resources/files/character.txt");
-	for (int i = 0; i < 97; i++) {
-		ifs1 >> characterinf[i];
-	}
-	ifstream ifs2("resources/files/pokemoninf.txt");
-	for (int i = 0; i < 22; i++) {
-		for (int j = 0; j < 13; j++) {
-			ifs2 >> pokemoninf[j][i];
+		for (int i = 0; i < 97; i++) {
+			ifs1 >> characterinf[i];
 		}
-	}
-	ifstream ifs3("resources/files/pokemonname.txt");
-	for (int i = 0; i < 22; i++) {
-		ifs3 >> pokemonname[i];
-	}
+	ifstream ifs2("resources/files/pokemoninf.txt");
+		for (int i = 0; i < 22; i++) {
+			for (int j = 0; j < 13; j++) {
+				ifs2 >> pokemoninf[j][i];
+			}
+		}
+	/*ifstream ifs3("resources/files/pokemonname.txt");
+		for (int i = 0; i < 19; i++) {
+			ifs3 >> pokemonname[i];
+		}*/
 	ifstream ifs4("resources/files/skilldam.txt");
-	for (int i = 0; i < 35; i++) {
+	for (int i = 0; i < 37; i++) {
 		ifs4 >> skilldam[i];
 	}
-	ifstream ifs5("resources/files/skillname.txt");
-	for (int i = 0; i < 35; i++) {
+	/*ifstream ifs5("resources/files/skillname.txt");
+	for (int i = 0; i < 19; i++) {
 		ifs5 >> skillname[i];
-	}
+	}*/
 	ifstream ifs("Resources/mapdoc/home2f.txt");
 	for (int i = 0; i < 7; i++) {
 		for (int j = 0; j < 8; j++) {
@@ -118,7 +115,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	overlapright = 0;
 	overlaptop = 0;
 	overlapdown = 0;
-	if (bag == false && shopnum == 0 && battle == false) {
+	if (bag == false && shopnum == 0) {
 		for (auto i = hitbox.begin(); i != hitbox.end(); i++) { 
 			if (CMovingBitmap::IsOverlap(character, *i)) {
 				if (character.GetLeft() > i->GetLeft()) {
@@ -330,7 +327,7 @@ for (int i = 0; i < tppointnum; i++) {
 			}
 		}
 		else if (phase == 3) {
-			if (abs(nowtop - temptop) >= 30 || abs(nowleft - templeft) >= 30) {
+			if (abs(nowtop - temptop) == 30 || abs(nowleft - templeft) == 30) {
 				ran = true;
 			}
 			for (auto i = grass.begin(); i != grass.end(); i++) {
@@ -353,7 +350,6 @@ for (int i = 0; i < tppointnum; i++) {
 					//程式碼放這邊
 				}
 			}
-			// 遍歷草叢進入戰鬥
 			if (CMovingBitmap::IsOverlap(character, tppoint[5])) {
 				phase = 1;
 				background.SetFrameIndexOfBitmap(1);
@@ -723,6 +719,12 @@ for (int i = 0; i < tppointnum; i++) {
 			else if (CMovingBitmap::IsOverlap(character, sign[0])) {
 				signnum = 1;
 			}
+			else if (CMovingBitmap::IsOverlap(character, dialog[0]) && shopnum == 0) {
+				signnum = 6;
+				for (int i = 0; i < 6; i++) {
+					characterinf[22 + i * 13] = pokemoninf[characterinf[19 + i * 13]][4];
+				}
+			}
 			else {
 				signnum = 0;
 			}
@@ -1026,7 +1028,13 @@ for (int i = 0; i < tppointnum; i++) {
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {	
 	if (nChar == VK_ESCAPE) {	//暫停並顯示箭頭
-		if (shopnum == 0 && battle != true) {
+		if (shopnum == 0) {
+			bag = !bag;
+			arrow.SetTopLeft(430, 75);
+			arrownum = 1;
+			menu.SetFrameIndexOfBitmap(0);
+			menu.SetTopLeft(400, 30);
+			propnum = 0;
 			bag = !bag;
 			arrow.SetTopLeft(430, 75);
 			arrownum = 1;
@@ -1048,15 +1056,6 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			arrownum = 0;
 		}
 		//close the window
-		if (team) {
-			shopnum = 0;
-			team = false;
-			arrow.SetTopLeft(430, 75);
-			arrownum = 0;
-			menu.SetFrameIndexOfBitmap(0);
-			menu.SetTopLeft(400, 40);
-		}
-		//team?
 		if (battle) {
 			if (arrownum != 4 && battle_phase == 1) {
 				battle_scr.SetFrameIndexOfBitmap(1);
@@ -1068,6 +1067,15 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 		}
 		//戰鬥選單退出
+		if (team) {
+			shopnum = 0;
+			team = false;
+			arrow.SetTopLeft(430, 75);
+			arrownum = 0;
+			menu.SetFrameIndexOfBitmap(0);
+			menu.SetTopLeft(400, 40);
+		}
+		//team?
 	}
 	if (nChar == VK_RETURN && confirmenter == false) {
 		if (shopnum == 0) {
@@ -1114,8 +1122,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			//查看隊伍
 		}
 		//stop function
-		if (propnum == 2 && arrow.GetTop() == 515 && characterinf[5] > 0) {
-			characterinf[5]--;
+		if (propnum == 1 && arrow.GetTop() == 465 && characterinf[1] > 0 && battle) {
 			confirmenter = true;
 			team = true;
 			arrow.SetTopLeft(30, 30);
@@ -1125,6 +1132,107 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			propnum = 0;
 			useprop = 1;
 		}
+		else if (propnum == 1 && arrow.GetTop() == 515 && characterinf[2] > 0 && battle) {
+			confirmenter = true;
+			team = true;
+			arrow.SetTopLeft(30, 30);
+			arrownum = 3;//暫定隊伍
+			menu.SetFrameIndexOfBitmap(1);
+			menu.SetTopLeft(0, 0);
+			propnum = 0;
+			useprop = 2;
+		}
+		else if (propnum == 2 && arrow.GetTop() == 415 && characterinf[3] > 0 && battle) {
+			confirmenter = true;
+			team = true;
+			arrow.SetTopLeft(30, 30);
+			arrownum = 3;//暫定隊伍
+			menu.SetFrameIndexOfBitmap(1);
+			menu.SetTopLeft(0, 0);
+			propnum = 0;
+			useprop = 3;
+		}
+		else if (propnum == 2 && arrow.GetTop() == 465 && characterinf[4] > 0 && battle) {
+			confirmenter = true;
+			team = true;
+			arrow.SetTopLeft(30, 30);
+			arrownum = 3;//暫定隊伍
+			menu.SetFrameIndexOfBitmap(1);
+			menu.SetTopLeft(0, 0);
+			propnum = 0;
+			useprop = 4;
+		}
+		else if (propnum == 2 && arrow.GetTop() == 515 && characterinf[5] > 0) {
+			confirmenter = true;
+			team = true;
+			arrow.SetTopLeft(30, 30);
+			arrownum = 3;//暫定隊伍
+			menu.SetFrameIndexOfBitmap(1);
+			menu.SetTopLeft(0, 0);
+			propnum = 0;
+			useprop = 5;
+		}
+		else if (propnum == 3 && arrow.GetTop() == 415 && characterinf[6] > 0) {
+			confirmenter = true;
+			team = true;
+			arrow.SetTopLeft(30, 30);
+			arrownum = 3;//暫定隊伍
+			menu.SetFrameIndexOfBitmap(1);
+			menu.SetTopLeft(0, 0);
+			propnum = 0;
+			useprop = 6;
+		}
+		else if (propnum == 3 && arrow.GetTop() == 465 && characterinf[7] > 0) {
+			confirmenter = true;
+			team = true;
+			arrow.SetTopLeft(30, 30);
+			arrownum = 3;//暫定隊伍
+			menu.SetFrameIndexOfBitmap(1);
+			menu.SetTopLeft(0, 0);
+			propnum = 0;
+			useprop = 7;
+		}
+		else if (propnum == 3 && arrow.GetTop() == 515 && characterinf[8] > 0) {
+			confirmenter = true;
+			team = true;
+			arrow.SetTopLeft(30, 30);
+			arrownum = 3;//暫定隊伍
+			menu.SetFrameIndexOfBitmap(1);
+			menu.SetTopLeft(0, 0);
+			propnum = 0;
+			useprop = 8;
+		}
+		else if (propnum == 4 && arrow.GetTop() == 415 && characterinf[9] > 0) {
+			confirmenter = true;
+			team = true;
+			arrow.SetTopLeft(30, 30);
+			arrownum = 3;//暫定隊伍
+			menu.SetFrameIndexOfBitmap(1);
+			menu.SetTopLeft(0, 0);
+			propnum = 0;
+			useprop = 9;
+		}
+		else if (propnum == 6 && arrow.GetTop() == 465 && characterinf[16] > 0) {
+			confirmenter = true;
+			team = true;
+			arrow.SetTopLeft(30, 30);
+			arrownum = 3;//暫定隊伍
+			menu.SetFrameIndexOfBitmap(1);
+			menu.SetTopLeft(0, 0);
+			propnum = 0;
+			useprop = 16;
+		}
+		else if (propnum == 6 && arrow.GetTop() == 515 && characterinf[17] > 0) {
+			confirmenter = true;
+			team = true;
+			arrow.SetTopLeft(30, 30);
+			arrownum = 3;//暫定隊伍
+			menu.SetFrameIndexOfBitmap(1);
+			menu.SetTopLeft(0, 0);
+			propnum = 0;
+			useprop = 17;
+		}
+		//chooseprop
 		if (phase == 4 && bag == false) {
 			if (CMovingBitmap::IsOverlap(character, dialog[1]) && shopnum == 0) {
 				shopnum = 1;
@@ -1249,32 +1357,266 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 		}
 		//sell
-		if (team) {
-			if (useprop == 1) {
-				if (arrow.GetTop() == 30 && characterinf[19] != 0) {
+		if (team ) {
+			if (useprop == 5) {
+				if (arrow.GetTop() == 30 && characterinf[19] != 0 && characterinf[19] < 100) {
 					characterinf[20]++;
 					characterinf[5]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 100 && characterinf[32] != 0) {
+				else if (arrow.GetTop() == 100 && characterinf[32] != 0 && characterinf[32] < 100) {
 					characterinf[33]++;
 					characterinf[5]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 170 && characterinf[45] != 0) {
+				else if (arrow.GetTop() == 170 && characterinf[45] != 0 && characterinf[45] < 100) {
 					characterinf[46]++;
 					characterinf[5]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 240 && characterinf[58] != 0) {
+				else if (arrow.GetTop() == 240 && characterinf[58] != 0 && characterinf[58] < 100) {
 					characterinf[59]++;
 					characterinf[5]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 310 && characterinf[71] != 0) {
+				else if (arrow.GetTop() == 310 && characterinf[71] != 0 && characterinf[71] < 100) {
 					characterinf[72]++;
 					characterinf[5]--;
+					confirmenter = true;
 				}
-				else if (arrow.GetTop() == 380 && characterinf[84] != 0) {
+				else if (arrow.GetTop() == 380 && characterinf[84] != 0 && characterinf[84] < 100) {
 					characterinf[85]++;
 					characterinf[5]--;
+					confirmenter = true;
 				}
+			}
+			//神奇糖果
+			else if (useprop == 6) {
+				if (arrow.GetTop() == 30 && characterinf[22] != 0 && characterinf[6] > 0) {
+					characterinf[22] += 20;
+					characterinf[6]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 100 && characterinf[35] != 0 && characterinf[6] > 0) {
+					characterinf[35] += 20;
+					characterinf[6]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 170 && characterinf[48] != 0 && characterinf[6] > 0) {
+					characterinf[48] += 20;
+					characterinf[6]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 240 && characterinf[61] != 0 && characterinf[6] > 0) {
+					characterinf[61] += 20;
+					characterinf[6]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 310 && characterinf[74] != 0 && characterinf[6] > 0) {
+					characterinf[74] += 20;
+					characterinf[6]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 380 && characterinf[87] != 0 && characterinf[6] > 0) {
+					characterinf[87] += 20;
+					characterinf[6]--;
+					confirmenter = true;
+				}
+			}
+			//傷藥
+			else if (useprop == 7) {
+				if (arrow.GetTop() == 30 && characterinf[22] != 0 && characterinf[7] > 0) {
+					characterinf[22] += 50;
+					characterinf[7]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 100 && characterinf[35] != 0 && characterinf[7] > 0) {
+					characterinf[35] += 50;
+					characterinf[7]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 170 && characterinf[48] != 0 && characterinf[7] > 0) {
+					characterinf[48] += 50;
+					characterinf[7]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 240 && characterinf[61] != 0 && characterinf[7] > 0) {
+					characterinf[61] += 50;
+					characterinf[7]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 310 && characterinf[74] != 0 && characterinf[7] > 0) {
+					characterinf[74] += 50;
+					characterinf[7]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 380 && characterinf[87] != 0 && characterinf[7] > 0) {
+					characterinf[87] += 50;
+					characterinf[7]--;
+					confirmenter = true;
+				}
+			}
+			//好傷藥
+			else if (useprop == 8) {
+				if (arrow.GetTop() == 30 && characterinf[22] != 0 && characterinf[8] > 0) {
+					characterinf[22] += 200;
+					characterinf[8]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 100 && characterinf[35] != 0 && characterinf[8] > 0) {
+					characterinf[35] += 200;
+					characterinf[8]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 170 && characterinf[48] != 0 && characterinf[8] > 0) {
+					characterinf[48] += 200;
+					characterinf[8]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 240 && characterinf[61] != 0 && characterinf[8] > 0) {
+					characterinf[61] += 200;
+					characterinf[8]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 310 && characterinf[74] != 0 && characterinf[8] > 0) {
+					characterinf[74] += 200;
+					characterinf[8]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 380 && characterinf[87] != 0 && characterinf[8] > 0) {
+					characterinf[87] += 200;
+					characterinf[8]--;
+					confirmenter = true;
+				}
+			}
+			//厲害傷藥
+			else if (useprop == 9) {
+				if (arrow.GetTop() == 30 && characterinf[22] != 0 && characterinf[9] > 0) {
+					characterinf[22] = pokemoninf[characterinf[19]][4];
+					characterinf[9]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 100 && characterinf[35] != 0 && characterinf[9] > 0) {
+					characterinf[35] = pokemoninf[characterinf[28]][4];
+					characterinf[9]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 170 && characterinf[48] != 0 && characterinf[9] > 0) {
+					characterinf[48] = pokemoninf[characterinf[41]][4];
+					characterinf[9]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 240 && characterinf[61] != 0 && characterinf[9] > 0) {
+					characterinf[61] = pokemoninf[characterinf[54]][4];
+					characterinf[9]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 310 && characterinf[74] != 0 && characterinf[9] > 0) {
+					characterinf[74] = pokemoninf[characterinf[67]][4];
+					characterinf[9]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 380 && characterinf[87] != 0 && characterinf[9] > 0) {
+					characterinf[87] = pokemoninf[characterinf[80]][4];
+					characterinf[9]--;
+					confirmenter = true;
+				}
+			}
+			//全滿藥
+			else if (useprop == 16) {
+				if (arrow.GetTop() == 30 && characterinf[22] == 0 && characterinf[16] > 0) {
+					characterinf[22] = pokemoninf[characterinf[19]][4] / 2;
+					characterinf[16]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 100 && characterinf[35] == 0 && characterinf[16] > 0) {
+					characterinf[35] = pokemoninf[characterinf[28]][4] / 2;
+					characterinf[16]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 170 && characterinf[48] == 0 && characterinf[16] > 0) {
+					characterinf[48] = pokemoninf[characterinf[41]][4] / 2;
+					characterinf[16]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 240 && characterinf[61] == 0 && characterinf[16] > 0) {
+					characterinf[61] = pokemoninf[characterinf[54]][4] / 2;
+					characterinf[16]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 310 && characterinf[74] == 0 && characterinf[16] > 0) {
+					characterinf[74] = pokemoninf[characterinf[67]][4] / 2;
+					characterinf[16]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 380 && characterinf[87] == 0 && characterinf[16] > 0) {
+					characterinf[87] = pokemoninf[characterinf[80]][4] / 2;
+					characterinf[16]--;
+					confirmenter = true;
+				}
+			}
+			//活力碎片
+			else if (useprop == 17) {
+				if (arrow.GetTop() == 30 && characterinf[22] == 0 && characterinf[17] > 0) {
+					characterinf[22] = pokemoninf[characterinf[19]][4];
+					characterinf[17]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 100 && characterinf[35] == 0 && characterinf[17] > 0) {
+					characterinf[35] = pokemoninf[characterinf[28]][4];
+					characterinf[17]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 170 && characterinf[48] == 0 && characterinf[17] > 0) {
+					characterinf[48] = pokemoninf[characterinf[41]][4];
+					characterinf[17]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 240 && characterinf[61] == 0 && characterinf[17] > 0) {
+					characterinf[61] = pokemoninf[characterinf[54]][4];
+					characterinf[17]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 310 && characterinf[74] == 0 && characterinf[17] > 0) {
+					characterinf[74] = pokemoninf[characterinf[67]][4];
+					characterinf[17]--;
+					confirmenter = true;
+				}
+				else if (arrow.GetTop() == 380 && characterinf[87] == 0 && characterinf[17] > 0) {
+					characterinf[87] = pokemoninf[characterinf[80]][4];
+					characterinf[17]--;
+					confirmenter = true;
+				}
+			}
+			//活力塊
+			else if (useprop == 1) {
+				confirmenter = true;
+				characterinf[1]--;
+				int a1 = rand() % 10;
+				if (a1 == 1) {
+					//finish
+				}
+			}
+			else if (useprop == 2) {
+				confirmenter = true;
+				characterinf[2]--;
+				int a1 = rand() % 5;
+				if (a1 == 1) {
+					//finish
+				}
+			}
+			else if (useprop == 3) {
+				confirmenter = true;
+				characterinf[3]--;
+				int a1 = rand() % 3;
+				if (a1 == 1) {
+					//finish
+				}
+			}
+			else if (useprop == 4) {
+				confirmenter = true;
+				characterinf[4]--;
+				//finish
 			}
 		}
 		if (arrownum == 5) {
@@ -1362,7 +1704,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 	if (nChar == VK_UP)
 	{
-		if (bag == false && shopnum == 0 && storynum == 0 && battle == false) {
+		if (bag == false && shopnum == 0 && storynum == 0) {
 			if (accel) {
 				speedY = 10;
 				speedX = 0;
@@ -1471,17 +1813,35 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				speedX = 5;
 				speedY = 0;
 			}
+			if (arrownum == 4) {
+				if (arrow.GetLeft() != 300)
+					arrow.SetTopLeft(arrow.GetLeft() - 140, arrow.GetTop());
+			}
+			else if (arrownum == 5) {
+				if (arrow.GetLeft() != 40)
+					arrow.SetTopLeft(arrow.GetLeft() - 300, arrow.GetTop());
+			}
+
+			// try to finish walking bug
+			/*if (nChar == VK_UP) {
+				switch (nownum) {
+					case 1:
+						speedY = -8;
+						break;
+					case 2:
+						speedY = -16;
+						break;
+					case 3:
+						speedY = 8;
+						break;
+					case 4:
+						speedY = 16;
+						break;
+
+				}
+			}*/
 			// try to finish walking bug
 		}
-		if (arrownum == 4) {
-			if (arrow.GetLeft() != 300)
-				arrow.SetTopLeft(arrow.GetLeft() - 140, arrow.GetTop());
-		}
-		else if (arrownum == 5) {
-			if (arrow.GetLeft() != 40)
-				arrow.SetTopLeft(arrow.GetLeft() - 300, arrow.GetTop());
-		}
-
 	}
 	if (nChar == VK_RIGHT)
 	{
@@ -1494,17 +1854,16 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				speedX = -5;
 				speedY = 0;
 			}
+			if (arrownum == 4) {
+				if (arrow.GetLeft() != 440)
+					arrow.SetTopLeft(arrow.GetLeft() + 140, arrow.GetTop());
+			}
+			else if (arrownum == 5) {
+				if (arrow.GetLeft() != 340)
+					arrow.SetTopLeft(arrow.GetLeft() + 300, arrow.GetTop());
+			}
 			
 		}
-		if (arrownum == 4) {
-			if (arrow.GetLeft() != 440)
-				arrow.SetTopLeft(arrow.GetLeft() + 140, arrow.GetTop());
-		}
-		else if (arrownum == 5) {
-			if (arrow.GetLeft() != 340)
-				arrow.SetTopLeft(arrow.GetLeft() + 300, arrow.GetTop());
-		}
-
 	}
 	if (nChar == VK_SHIFT)
 	{
@@ -1558,6 +1917,134 @@ void CGameStateRun::OnRButtonUp(UINT nFlags, CPoint point)	// 處理滑鼠的動
 {
 }
 
+void CGameStateRun::battle_start() {
+	pokeid = rand() % 20 + 1;
+	LV2 = (characterinf[18]) * 10 + (rand() / 10 % 10) + 2;
+	/*資料讀入*/
+	turn = 0; //回合清零
+	d = false;
+	hp1 = (((pokemoninf[1][characterinf[19 + 13 * pokest]] + 7) * characterinf[20 + 13 * pokest]) / 50 + 10 + characterinf[20 + 13 * pokest]) * (characterinf[22 + 13 * pokest] / 100);
+	hp2 = ((pokemoninf[1][pokeid] + 7) * LV2) / 50 + 10 + LV2;
+	att1 = characterinf[23 + 13 * pokest];
+	att2 = ((pokemoninf[2][pokeid] + 7) * 5) / 50 + LV2;
+	def1 = characterinf[24 + 13 * pokest];
+	def2 = ((pokemoninf[3][pokeid] + 7) * 5) / 50 + LV2;
+	/*Satt1 = ((種族值 + 7) * LV) / 50 + LV;
+	Satt2 = ((種族值 + 7) * 5) / 50 + 5;
+	Sdef1 = ((種族值 + 7) * 5) / 50 + 5;
+	Sdef2 = ((種族值 + 7) * 5) / 50 + 5;*/
+	spe1 = characterinf[27 + 13 * pokest];
+	spe2 = ((pokemoninf[8][pokeid] + 7) * 5) / 50 + LV2;
+}
+void CGameStateRun::battle_turn() {
+	dam1 = (((2 * characterinf[20 + 13 * pokest]/*等級*/ + 10) / 250) * (att1 / def2) * dam1/*招式傷害*/ + 2) * 1;
+	dam2 = (((2 * LV2 + 10) / 250) * (att2 / def1) * skilldam[pokemoninf[8 + rand() / 10 % 4][pokeid]] + 2) * 1;
+	int t = turn % 3;
+
+	if (battle_phase == 2) {
+		if (spe1 >= spe2)
+			battle_phase = 3;
+		else if (spe1 < spe2)
+			battle_phase = 4;
+	}
+	//判斷雙方速度值
+
+	if (battle_phase == 3) {
+		if (t == 2)
+		{
+			battle_phase = 1;
+		}
+		else {
+			hp2 -= dam1;
+			if (hp2 > 0) {
+
+				battle_phase = 4;
+			}
+			else {
+				battle_phase = 5;
+				turn_end();
+			}
+		}
+	}
+	else if (battle_phase == 4) {
+		if (t == 2)
+		{
+			battle_phase = 1;
+		}
+		else {
+			hp1 -= dam2;
+			if (hp1 > 0) {
+
+				battle_phase = 3;
+			}
+			else if (hp1 <= 0) {
+				characterinf[22 + 13 * pokest] = hp1 / (((pokemoninf[1][characterinf[19 + 13 * pokest]] + 7) * characterinf[20 + 13 * pokest]) / 50 + 10 + characterinf[20 + 13 * pokest]) * 100;
+				for (int i = 0; i < 6; i++) {
+					if (characterinf[22 + 13 * i] > 0) {
+						d = true;
+					}
+
+				}
+				if (d) {
+					team = 1;
+					arrow.SetTopLeft(30, 30);
+					arrownum = 3;//暫定隊伍
+					battle_scr.SetFrameIndexOfBitmap(2);
+					battle_scr.SetTopLeft(0, 0);
+				}
+				battle_phase = 5;
+					turn_end();
+			}
+			else {
+				battle_phase = 5;
+				turn_end();
+			}
+		}
+	}
+
+}
+void CGameStateRun::team_change() {
+	arrownum = 3;
+	team = 1;
+	arrow.SetTopLeft(30, 30);
+	arrownum = 3;//暫定隊伍
+	battle_scr.SetFrameIndexOfBitmap(2);
+	battle_scr.SetTopLeft(0, 0);
+}
+void CGameStateRun::turn_end() {
+	if (d) {
+		characterinf[0] -= 200;
+	}
+	else {
+		int xp = LV2 / 10;
+		characterinf[22 + 13 * pokest] = hp1 / (((pokemoninf[1][characterinf[19 + 13 * pokest]] + 7) * characterinf[20 + 13 * pokest]) / 50 + 10 + characterinf[20 + 13 * pokest]) * 100;
+		for (int i = 0; i < 6; i++) {
+			if (characterinf[19 + 13 * i] != 0) {
+				if (xp <= 1)
+					characterinf[21 + 13 * i] = characterinf[21 + 13 * i] + 500;
+				else if (xp >= 2)
+					characterinf[21 + 13 * i] = characterinf[21 + 13 * i] + 500 * xp;
+				if (characterinf[21 + 13 * i] >= 10000) {
+					characterinf[20 + 13 * i] += 1;
+					characterinf[21 + 13 * i] = 0;
+					if ((characterinf[19 + 13 * i] == 1 || characterinf[19 + 13 * i] == 4 || characterinf[19 + 13 * i] == 7 || characterinf[19 + 13 * i] == 10 || characterinf[19 + 13 * i] == 15 || characterinf[19 + 13 * i] == 18) && (characterinf[20 + 13 * i] == 20)) {
+						characterinf[19 + 13 * i] += 1;
+					}
+					else if ((characterinf[19 + 13 * i] == 2 || characterinf[19 + 13 * i] == 5 || characterinf[19 + 13 * i] == 8 || characterinf[19 + 13 * i] == 11 || characterinf[19 + 13 * i] == 16) && (characterinf[20 + 13 * i] == 35)) {
+						characterinf[19 + 13 * i] += 1;
+					}
+					characterinf[23 + 13 * i] = (((pokemoninf[2][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
+					characterinf[24 + 13 * i] = (((pokemoninf[3][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
+					characterinf[27 + 13 * i] = (((pokemoninf[8][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
+					characterinf[22 + 13 * i] = (((pokemoninf[1][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + 10 + characterinf[20 + 13 * i]);
+
+				}
+				characterinf[22 + 13 * i] = characterinf[22 + 13 * i] / (((pokemoninf[1][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + 10 + characterinf[20 + 13 * i]) * 100;
+
+			}
+		}
+	}
+}
 void CGameStateRun::OnShow()
 {
 	show_image_by_phase();
@@ -1617,135 +2104,6 @@ void CGameStateRun::show_image_by_phase() {
 	}//戰鬥畫面顯示
 }
 
-void CGameStateRun::battle_start() {
-	pokeid = rand() % 20 +1;
-	LV2 = (characterinf[18])*10 + (rand()/10%10)+2;
-	/*資料讀入*/
-	turn = 0; //回合清零
-	d = false;
-	hp1 = (((pokemoninf[1][characterinf[19+13*pokest]] + 7) * characterinf[20 + 13 * pokest]) / 50 + 10 + characterinf[20 + 13 * pokest]) *( characterinf[22 + 13 * pokest] / 100);
-	hp2 = ((pokemoninf[1][pokeid] + 7) * LV2) / 50 + 10 + LV2;
-	att1 = characterinf[23 + 13 * pokest];
-	att2 = ((pokemoninf[2][pokeid] + 7) * 5) / 50 + LV2;
-	def1 = characterinf[24 + 13 * pokest];
-	def2 = ((pokemoninf[3][pokeid] + 7) * 5) / 50 + LV2;
-	/*Satt1 = ((種族值 + 7) * LV) / 50 + LV;
-	Satt2 = ((種族值 + 7) * 5) / 50 + 5;
-	Sdef1 = ((種族值 + 7) * 5) / 50 + 5;
-	Sdef2 = ((種族值 + 7) * 5) / 50 + 5;*/
-	spe1 = characterinf[27 + 13 * pokest];
-	spe2 = ((pokemoninf[8][pokeid] + 7) * 5) / 50 + LV2;
-
-
-
-}
-void CGameStateRun::battle_turn() {
-	dam1 = (((2 * characterinf[20 + 13 * pokest]/*等級*/ + 10) / 250) * (att1 / def2) * dam1/*招式傷害*/ + 2) * 1;
-	dam2 = (((2 * LV2 + 10) / 250) * (att2 / def1) * skilldam[pokemoninf[8+rand()/10%4][pokeid]] + 2) * 1;
-	int t = turn % 3;
-	if (battle_phase == 2) {
-		if (spe1 >= spe2)
-			battle_phase = 3;
-		else if (spe1 < spe2)
-			battle_phase = 4;
-	}
-	//判斷雙方速度值
-
-	if (battle_phase == 3) {
-		if (t == 2)
-		{
-			battle_phase = 1;
-		}
-		else {
-			hp2 -= dam1;
-			if (hp2 > 0) {
-
-				battle_phase = 4;
-			}
-			else {
-				battle_phase = 5;
-				turn_end();
-			}
-		}
-	}
-	else if (battle_phase == 4) {
-		if (t == 2)
-		{
-			battle_phase = 1;
-		}
-		else {
-			hp1 -= dam2;
-			if (hp1 > 0) {
-
-				battle_phase = 3;
-			}
-			else if (hp1 <= 0) {
-				for (int i = 0; i < 6; i++) {
-					if (characterinf[20 + 13 * i] > 0)
-						d = true;
-				}
-				if (d) {
-					team = 1;
-					arrow.SetTopLeft(30, 30);
-					arrownum = 3;//暫定隊伍
-					battle_scr.SetFrameIndexOfBitmap(2);
-					battle_scr.SetTopLeft(0, 0);
-				}
-				else {
-					turn_end();
-				}
-			}
-			else {
-				battle_phase = 5;
-				turn_end();
-			}
-		}
-	}
-
-}
-void CGameStateRun::team_change() {
-		arrownum = 3;
-		team = 1;
-		arrow.SetTopLeft(30, 30);
-		arrownum = 3;//暫定隊伍
-		battle_scr.SetFrameIndexOfBitmap(2);
-		battle_scr.SetTopLeft(0, 0);
-}
-void CGameStateRun::turn_end() {
-	if (d){
-		characterinf[0] -= 200;
-	}
-	else {
-		int xp = LV2 / 10;
-		characterinf[22 + 13 * pokest] = hp1 / (((pokemoninf[1][characterinf[19 + 13 * pokest]] + 7) * characterinf[20 + 13 * pokest]) / 50 + 10 + characterinf[20 + 13 * pokest]) * 100;
-		for (int i = 0; i < 6; i++) {
-			if (characterinf[19 + 13 * i] != 0) {
-				if (xp <= 1)
-					characterinf[21 + 13 * i] = characterinf[21 + 13 * i] + 500;
-				else if (xp >= 2)
-					characterinf[21 + 13 * i] = characterinf[21 + 13 * i] + 500 * xp;
-				if (characterinf[21 + 13 * i] >= 10000) {
-					characterinf[20 + 13 * i] += 1;
-					characterinf[21 + 13 * i] = 0;
-					if((characterinf[19 + 13*i] == 1 || characterinf[19 + 13 * i] == 4 || characterinf[19 + 13 * i] == 7 || characterinf[19 + 13 * i] == 10 || characterinf[19 + 13 * i] == 15 || characterinf[19 + 13 * i] == 18)&&(characterinf[20+13*i]== 20)) {
-						characterinf[19 + 13 * i] += 1;
-					}
-					else if ((characterinf[19 + 13 * i] == 2 || characterinf[19 + 13 * i] == 5 || characterinf[19 + 13 * i] == 8 || characterinf[19 + 13 * i] == 11 || characterinf[19 + 13 * i] == 16) && (characterinf[20 + 13 * i] == 35)) {
-						characterinf[19 + 13 * i] += 1;
-					}
-					characterinf[23 + 13 * i] = (((pokemoninf[2][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
-					characterinf[24 + 13 * i] = (((pokemoninf[3][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
-					characterinf[27 + 13 * i] = (((pokemoninf[8][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
-					characterinf[22 + 13 * i] = (((pokemoninf[1][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + 10 + characterinf[20 + 13 * i]);
-
-				}
-				characterinf[22 + 13 * i] = characterinf[22 + 13 * i]  / (((pokemoninf[1][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + 10 + characterinf[20 + 13 * i]) * 100;
-				
-			}
-		}
-	}
-}
-
 void CGameStateRun::show_text_by_phase() {
 
 	CDC* pDC = CDDraw::GetBackCDC();
@@ -1754,7 +2112,7 @@ void CGameStateRun::show_text_by_phase() {
 	string tx = to_string(pokemoninf[1][pokeid]);
 	string ty = to_string(pokeid);
 	string moneyout = to_string(characterinf[0]);
-	string pokemon[6] ;
+	string pokemon[6];
 	string teamname[6];
 	string j = to_string(judge % 1000);
 	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 0, 0), 800);
@@ -1781,8 +2139,8 @@ void CGameStateRun::show_text_by_phase() {
 	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 255, 51), 800);
 	//CTextDraw::Print(pDC, 535, 0, "$");
 	CTextDraw::Print(pDC, 300, 0, moneyout);//550
-	if (bag == true || battle == true) {				//選單文字
-		if (shopnum == 0 && team == false && battle == false) {
+	if (bag == true) {				//選單文字
+		if (shopnum == 0 && team == false) {
 			CTextDraw::ChangeFontLog(pDC, 40, "微軟正黑體", RGB(0, 0, 0), 800);
 			CTextDraw::Print(pDC, 450, 60, "隊伍");
 			CTextDraw::Print(pDC, 450, 120, "背包");
@@ -1913,6 +2271,10 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
 			CTextDraw::Print(pDC, 50, 400, "往荒野");
 		}
+		else if (signnum == 6) {
+			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 50, 400, "寶可夢們被治癒了");
+		}
 	}
 	else if (storynum) {
 		if (storynum == 1) {
@@ -1939,66 +2301,65 @@ void CGameStateRun::show_text_by_phase() {
 		CTextDraw::Print(pDC, 150, 310, pokemon[4]);
 		CTextDraw::Print(pDC, 50, 380, teamname[5]);
 		CTextDraw::Print(pDC, 150, 380, pokemon[5]);
-
 	}
 	if (battle == true && team == 0) {
-		CTextDraw::ChangeFontLog(pDC, 25, "微軟正黑體", RGB(0, 0, 0), 1000);
-		CTextDraw::Print(pDC, 60, 50, pokemonname[pokeid]);
-		CTextDraw::Print(pDC, 240, 50, "LV:");
-		CTextDraw::Print(pDC, 300, 50, to_string(LV2));
-		CTextDraw::Print(pDC, 60, 75, "HP:");
-		CTextDraw::Print(pDC, 130, 75, to_string(hp2));
-		CTextDraw::Print(pDC, 330, 300, "小火龍");
-		CTextDraw::Print(pDC, 480, 300, "LV:");
-		CTextDraw::Print(pDC, 540, 300, to_string((characterinf[20+13*pokest])));
-		CTextDraw::Print(pDC, 330, 325, "HP:");
-		CTextDraw::Print(pDC, 400, 325, to_string(hp1));
-		if (battle_phase == 1) {
-			if (arrownum == 4) {
+			CTextDraw::ChangeFontLog(pDC, 25, "微軟正黑體", RGB(0, 0, 0), 1000);
+			CTextDraw::Print(pDC, 60, 50, pokemonname[pokeid]);
+			CTextDraw::Print(pDC, 240, 50, "LV:");
+			CTextDraw::Print(pDC, 300, 50, to_string(LV2));
+			CTextDraw::Print(pDC, 60, 75, "HP:");
+			CTextDraw::Print(pDC, 130, 75, to_string(hp2));
+			CTextDraw::Print(pDC, 330, 300, "小火龍");
+			CTextDraw::Print(pDC, 480, 300, "LV:");
+			CTextDraw::Print(pDC, 540, 300, to_string((characterinf[20 + 13 * pokest])));
+			CTextDraw::Print(pDC, 330, 325, "HP:");
+			CTextDraw::Print(pDC, 400, 325, to_string(hp1));
+			if (battle_phase == 1) {
+				if (arrownum == 4) {
+					CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+					CTextDraw::Print(pDC, 330, 430, "戰鬥");
+					CTextDraw::Print(pDC, 470, 430, "寶可夢");
+					CTextDraw::Print(pDC, 330, 490, "背包");
+					CTextDraw::Print(pDC, 470, 490, "逃跑");
+				}
+				else if (arrownum == 5) {
+					CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+					CTextDraw::Print(pDC, 60, 430, skillname[characterinf[28 + 13 * pokest]]);
+					CTextDraw::Print(pDC, 360, 430, skillname[characterinf[29 + 13 * pokest]]);
+					CTextDraw::Print(pDC, 60, 490, skillname[characterinf[30 + 13 * pokest]]);
+					CTextDraw::Print(pDC, 360, 490, skillname[characterinf[31 + 13 * pokest]]);
+					/*CTextDraw::ChangeFontLog(pDC, 30, "微軟正黑體", RGB(0, 0, 0), 1000);
+					CTextDraw::Print(pDC, 220, 430, "pp/pp");
+					CTextDraw::Print(pDC, 520, 430, "pp/pp");
+					CTextDraw::Print(pDC, 220, 490, "pp/pp");
+					CTextDraw::Print(pDC, 520, 490, "pp/pp");*/
+				}
+			}
+			else if (battle_phase == 3)
+			{
 				CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-				CTextDraw::Print(pDC, 330, 430, "戰鬥");
-				CTextDraw::Print(pDC, 470, 430, "寶可夢");
-				CTextDraw::Print(pDC, 330, 490, "背包");
-				CTextDraw::Print(pDC, 470, 490, "逃跑");
+				CTextDraw::Print(pDC, 60, 430, "受到了攻擊");
 			}
-			else if (arrownum == 5) {
+			else if (battle_phase == 4)
+			{
 				CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-				CTextDraw::Print(pDC, 60, 430, "技能1");
-				CTextDraw::Print(pDC, 360, 430, "技能2");
-				CTextDraw::Print(pDC, 60, 490, "技能3");
-				CTextDraw::Print(pDC, 360, 490, "技能4");
-				/*CTextDraw::ChangeFontLog(pDC, 30, "微軟正黑體", RGB(0, 0, 0), 1000);
-				CTextDraw::Print(pDC, 220, 430, "pp/pp");
-				CTextDraw::Print(pDC, 520, 430, "pp/pp");
-				CTextDraw::Print(pDC, 220, 490, "pp/pp");
-				CTextDraw::Print(pDC, 520, 490, "pp/pp");*/
+				CTextDraw::Print(pDC, 60, 430, "受到了攻擊");
 			}
-		}
-		else if (battle_phase == 3)
-		{
-			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-			CTextDraw::Print(pDC, 60, 430, "受到了攻擊");
-		}
-		else if (battle_phase == 4)
-		{
-			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-			CTextDraw::Print(pDC, 60, 430, "受到了攻擊");
-		}
-		else if (battle_phase == 5)
-		{
-			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-			CTextDraw::Print(pDC, 60, 430, "隊伍全體獲得了");
-			if (LV2 < 10) {
-				CTextDraw::Print(pDC, 300, 430, to_string(500));
+			else if (battle_phase == 5)
+			{
+				CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
+				CTextDraw::Print(pDC, 60, 430, "隊伍全體獲得了");
+				if (LV2 < 10) {
+					CTextDraw::Print(pDC, 300, 430, to_string(500));
+				}
+				else {
+					CTextDraw::Print(pDC, 300, 430, to_string(500 * (LV2 / 10)));
+				}
+				CTextDraw::Print(pDC, 360, 430, "經驗");
+
 			}
-			else {
-				CTextDraw::Print(pDC, 300, 430, to_string(500 * (LV2 / 10)));
-			}
-			CTextDraw::Print(pDC, 360, 430, "經驗");
-			
-		}
+		
 	}
-	
 	CDDraw::ReleaseBackCDC();
 }
 

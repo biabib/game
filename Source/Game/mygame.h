@@ -119,8 +119,8 @@ namespace game_framework {
 		CMovingBitmap point;
 		CMovingBitmap arrow;
 		CMovingBitmap white;
-		CMovingBitmap boss[5];
 		CMovingBitmap battle_scr;
+		CMovingBitmap boss[5];
 		std::vector<CMovingBitmap> pack;
 		std::vector<CMovingBitmap> hitbox;				//先用兩百個物件看看夠不夠
 		std::vector<CMovingBitmap> tppoint;
@@ -149,31 +149,90 @@ namespace game_framework {
 		int nownum1 = 0;
 		int arrownum = 0;
 		int signnum = 0;
-		int pokemoninf[22][13];
-		string pokemonname[22];
-		int skilldam[35];
-		string skillname[35];
-		void show_image_by_phase();
-		void show_text_by_phase();
-		/*void phase_house();
-		void phase_map();*/
-		int battle_phase = 0;
+		int battle_phase = 0;	
 		int judge;
 		int turn = 0;
+		int pokemoninf[22][13];
+		string pokemonname[22] = {"",
+		"妙蛙種子",
+		"妙蛙草",
+		"妙蛙花",
+		"小火龍",
+		"火恐龍",
+		"噴火龍",
+		"傑尼龜",
+		"卡咪龜",
+		"水箭龜",
+		"波波",
+		"比比鳥",
+		"大比鳥",
+		"怪力",
+		"刺甲貝",
+		"鬼斯",
+		"鬼斯通",
+		"耿鬼",
+		"霹靂電球",
+		"頑皮雷彈",
+		"快龍",
+		"超夢"
+		};
+		int skilldam[37];
+		string skillname[37] = {
+		"",
+		"火焰拳",
+		"抓 ",
+		"起風",
+		"翅膀攻擊",
+		"藤鞭",
+		"撞擊",
+		"泰山壓頂",
+		"捨身衝撞",
+		"火花",
+		"噴射火焰",
+		"水槍",
+		"水炮",
+		"衝浪",
+		"冰凍光束",
+		"暴風雪",
+		"幻象光線",
+		"極光束",
+		"破壞光線",
+		"地獄翻滾",
+		"飛葉快刀",
+		"日光束",
+		"十萬伏特",
+		"打雷",
+		"地震",
+		"念力",
+		"精神強念",
+		"電光一閃",
+		"黑夜魔影",
+		"自爆",
+		"舌舔",
+		"大字爆炎",
+		"高速星星",
+		"神鳥猛擊",
+		"大爆炸",
+		"岩崩",
+		"三重攻擊"};
+		void show_image_by_phase();
+		void show_text_by_phase();
 		void battle_start();
 		void turn_end();
 		void team_change();
 		void battle_turn();
+		/*void phase_house();
+		void phase_map();*/
 		int hp1;
 		int hp2;
 		int att1;
 		int att2;
 		int def1;
 		int def2;
-		/*int Satt1;
+		int Satt1;
 		int Satt2;
 		int Sdef1;
-		int Sdef2;*/
+		int Sdef2;
 		int spe1;
 		int spe2;
 		int dam1;
