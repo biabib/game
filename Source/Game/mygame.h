@@ -130,6 +130,8 @@ namespace game_framework {
 		bool confirmup = false;
 		bool confirmdown = false;
 		bool sell = false;
+		bool usingprop = false;
+		int useprop = 0;
 		int storynum = 1;
 		int shopnum = 0;
 		int hitboxnum = 0;

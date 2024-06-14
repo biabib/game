@@ -742,7 +742,7 @@ for (int i = 0; i < tppointnum; i++) {
 			if (CMovingBitmap::IsOverlap(character, tppoint[0])) {
 				phase = 3;
 				background.SetFrameIndexOfBitmap(2);
-				background.SetTopLeft(-816, -115);
+				background.SetTopLeft(-730, -270);
 				character.SetFrameIndexOfBitmap(0);
 				hitbox.clear();
 				tppoint.clear();
@@ -789,7 +789,7 @@ for (int i = 0; i < tppointnum; i++) {
 			else if (CMovingBitmap::IsOverlap(character, tppoint[1])) {
 				phase = 3;
 				background.SetFrameIndexOfBitmap(2);
-				background.SetTopLeft(-816, -115);
+				background.SetTopLeft(-730, -270);
 				character.SetFrameIndexOfBitmap(0);
 				hitbox.clear();
 				tppoint.clear();
@@ -836,7 +836,7 @@ for (int i = 0; i < tppointnum; i++) {
 			else if (CMovingBitmap::IsOverlap(character, tppoint[2])) {
 				phase = 3;
 				background.SetFrameIndexOfBitmap(2);
-				background.SetTopLeft(-816, -115);
+				background.SetTopLeft(-730, -270);
 				character.SetFrameIndexOfBitmap(0);
 				hitbox.clear();
 				tppoint.clear();
@@ -883,7 +883,7 @@ for (int i = 0; i < tppointnum; i++) {
 			else if (CMovingBitmap::IsOverlap(character, tppoint[3])) {
 				phase = 3;
 				background.SetFrameIndexOfBitmap(2);
-				background.SetTopLeft(-816, -115);
+				background.SetTopLeft(-730, -270);
 				character.SetFrameIndexOfBitmap(0);
 				hitbox.clear();
 				tppoint.clear();
@@ -930,7 +930,7 @@ for (int i = 0; i < tppointnum; i++) {
 			else if (CMovingBitmap::IsOverlap(character, tppoint[4])) {
 				phase = 3;
 				background.SetFrameIndexOfBitmap(2);
-				background.SetTopLeft(-816, -115);
+				background.SetTopLeft(-730, -270);
 				character.SetFrameIndexOfBitmap(0);
 				hitbox.clear();
 				tppoint.clear();
@@ -1056,6 +1056,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 			//查看背包
 			else if (arrow_y == 75) {
+				confirmenter = true;
 				team = true;
 				arrow.SetTopLeft(30, 30);
 				arrownum = 3;//暫定隊伍
@@ -1065,7 +1066,17 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			//查看隊伍
 		}
 		//stop function
-		
+		if (propnum == 2 && arrow.GetTop() == 515 && characterinf[5] > 0) {
+			characterinf[5]--;
+			confirmenter = true;
+			team = true;
+			arrow.SetTopLeft(30, 30);
+			arrownum = 3;//暫定隊伍
+			menu.SetFrameIndexOfBitmap(1);
+			menu.SetTopLeft(0, 0);
+			propnum = 0;
+			useprop = 1;
+		}
 		if (phase == 4 && bag == false) {
 			if (CMovingBitmap::IsOverlap(character, dialog[1]) && shopnum == 0) {
 				shopnum = 1;
@@ -1084,7 +1095,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				shopnum = 2;
 				confirmenter = true;
 			}
-			//innto buy
+			//into buy
 			else if (arrow.GetTop() == 465) {
 				confirmenter = true;
 				sell = true;
@@ -1102,89 +1113,119 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 		//in shop
 		if (shopnum == 2 && confirmenter == false) {
-			if (arrow.GetTop() == 415 && characterinf[0] >= 100) {
-				characterinf[0] = characterinf[0] - 100;
+			if (arrow.GetTop() == 415 && characterinf[0] >= 200) {
+				characterinf[0] = characterinf[0] - 200;
 				characterinf[1]++;
 			}
-			else if (arrow.GetTop() == 465) {
-				characterinf[0] = characterinf[0] - 300;
+			else if (arrow.GetTop() == 465 && characterinf[0] >= 600) {
+				characterinf[0] = characterinf[0] - 600;
 				characterinf[2]++;
 			}
-			else {
-				characterinf[0] = characterinf[0] - 500;
+			else if (arrow.GetTop() == 515 && characterinf[0] >= 1200) {
+				characterinf[0] = characterinf[0] - 1200;
 				characterinf[3]++;
 			}
 		}
 		else if (shopnum == 3) {
-			if (arrow.GetTop() == 415) {
-				characterinf[0] = characterinf[0] - 100;
-				characterinf[4]++;
-			}
-			else if (arrow.GetTop() == 465) {
-				characterinf[0] = characterinf[0] - 300;
+			if (arrow.GetTop() == 415 && characterinf[0] >= 4800) {
+				characterinf[0] = characterinf[0] - 4800;
 				characterinf[5]++;
 			}
-			else {
-				characterinf[0] = characterinf[0] - 500;
+			else if (arrow.GetTop() == 465 && characterinf[0] >= 300) {
+				characterinf[0] = characterinf[0] - 300;
 				characterinf[6]++;
+			}
+			else if (arrow.GetTop() == 515 && characterinf[0] >= 700) {
+				characterinf[0] = characterinf[0] - 700;
+				characterinf[7]++;
 			}
 		}
 		else if (shopnum == 4) {
-			if (arrow.GetTop() == 415) {
-				characterinf[0] = characterinf[0] - 100;
-				characterinf[7]++;
-			}
-			else if (arrow.GetTop() == 465) {
-				characterinf[0] = characterinf[0] - 300;
+			if (arrow.GetTop() == 415 && characterinf[0] >= 1500) {
+				characterinf[0] = characterinf[0] - 1500;
 				characterinf[8]++;
 			}
-			else {
-				characterinf[0] = characterinf[0] - 500;
+			else if (arrow.GetTop() == 465 && characterinf[0] >= 2500) {
+				characterinf[0] = characterinf[0] - 2500;
 				characterinf[9]++;
 			}
-		}
-		else if (shopnum == 5) {
-			if (arrow.GetTop() == 415) {
+			else if (arrow.GetTop() == 515 && characterinf[0] >= 100) {
 				characterinf[0] = characterinf[0] - 100;
 				characterinf[10]++;
 			}
-			else if (arrow.GetTop() == 465) {
-				characterinf[0] = characterinf[0] - 300;
+		}
+		else if (shopnum == 5) {
+			if (arrow.GetTop() == 415 && characterinf[0] >= 250) {
+				characterinf[0] = characterinf[0] - 250;
 				characterinf[11]++;
 			}
-			else {
-				characterinf[0] = characterinf[0] - 500;
+			else if (arrow.GetTop() == 465 && characterinf[0] >= 250) {
+				characterinf[0] = characterinf[0] - 250;
 				characterinf[12]++;
+			}
+			else if (arrow.GetTop() == 515 && characterinf[0] >= 200) {
+				characterinf[0] = characterinf[0] - 200;
+				characterinf[13]++;
 			}
 		}
 		else if (shopnum == 6) {
-			if (arrow.GetTop() == 415) {
-				characterinf[0] = characterinf[0] - 100;
-				characterinf[13]++;
-			}
-			else if (arrow.GetTop() == 465) {
-				characterinf[0] = characterinf[0] - 300;
+			if (arrow.GetTop() == 415 && characterinf[0] >= 200) {
+				characterinf[0] = characterinf[0] - 200;
 				characterinf[14]++;
 			}
-			else {
-				characterinf[0] = characterinf[0] - 500;
+			else if (arrow.GetTop() == 465 && characterinf[0] >= 600) {
+				characterinf[0] = characterinf[0] - 600;
 				characterinf[15]++;
 			}
-		}
-		if (shopnum == 7) {
-			if (arrow.GetTop() == 415) {
-				characterinf[0] = characterinf[0] - 100;
+			else if (arrow.GetTop() == 515 && characterinf[0] >= 1500) {
+				characterinf[0] = characterinf[0] - 1500;
 				characterinf[16]++;
+			}
+		}
+		else if (shopnum == 7) {
+			if (arrow.GetTop() == 415 && characterinf[0] >= 4000) {
+				characterinf[0] = characterinf[0] - 4000;
+				characterinf[17]++;
 			}
 		}
 		//buy
 		if (sell && !confirmenter) {
 			for (int i = 0; i < 6; i++) {
 				if (arrow.GetTop() == 30+i*70) {
+					characterinf[0] += 100 * characterinf[21 + i * 13];
 					for (int j = 0; j < 13; j++) {
 						characterinf[19 + i * 13 + j] = 0;
 						sell = false;
 					}
+				}
+			}
+		}
+		//sell
+		if (team) {
+			if (useprop == 1) {
+				if (arrow.GetTop() == 30 && characterinf[19] != 0) {
+					characterinf[20]++;
+					characterinf[5]--;
+				}
+				else if (arrow.GetTop() == 100 && characterinf[32] != 0) {
+					characterinf[33]++;
+					characterinf[5]--;
+				}
+				else if (arrow.GetTop() == 170 && characterinf[45] != 0) {
+					characterinf[46]++;
+					characterinf[5]--;
+				}
+				else if (arrow.GetTop() == 240 && characterinf[58] != 0) {
+					characterinf[59]++;
+					characterinf[5]--;
+				}
+				else if (arrow.GetTop() == 310 && characterinf[71] != 0) {
+					characterinf[72]++;
+					characterinf[5]--;
+				}
+				else if (arrow.GetTop() == 380 && characterinf[84] != 0) {
+					characterinf[85]++;
+					characterinf[5]--;
 				}
 			}
 		}
@@ -1239,7 +1280,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 		//prop page down  少五十補正 
 
-		if (shopnum < 6 && arrow.GetTop() == 515 && propnum == 0) {
+		if (shopnum > 1 && shopnum < 6 && arrow.GetTop() == 515 && propnum == 0) {
 			shopnum++;
 			arrow.SetTopLeft(100, 365);
 		}
@@ -1370,16 +1411,13 @@ void CGameStateRun::show_image_by_phase() {
 	if (signnum || storynum) {
 		textbox.ShowBitmap();
 	}
-	if (sell) {
-		menu.ShowBitmap();
-		arrow.ShowBitmap();
-	}
 	if (bag && !team) {
 		menu.ShowBitmap();
 		arrow.ShowBitmap();
 	}
-	else if (team) {
+	if (sell || team) {
 		menu.ShowBitmap();
+		arrow.ShowBitmap();
 	}
 	for (auto i = hitbox.begin(); i != hitbox.end(); i++) {
 		i->ShowBitmap();
@@ -1496,39 +1534,37 @@ void CGameStateRun::show_text_by_phase() {
 		}
 		else if (shopnum == 2) {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-			CTextDraw::Print(pDC, 150, 400, "精靈球    $100");
-			CTextDraw::Print(pDC, 150, 450, "超級球    $300");
-			CTextDraw::Print(pDC, 150, 500, "高級球    $500");
+			CTextDraw::Print(pDC, 150, 400, "精靈球    $200");
+			CTextDraw::Print(pDC, 150, 450, "超級球    $600");
+			CTextDraw::Print(pDC, 150, 500, "高級球    $1200");
 		}
 		else if (shopnum == 3) {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-			CTextDraw::Print(pDC, 150, 400, "神奇糖果$1000");
+			CTextDraw::Print(pDC, 150, 400, "神奇糖果$4800");
 			CTextDraw::Print(pDC, 150, 450, "傷藥        $300");
-			CTextDraw::Print(pDC, 150, 500, "好傷藥    $500");
+			CTextDraw::Print(pDC, 150, 500, "好傷藥    $700");
 		}
 		else if (shopnum == 4) {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-			CTextDraw::Print(pDC, 150, 400, "厲害傷藥$100");
-			CTextDraw::Print(pDC, 150, 450, "全滿藥    $300");
-			CTextDraw::Print(pDC, 150, 500, "解毒藥    $500");
+			CTextDraw::Print(pDC, 150, 400, "厲害傷藥$1500");
+			CTextDraw::Print(pDC, 150, 450, "全滿藥    $2500");
+			CTextDraw::Print(pDC, 150, 500, "解毒藥    $100");
 		}
 		else if (shopnum == 5) {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-			CTextDraw::Print(pDC, 150, 400, "灼傷藥    $100");
-			CTextDraw::Print(pDC, 150, 450, "解凍藥    $300");
-			CTextDraw::Print(pDC, 150, 500, "解麻藥    $500");
+			CTextDraw::Print(pDC, 150, 400, "灼傷藥    $250");
+			CTextDraw::Print(pDC, 150, 450, "解凍藥    $250");
+			CTextDraw::Print(pDC, 150, 500, "解麻藥    $200");
 		}
 		else if (shopnum == 6) {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-			CTextDraw::Print(pDC, 150, 400, "解眠藥    $100");
-			CTextDraw::Print(pDC, 150, 450, "萬靈藥    $300");
-			CTextDraw::Print(pDC, 150, 500, "活力碎片$500");
+			CTextDraw::Print(pDC, 150, 400, "解眠藥    $200");
+			CTextDraw::Print(pDC, 150, 450, "萬靈藥    $600");
+			CTextDraw::Print(pDC, 150, 500, "活力碎片$1500");
 		}
 		else if (shopnum == 7) {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
-			CTextDraw::Print(pDC, 150, 400, "活力塊    $100");
-			CTextDraw::Print(pDC, 150, 450, "");
-			CTextDraw::Print(pDC, 150, 500, "");
+			CTextDraw::Print(pDC, 150, 400, "活力塊   $4000");
 		}
 		else if (shopnum == 100) {
 			CTextDraw::ChangeFontLog(pDC, 35, "微軟正黑體", RGB(0, 0, 0), 1000);
