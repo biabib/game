@@ -1028,19 +1028,14 @@ for (int i = 0; i < tppointnum; i++) {
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {	
 	if (nChar == VK_ESCAPE) {	//暫停並顯示箭頭
-		if (shopnum == 0) {
+		if (shopnum == 0 && battle != true) {
 			bag = !bag;
 			arrow.SetTopLeft(430, 75);
 			arrownum = 1;
 			menu.SetFrameIndexOfBitmap(0);
 			menu.SetTopLeft(400, 30);
 			propnum = 0;
-			bag = !bag;
-			arrow.SetTopLeft(430, 75);
-			arrownum = 1;
-			menu.SetFrameIndexOfBitmap(0);
-			menu.SetTopLeft(400, 30);
-			propnum = 0;
+			team = 0;
 			team = false;
 		}
 		// stop the game
@@ -1624,7 +1619,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				if (arrow.GetTop() == 440) {
 					if (arrow.GetLeft() == 40) {
 						battle_phase = 2;
-						dam1 = skilldam[characterinf[28 + 13 * pokest]];
+						dam1 = ((att1/def2)*skilldam[characterinf[28+13*pokest]]/10+2);
 						//招式威力
 
 						battle_turn();
@@ -1633,7 +1628,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					else
 					{
 						battle_phase = 2;
-						dam1 = skilldam[characterinf[29 + 13 * pokest]];
+						dam1 = ((att1 / def2) * skilldam[characterinf[29 + 13 * pokest]]/10 + 2);
 						battle_turn();
 						turn += 1;
 					}
@@ -1641,14 +1636,13 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				else {
 					if (arrow.GetLeft() == 40) {
 						battle_phase = 2;
-						dam1 = skilldam[characterinf[30 + 13 * pokest]];
-						battle_turn();
+						dam1 = ((att1 / def2) * skilldam[characterinf[30 + 13 * pokest]]/10 + 2) ;
 						turn += 1;
 					}
 					else
 					{
 						battle_phase = 2;
-						dam1 = skilldam[characterinf[31 + 13 * pokest]];
+						dam1 = ((att1 / def2) * skilldam[characterinf[31 + 13 * pokest]]/10 + 2) ;
 						battle_turn();
 						turn += 1;
 					}
@@ -1941,8 +1935,8 @@ void CGameStateRun::battle_start() {
 	spe2 = ((pokemoninf[8][pokeid] + 7) * 5) / 50 + LV2;
 }
 void CGameStateRun::battle_turn() {
-	dam1 = (((2 * characterinf[20 + 13 * pokest]/*等級*/ + 10) / 250) * (att1 / def2) * dam1/*招式傷害*/ + 2) * 1;
-	dam2 = (((2 * LV2 + 10) / 250) * (att2 / def1) * skilldam[pokemoninf[8 + rand() / 10 % 4][pokeid]] + 2) * 1;
+	
+	dam2 = ((att2 / def1) * skilldam[pokemoninf[8 + rand() / 10 % 4][pokeid]]/10 + 2) ;
 	int t = turn % 3;
 
 	if (battle_phase == 2) {
@@ -1959,7 +1953,7 @@ void CGameStateRun::battle_turn() {
 			battle_phase = 1;
 		}
 		else {
-			hp2 -= dam1;
+			hp2 = hp2 - dam1;
 			if (hp2 > 0) {
 
 				battle_phase = 4;
@@ -1976,7 +1970,7 @@ void CGameStateRun::battle_turn() {
 			battle_phase = 1;
 		}
 		else {
-			hp1 -= dam2;
+			hp1 = hp1 -  dam2;
 			if (hp1 > 0) {
 
 				battle_phase = 3;
@@ -2029,21 +2023,26 @@ void CGameStateRun::turn_end() {
 				else if (xp >= 2)
 					characterinf[21 + 13 * i] = characterinf[21 + 13 * i] + 500 * xp;
 				if (characterinf[21 + 13 * i] >= 10000) {
+					characterinf[22 + 13 * i] = characterinf[22 + 13 * i] / (((pokemoninf[1][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + 10 + characterinf[20 + 13 * i]) * 100;
 					characterinf[20 + 13 * i] += 1;
 					characterinf[21 + 13 * i] = 0;
 					if ((characterinf[19 + 13 * i] == 1 || characterinf[19 + 13 * i] == 4 || characterinf[19 + 13 * i] == 7 || characterinf[19 + 13 * i] == 10 || characterinf[19 + 13 * i] == 15 || characterinf[19 + 13 * i] == 18) && (characterinf[20 + 13 * i] == 20)) {
 						characterinf[19 + 13 * i] += 1;
+						
 					}
 					else if ((characterinf[19 + 13 * i] == 2 || characterinf[19 + 13 * i] == 5 || characterinf[19 + 13 * i] == 8 || characterinf[19 + 13 * i] == 11 || characterinf[19 + 13 * i] == 16) && (characterinf[20 + 13 * i] == 35)) {
 						characterinf[19 + 13 * i] += 1;
 					}
-					characterinf[23 + 13 * i] = (((pokemoninf[2][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
-					characterinf[24 + 13 * i] = (((pokemoninf[3][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
-					characterinf[27 + 13 * i] = (((pokemoninf[8][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
-					characterinf[22 + 13 * i] = (((pokemoninf[1][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + 10 + characterinf[20 + 13 * i]);
-
 				}
-				characterinf[22 + 13 * i] = characterinf[22 + 13 * i] / (((pokemoninf[1][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + 10 + characterinf[20 + 13 * i]) * 100;
+				characterinf[23 + 13 * i] = (((pokemoninf[2][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
+				characterinf[24 + 13 * i] = (((pokemoninf[3][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
+				characterinf[27 + 13 * i] = (((pokemoninf[8][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + characterinf[20 + 13 * i]);
+				characterinf[22 + 13 * i] = (((pokemoninf[1][characterinf[19 + 13 * i]] + 7) * characterinf[20 + 13 * i]) / 50 + 10 + characterinf[20 + 13 * i]);
+				characterinf[28 + 13 * i] = pokemoninf[9][characterinf[19 + 13 * i]];
+				characterinf[29 + 13 * i] = pokemoninf[10][characterinf[19 + 13 * i]];
+				characterinf[30 + 13 * i] = pokemoninf[11][characterinf[19 + 13 * i]];
+				characterinf[31 + 13 * i] = pokemoninf[12][characterinf[19 + 13 * i]];
+				
 
 			}
 		}
@@ -2118,10 +2117,10 @@ void CGameStateRun::show_text_by_phase() {
 	string moneyout = to_string(characterinf[0]);
 	string pokemon[6];
 	string teamname[6];
-	/*string j = to_string(judge % 1000);
+	/*string j = to_string(judge % 1000);*/
 	CTextDraw::ChangeFontLog(pDC, 21, "微軟正黑體", RGB(255, 0, 0), 800);
-	CTextDraw::Print(pDC, 0, 0, x);
-	CTextDraw::Print(pDC, 90, 0, y);
+	CTextDraw::Print(pDC, 0, 0, to_string(dam1));
+	/*CTextDraw::Print(pDC, 90, 0, y);
 	CTextDraw::Print(pDC, 0, 20, tx);
 	CTextDraw::Print(pDC, 90, 20, ty);
 	CTextDraw::Print(pDC, 180, 0, j);*/
@@ -2308,7 +2307,7 @@ void CGameStateRun::show_text_by_phase() {
 			CTextDraw::Print(pDC, 300, 50, to_string(LV2));
 			CTextDraw::Print(pDC, 60, 75, "HP:");
 			CTextDraw::Print(pDC, 130, 75, to_string(hp2));
-			CTextDraw::Print(pDC, 330, 300, "小火龍");
+			CTextDraw::Print(pDC, 360, 300, pokemonname[characterinf[19 + 13 * pokest]]);
 			CTextDraw::Print(pDC, 480, 300, "LV:");
 			CTextDraw::Print(pDC, 540, 300, to_string((characterinf[20 + 13 * pokest])));
 			CTextDraw::Print(pDC, 330, 325, "HP:");
