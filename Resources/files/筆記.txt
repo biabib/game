@@ -1,27 +1,18 @@
-精靈球 超級球 高級球 大師球 神奇糖果 傷藥 好傷藥 厲害傷藥 全滿藥 解毒藥 灼傷藥 解凍藥 解麻藥 解眠藥 萬靈藥 活力碎片 活力塊 
+精靈球 超級球 高級球 大師球 神奇糖果 	傷藥 	好傷藥 	厲害傷藥 全滿藥 	解毒藥 灼傷藥 解凍藥 解麻藥 解眠藥 	萬靈藥 活力碎片 活力塊 
+200	600	1200		4800	300	700	1500	2500		100	250	250	200	200	600	1500	4000
 text:
 1	shopstart
 2	shopbuy1
 3	shopbuy2
 arrow:
-1	左上
+1	右上
 2	下	
-3	隊伍
-4	戰鬥
-5	技能
-
-
-battle_phase:
-0     無戰鬥
-1	進入戰鬥(選項介面)
-2	技能選中(優先值判斷過場)
-3 	我方行動
-4	敵方行動
-5	結算
-
-隊伍資料:
-編號 等級 目前血量(0~100) 招式編號 
-
+3	隊伍 100,415、465、515
+prop:
+1
+2
+3
 地圖物件編號從左下開始
 characterinf：money,prop[17],dojonum, pokemoninpack[6];
-pokemon：pokemonnum,level,exp,life,att,def,raceatt,racedef,speed,skill1,skill2,skill3,skill4
+pokemon：pokemonnum,level,exp,life
+,att,def,raceatt 0,racedef 0,speed,skill1,skill2,skill3,skill4

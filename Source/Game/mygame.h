@@ -83,6 +83,11 @@ namespace game_framework {
 		void OnInit();  								// 遊戲的初值及圖形設定
 		void OnKeyDown(UINT, UINT, UINT);
 		void OnKeyUp(UINT, UINT, UINT);
+		void OnLButtonDown(UINT nFlags, CPoint point);  // 處理滑鼠的動作
+		void OnLButtonUp(UINT nFlags, CPoint point);	// 處理滑鼠的動作
+		void OnMouseMove(UINT nFlags, CPoint point);	// 處理滑鼠的動作 
+		void OnRButtonDown(UINT nFlags, CPoint point);  // 處理滑鼠的動作
+		void OnRButtonUp(UINT nFlags, CPoint point);	// 處理滑鼠的動作
 		int lastX = 0;
 		int lastY = 0;
 		int speedX = 0;
@@ -113,11 +118,14 @@ namespace game_framework {
 		CMovingBitmap menu;
 		CMovingBitmap point;
 		CMovingBitmap arrow;
+		CMovingBitmap white;
+		CMovingBitmap boss[5];
 		CMovingBitmap battle_scr;
 		std::vector<CMovingBitmap> pack;
 		std::vector<CMovingBitmap> hitbox;				//先用兩百個物件看看夠不夠
 		std::vector<CMovingBitmap> tppoint;
 		std::vector<CMovingBitmap> grass;
+		std::vector<CMovingBitmap> sign;
 		std::vector<CMovingBitmap> dialog;
 		bool overlapleft = 0;
 		bool overlapright = 0;
@@ -127,6 +135,11 @@ namespace game_framework {
 		bool confirmenter = false;
 		bool confirmup = false;
 		bool confirmdown = false;
+		bool sell = false;
+		bool usingprop = false;
+		bool d = false;
+		int useprop = 0;
+		int storynum = 1;
 		int shopnum = 0;
 		int hitboxnum = 0;
 		int grassnum = 0;
@@ -135,11 +148,18 @@ namespace game_framework {
 		int nownum = 0;
 		int nownum1 = 0;
 		int arrownum = 0;
+		int signnum = 0;
+		int pokemoninf[22][13];
+		string pokemonname[22];
+		int skilldam[35];
+		string skillname[35];
+		void show_image_by_phase();
+		void show_text_by_phase();
+		/*void phase_house();
+		void phase_map();*/
 		int battle_phase = 0;
 		int judge;
 		int turn = 0;
-		void show_image_by_phase();
-		void show_text_by_phase();
 		void battle_start();
 		void turn_end();
 		void team_change();
@@ -158,8 +178,9 @@ namespace game_framework {
 		int spe2;
 		int dam1;
 		int dam2;
-
-		//測試用
+		int LV2;
+		int pokeid = 0;
+		int pokest = 0;
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
